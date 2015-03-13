@@ -3,7 +3,7 @@ __author__ = 'Ciddhi'
 from DatabaseManager import *
 from sqlalchemy import create_engine
 import GlobalVariables as gv
-from decimal import Decimal
+from random import randint
 
 class DBUtils:
 
@@ -26,4 +26,67 @@ class DBUtils:
     def dbClose (self):
         global databaseObject
         databaseObject.Close()
+
+    # Function to return the count of Elite individuals in table feeder_individual_table
+    def getEliteCountLatest(self):
+        global databaseObject
+        query = "SELECT COUNT(*),1 FROM feeder_individual_table WHERE category=1 AND " \
+                "walk_forward=(SELECT MAX(walk_forward) FROM feeder_individual_table)"
+        return databaseObject.Execute(query)
+
+    # Function to return the count of Feasible individuals in table feeder_individual_table
+    def getFeasibleCountLatest(self):
+        global databaseObject
+        query = "SELECT COUNT(*),1 FROM feeder_individual_table WHERE category=2 AND " \
+                "walk_forward=(SELECT MAX(walk_forward) FROM feeder_individual_table)"
+        return databaseObject.Execute(query)
+
+    # Function to return the count of Non-Feasible individuals in table feeder_individual_table
+    def getNonFeasibleCountLatest(self):
+        global databaseObject
+        query = "SELECT COUNT(*),1 FROM feeder_individual_table WHERE category=3 AND " \
+                "walk_forward=(SELECT MAX(walk_forward) FROM feeder_individual_table)"
+        return databaseObject.Execute(query)
+
+    # Function to return a random elite individual id
+    # The provided offset should be within limit depending upon count of elite individuals
+    def getRandomEliteIndividualLatest(self, offset):
+        global databaseObject
+        queryIndividual = "SELECT individual_id,1 FROM feeder_individual_table WHERE category=1 AND" \
+                          " walk_forward=(SELECT MAX(walk_forward) FROM feeder_individual_table)" \
+                          " LIMIT 1 OFFSET " + str(offset)
+        return databaseObject.Execute(queryIndividual)
+
+    # Function to return a random feasible individual id.
+    # The provided offset should be within limit depending upon count of feasible individuals
+    def getRandomFeasibleIndividualLatest(self, offset):
+        global databaseObject
+        queryIndividual = "SELECT individual_id,1 FROM feeder_individual_table WHERE category=2 AND" \
+                          " walk_forward=(SELECT MAX(walk_forward) FROM feeder_individual_table)" \
+                          " LIMIT 1 OFFSET " + str(offset)
+        return databaseObject.Execute(queryIndividual)
+
+    # Function to return a random non-feasible individual id
+    # The provided offset should be within limit depending upon count of non-feasible individuals
+    def getRandomNonFeasibleIndividualLatest(self, offset):
+        global databaseObject
+        queryIndividual = "SELECT individual_id,1 FROM feeder_individual_table WHERE category=3 AND" \
+                          " walk_forward=(SELECT MAX(walk_forward) FROM feeder_individual_table)" \
+                          " LIMIT 1 OFFSET " + str(offset)
+        return databaseObject.Execute(queryIndividual)
+
+    # Function to add a new Portfolio mapping in mapping_table
+    def insertPortfolioMapping(self, metaIndividualId, feederIndividualId):
+        global databaseObject
+        query = "INSERT INTO mapping_table" \
+                " (meta_individual_id, feeder_individual_id)" \
+                " VALUES" \
+                " ( " + str(metaIndividualId) + ", " + str(feederIndividualId) + " )"
+        return databaseObject.Execute(query)
+
+
+
+
+
+
 
