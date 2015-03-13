@@ -22,11 +22,15 @@ if __name__ == "__main__":
                      " category int"
                      " )")
 
+    '''
+    dbObject.dbQuery("DROP TABLE mapping_table")
     dbObject.dbQuery("CREATE TABLE mapping_table"
                      " ("
                      " meta_individual_id int,"
-                     " feeder_individual_id int"
+                     " feeder_individual_id array,"
+                     " generation int"
                      " )")
+
     '''
 
     dbObject.dbQuery("DROP TABLE feeder_individual_table")
@@ -34,5 +38,6 @@ if __name__ == "__main__":
     dbObject.dbQuery("CREATE TABLE feeder_individual_table"
                      " AS SELECT DISTINCT(individual_id), category, walk_forward"
                      " FROM tradesheet_data_table")
+    '''
 
     dbObject.dbClose()

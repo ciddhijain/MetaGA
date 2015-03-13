@@ -76,12 +76,12 @@ class DBUtils:
         return databaseObject.Execute(queryIndividual)
 
     # Function to add a new Portfolio mapping in mapping_table
-    def insertPortfolioMapping(self, metaIndividualId, feederIndividualId):
+    def insertPortfolioMapping(self, metaIndividualId, feederIndividualId, generation):
         global databaseObject
         query = "INSERT INTO mapping_table" \
-                " (meta_individual_id, feeder_individual_id)" \
+                " (meta_individual_id, feeder_individual_id, generation)" \
                 " VALUES" \
-                " ( " + str(metaIndividualId) + ", " + str(feederIndividualId) + " )"
+                " ( " + str(metaIndividualId) + ", " + str(feederIndividualId) + ", " + str(generation) + " )"
         return databaseObject.Execute(query)
 
 

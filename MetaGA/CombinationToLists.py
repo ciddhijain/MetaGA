@@ -1,7 +1,7 @@
 __author__ = 'Ciddhi'
 
 import GlobalVariables as gv
-from random import randint
+from random import randint, sample
 
 class CombinationToLists:
 
@@ -36,42 +36,24 @@ class CombinationToLists:
             sizePortfolio = randint(gv.minPortfolioSize, gv.maxPortfolioSize)
             currentSize = 0
 
-            # This list stores the offsets generated, to ensure the individuals in a portfolio are unique
-            # Inherent offset for elites is 0, for feasible individuals is countElite+0 and
-            # for non-feasible individuals is countElite+countFeasible+0
-            portfolioOffsets = []
+            # Lists containing unique randomly ordered offsets within range for elites and feasible individuals
+            eliteOffsets = sample(range(countElite), sizePortfolio)
+            feasibleOffsets = sample(range(countFeasible), sizePortfolio)
 
             # Terminate when required number of individuals have been added to the portfolio
             while currentSize<sizePortfolio:
 
                 # Generating probability for fetching elite/feasible feeder individual
                 p = randint(1, range)
-
                 if p<gv.feederEliteSelectionProbability*range:
-                    # Generating a unique offset for elite individuals
-                    offset = 0
-                    while (True):
-                        offset = randint(0, countElite-1)
-                        if offset not in portfolioOffsets:
-                            portfolioOffsets.append(offset)
-                            break
-                    resultIndividual = dbObject.getRandomEliteIndividualLatest(offset)
+                    resultIndividual = dbObject.getRandomEliteIndividualLatest(eliteOffsets[currentSize])
                 else:
-                    # Generating a unique offset for feasible individuals
-                    offset = 0
-                    while (True):
-                        offset = randint(0, countFeasible-1)
-                        if offset not in portfolioOffsets:
-                            portfolioOffsets.append(countElite+offset)
-                            break
-                    resultIndividual = dbObject.getRandomFeasibleIndividualLatest(offset)
+                    resultIndividual = dbObject.getRandomFeasibleIndividualLatest(feasibleOffsets[currentSize])
                 for individualId, dummy in resultIndividual:
                     currentSize += 1
-                    dbObject.insertPortfolioMapping(countPortfolios+1, individualId)
+                    dbObject.insertPortfolioMapping(countPortfolios+1, individualId, 0)
 
             countPortfolios += 1
-
-
 
 
 if __name__ == "__main__":
