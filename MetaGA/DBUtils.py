@@ -75,6 +75,12 @@ class DBUtils:
                           " LIMIT 1 OFFSET " + str(offset)
         return databaseObject.Execute(queryIndividual)
 
+    def getRandomPortfolioIndividual(self, metaIndividualId, offset):
+        global databaseObject
+        query = "SELECT feeder_individual_id, 1 FROM mapping_table WHERE meta_individual_id=" + \
+                str(metaIndividualId) + " LIMIT 1 OFFSET " + str(offset)
+        return databaseObject.Execute(query)
+
     # Function to add a new Portfolio mapping in mapping_table
     def insertPortfolioMapping(self, metaIndividualId, feederIndividualId, generation):
         global databaseObject
@@ -84,9 +90,18 @@ class DBUtils:
                 " ( " + str(metaIndividualId) + ", " + str(feederIndividualId) + ", " + str(generation) + " )"
         return databaseObject.Execute(query)
 
+    # Function to update a single feeder individual in a portfolio
+    def updatePortfolioIndividual(self, metaIndividualId, oldFeederIndividualId, newFeederIndividualId):
+        global databaseObject
+        query = "UPDATE mapping_table SET feeder_individual_id=" + str(newFeederIndividualId) + \
+                " WHERE meta_individual_id=" + str(metaIndividualId) + " AND feeder_individual_id=" + str(oldFeederIndividualId)
+        return databaseObject.Execute(query)
 
-
-
-
+    # Function to get portfolio ids in latest generation from mapping_table
+    def getPortfolios(self, generation):
+        global databaseObject
+        query = "SELECT meta_individual_id, COUNT(*) FROM mapping_table WHERE generation=" + \
+                str(generation) + " GROUP BY meta_individual_id"
+        return databaseObject.Execute(query)
 
 
