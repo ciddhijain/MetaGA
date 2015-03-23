@@ -11,4 +11,4 @@ feederEliteSelectionProbability = 0.6           # This is the probability of put
 feederNonEliteSelectionProbability = 0.4        # This is the probability of putting non-elite fit individuals from feeder in a portfolio
 mutationProbability = 0.005                     # This is the mutation probability
 
-numPortfolios = 10                              # This is the number of portfolios in one generation
+numPortfolios = 11                              # This is the number of portfolios in one generation

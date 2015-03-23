@@ -51,7 +51,7 @@ class CombinationToLists:
                     resultIndividual = dbObject.getRandomFeasibleIndividualLatest(feasibleOffsets[currentSize])
                 for individualId, dummy in resultIndividual:
                     currentSize += 1
-                    dbObject.insertPortfolioMapping(countPortfolios+1, individualId, 0)
+                    dbObject.insertPortfolioMapping(countPortfolios+1, individualId, 0, 1)
 
             countPortfolios += 1
 
