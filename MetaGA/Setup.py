@@ -32,6 +32,12 @@ if __name__ == "__main__":
                      " selected int"
                      " )")
 
+    dbObject.dbQuery("CREATE TABLE performance_table"
+                     " ("
+                     " meta_individual_id int,"
+                     " performance float,"
+                     " )")
+
     '''
 
     dbObject.dbQuery("DROP TABLE feeder_individual_table")

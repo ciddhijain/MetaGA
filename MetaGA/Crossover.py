@@ -9,12 +9,13 @@ class Crossover:
     # By default, it performs single point crossover (type=1).
     # Two point crossover corresponds to 'type=2'.
     # Uniform crossover corresponds to 'type=3'.
-    # The variable 'type' takes a list of lists [(crossoverType, numChildren)] as input and performs all listed types of crossovers,
+    # The variable 'type' takes a list of lists [(crossoverType, numChildren)] as input and
+    # performs all listed types of crossovers.
     # By default, a single point crossover gives two children.
     # The variable numChildren can take a list of values (each belonging to {1, 2}),
     # and gives corresponding number of children for respective type of crossover.
 
-    def performCrossover(self,generation, dbObject, type=[(1, 2)]):
+    def performCrossover(self, generation, dbObject, type=[(1, 2)]):
 
         groups = sample(range(gv.numPortfolios), gv.numPortfolios)          # This provides a random ordered offset for pairing
 

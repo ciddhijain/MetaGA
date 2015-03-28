@@ -12,11 +12,12 @@ class DBUtils:
     def dbConnect (self):
         db_username = gv.userName
         db_password = gv.password
-        db_host = '127.0.0.1'
+        db_host = gv.dbHost
         db_name = gv.databaseName
-        db_port = '3306'
+        db_port = gv.dbPort
+        db_connector = gv.dbConnector
         global databaseObject
-        databaseObject = DatabaseManager(db_username, db_password,db_host,db_port, db_name)
+        databaseObject = DatabaseManager(db_connector, db_username, db_password,db_host,db_port, db_name)
         databaseObject.Connect()
 
     def dbQuery (self, query):
@@ -103,16 +104,16 @@ class DBUtils:
                     query = "INSERT INTO mapping_table" \
                             " (meta_individual_id, feeder_individual_id, generation, selected)" \
                             " VALUES" \
-                            " ( " + str(newMetaId+1) + ", " + str(newFeederIndividualId) + ", " + str(generation) + ", " + str(1) + " )"
+                            " ( " + str(newMetaId+1) + ", " + str(newFeederIndividualId) + ", " + str(generation) + ", " + str(0) + " )"
                     databaseObject.Execute(query)
                 else:
                     query = "INSERT INTO mapping_table" \
                             " (meta_individual_id, feeder_individual_id, generation, selected)" \
                             " VALUES" \
-                            " ( " + str(newMetaId+1) + ", " + str(feederIndividualId) + ", " + str(generation) + ", " + str(1) + " )"
+                            " ( " + str(newMetaId+1) + ", " + str(feederIndividualId) + ", " + str(generation) + ", " + str(0) + " )"
                     databaseObject.Execute(query)
 
-    # Function to get portfolio ids in latest generation from mapping_table
+    # Function to get portfolio ids in given generation from mapping_table
     def getPortfolios(self, generation):
         global databaseObject
         query = "SELECT meta_individual_id, COUNT(*) FROM mapping_table WHERE generation=" + \
@@ -122,7 +123,8 @@ class DBUtils:
     # Function to get size of a portfolio in given generation, specified by offset for id
     def getPortfolioSizeByOffset(self, metaPortfolioIdOffset, generation):
         global databaseObject
-        queryId = "SELECT DISTINCT(meta_portfolio_id), 1 FROM mapping_table WHERE generation=" + str(generation) + " LIMIT 1 OFFSET " + str(metaPortfolioIdOffset)
+        queryId = "SELECT DISTINCT(meta_portfolio_id), 1 FROM mapping_table WHERE generation=" + str(generation) + \
+                  " LIMIT 1 OFFSET " + str(metaPortfolioIdOffset)
         resultId = databaseObject.Execute(queryId)
         for metaPortfolioId, dummy in resultId:
             query = "SELECT COUNT(*), meta_portfolio_id FROM mapping_table WHERE meta_portfolio_id=" + str(metaPortfolioId)
@@ -154,13 +156,13 @@ class DBUtils:
                 query = "INSERT INTO mapping_table" \
                         " (meta_individual_id, feeder_individual_id, generation, selected)" \
                         " VALUES" \
-                        " ( " + str(newId+1) + ", " + str(list1[i]) + ", " + str(generation) + ", " + str(1) + " )"
+                        " ( " + str(newId+1) + ", " + str(list1[i]) + ", " + str(generation) + ", " + str(0) + " )"
                 databaseObject.Execute(query)
             for i in range(cut21, len(list2), 1):
                 query = "INSERT INTO mapping_table" \
                         " (meta_individual_id, feeder_individual_id, generation, selected)" \
                         " VALUES" \
-                        " ( " + str(newId+1) + ", " + str(list2[i]) + ", " + str(generation) + ", " + str(1) + " )"
+                        " ( " + str(newId+1) + ", " + str(list2[i]) + ", " + str(generation) + ", " + str(0) + " )"
                 databaseObject.Execute(query)
 
             if numChildren==2:
@@ -168,13 +170,13 @@ class DBUtils:
                     query = "INSERT INTO mapping_table" \
                             " (meta_individual_id, feeder_individual_id, generation, selected)" \
                             " VALUES" \
-                            " ( " + str(newId+2) + ", " + str(list2[i]) + ", " + str(generation) + ", " + str(1) + " )"
+                            " ( " + str(newId+2) + ", " + str(list2[i]) + ", " + str(generation) + ", " + str(0) + " )"
                     databaseObject.Execute(query)
                 for i in range(cut11, len(list1), 1):
                     query = "INSERT INTO mapping_table" \
                             " (meta_individual_id, feeder_individual_id, generation, selected)" \
                             " VALUES" \
-                            " ( " + str(newId+2) + ", " + str(list1[i]) + ", " + str(generation) + ", " + str(1) + " )"
+                            " ( " + str(newId+2) + ", " + str(list1[i]) + ", " + str(generation) + ", " + str(0) + " )"
                     databaseObject.Execute(query)
 
         # Two Point Crossover
@@ -183,19 +185,19 @@ class DBUtils:
                 query = "INSERT INTO mapping_table" \
                         " (meta_individual_id, feeder_individual_id, generation, selected)" \
                         " VALUES" \
-                        " ( " + str(newId+1) + ", " + str(list1[i]) + ", " + str(generation) + ", " + str(1) + " )"
+                        " ( " + str(newId+1) + ", " + str(list1[i]) + ", " + str(generation) + ", " + str(0) + " )"
                 databaseObject.Execute(query)
             for i in range(cut21, cut22, 1):
                 query = "INSERT INTO mapping_table" \
                         " (meta_individual_id, feeder_individual_id, generation, selected)" \
                         " VALUES" \
-                        " ( " + str(newId+1) + ", " + str(list2[i]) + ", " + str(generation) + ", " + str(1) + " )"
+                        " ( " + str(newId+1) + ", " + str(list2[i]) + ", " + str(generation) + ", " + str(0) + " )"
                 databaseObject.Execute(query)
             for i in range(cut12, len(list1), 1):
                  query = "INSERT INTO mapping_table" \
                         " (meta_individual_id, feeder_individual_id, generation, selected)" \
                         " VALUES" \
-                        " ( " + str(newId+1) + ", " + str(list1[i]) + ", " + str(generation) + ", " + str(1) + " )"
+                        " ( " + str(newId+1) + ", " + str(list1[i]) + ", " + str(generation) + ", " + str(0) + " )"
                  databaseObject.Execute(query)
 
             if numChildren==2:
@@ -203,19 +205,53 @@ class DBUtils:
                     query = "INSERT INTO mapping_table" \
                             " (meta_individual_id, feeder_individual_id, generation, selected)" \
                             " VALUES" \
-                            " ( " + str(newId+2) + ", " + str(list2[i]) + ", " + str(generation) + ", " + str(1) + " )"
+                            " ( " + str(newId+2) + ", " + str(list2[i]) + ", " + str(generation) + ", " + str(0) + " )"
                     databaseObject.Execute(query)
                 for i in range(cut11, cut12, 1):
                     query = "INSERT INTO mapping_table" \
                             " (meta_individual_id, feeder_individual_id, generation, selected)" \
                             " VALUES" \
-                            " ( " + str(newId+2) + ", " + str(list1[i]) + ", " + str(generation) + ", " + str(1) + " )"
+                            " ( " + str(newId+2) + ", " + str(list1[i]) + ", " + str(generation) + ", " + str(0) + " )"
                     databaseObject.Execute(query)
                 for i in range(cut22, len(list2), 1):
                      query = "INSERT INTO mapping_table" \
                             " (meta_individual_id, feeder_individual_id, generation, selected)" \
                             " VALUES" \
-                            " ( " + str(newId+2) + ", " + str(list2[i]) + ", " + str(generation) + ", " + str(1) + " )"
+                            " ( " + str(newId+2) + ", " + str(list2[i]) + ", " + str(generation) + ", " + str(0) + " )"
                      databaseObject.Execute(query)
 
         #if crossoverType==3:
+
+    # Function to insert a portfolio's performance in performance_table
+    def insertPerformance(self, portfolioId, performance):
+        global databaseObject
+        query = "INSERT INTO performance_table" \
+                " (meta_individual_id, performance)" \
+                " VALUES" \
+                " (" + str(portfolioId) + ", " + str(performance) + ")"
+        return databaseObject.Execute(query)
+
+    # Function to get portfolios in a given generation ordered by performance
+    def getOrderedPortfolios(self, generation):
+        global databaseObject
+        query = "SELECT meta_individual_id, 1 FROM performance_table WHERE meta_individual_id IN " \
+                "(SELECT DISTINCT(meta_individual_id) FROM mapping_table WHERE generation=" + str(generation) + ") " \
+                "ORDER BY performance LIMIT " + str(gv.numPortfolios)
+        return databaseObject.Execute(query)
+
+    # Function to insert selected portfolios for next generation and update in current generation
+    def insertUpdateSelectedPortfolio(self, portfolioId, generation):
+        global databaseObject
+        queryNewId = "SELECT MAX(meta_individual_id), 1 FROM mapping_table"
+        queryFeederIndividuals = "SELECT feeder_individual_id, 1 FROM mapping_table WHERE meta_individual_id=" + str(portfolioId)
+        querUpdate = "UPDATE mapping_table SET selected=1 WHERE meta_individual_id=" + str(portfolioId)
+        resultNewId = databaseObject.Execute(queryNewId)
+        resultFeederIndividuals = databaseObject.Execute(queryFeederIndividuals)
+        for newId, dummy1 in resultNewId:
+            for feederIndividual, dummy2 in resultFeederIndividuals:
+                queryInsert = "INSERT INTO mapping_table" \
+                              " (meta_individual_id, feeder_individual_id, generation, selected)" \
+                              " VALUES" \
+                              " (" + str(newId+1) + ", " + str(feederIndividual) + ", " + str(generation+1) + ", " + str(0) + ")"
+                databaseObject.Execute(queryInsert)
+        return databaseObject.Execute(querUpdate)

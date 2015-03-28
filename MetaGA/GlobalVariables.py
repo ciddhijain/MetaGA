@@ -1,8 +1,13 @@
 __author__ = 'Ciddhi'
 
+from datetime import timedelta, datetime
+
 databaseName = 'METAGA'                            # This is database name to which connection is made
 userName = 'root'                               # This is the user name for database connection
 password = 'controljp'                          # This is the password for database connection
+dbHost = '127.0.0.1'
+dbPort = '3306'
+dbConnector = 'mysqlconnector'
 
 maxPortfolioSize = 10                           # This is the maximum size of portfolio
 minPortfolioSize = 5                            # This is the minimum size of portfolio
@@ -11,4 +16,7 @@ feederEliteSelectionProbability = 0.6           # This is the probability of put
 feederNonEliteSelectionProbability = 0.4        # This is the probability of putting non-elite fit individuals from feeder in a portfolio
 mutationProbability = 0.005                     # This is the mutation probability
 
-numPortfolios = 11                              # This is the number of portfolios in one generation
+numPortfolios = 10                              # This is the number of portfolios in one generation
+
+startDate = datetime(2012, 1, 2).date()         # This is the start of trading period
+endDate = datetime(2012, 12, 30).date()           # This is the end of trading period
