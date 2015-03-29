@@ -9,16 +9,16 @@ class CombinationToLists:
         numBitsEliteProbabilty = str(gv.feederEliteSelectionProbability)[::-1].find('.')
         numBitsNonEliteProbability = str(gv.feederNonEliteSelectionProbability)[::-1].find('.')
         numBits = max(numBitsEliteProbabilty, numBitsNonEliteProbability)
-        range = 10**numBits
+        rangeBits = 10**numBits
         countPortfolios = 0
         countElite = 0
         countFeasible = 0
         countNonFeasible = 0
 
         # To get the number of each type of individuals in table
-        resultCountElite = dbObject.getEliteCountLatest()
-        resultCountFeasible = dbObject.getFeasibleCountLatest()
-        resultCountNonFeasible = dbObject.getNonFeasibleCountLatest()
+        resultCountElite = dbObject.getEliteCount(gv.walkforward)
+        resultCountFeasible = dbObject.getFeasibleCount(gv.walkforward)
+        resultCountNonFeasible = dbObject.getNonFeasibleCount(gv.walkforward)
         for count, dummy in resultCountElite:
             if count:
                 countElite = count
@@ -44,14 +44,14 @@ class CombinationToLists:
             while currentSize<sizePortfolio:
 
                 # Generating probability for fetching elite/feasible feeder individual
-                p = randint(1, range)
-                if p<gv.feederEliteSelectionProbability*range:
-                    resultIndividual = dbObject.getRandomEliteIndividualLatest(eliteOffsets[currentSize])
+                p = randint(1, rangeBits)
+                if p<=gv.feederEliteSelectionProbability*rangeBits:
+                    resultIndividual = dbObject.getRandomEliteIndividual(eliteOffsets[currentSize], gv.walkforward)
                 else:
-                    resultIndividual = dbObject.getRandomFeasibleIndividualLatest(feasibleOffsets[currentSize])
+                    resultIndividual = dbObject.getRandomFeasibleIndividual(feasibleOffsets[currentSize], gv.walkforward)
                 for individualId, dummy in resultIndividual:
                     currentSize += 1
-                    dbObject.insertPortfolioMapping(countPortfolios+1, individualId, 0, 0)
+                    dbObject.insertPortfolioMapping(countPortfolios+1, individualId, 1, 0)
 
             countPortfolios += 1
 

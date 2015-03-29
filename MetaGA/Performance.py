@@ -15,9 +15,9 @@ class Performance:
         for date,dummy in resultDates:
             DictOfDates[date]=date_count_range
             date_count_range=date_count_range+1
-        query= "SELECT * FROM tradesheet_data_table WHERE entry_date >= '" + str(startDate) + "' AND entry_date <= '" \
-               + str(endDate) + "' AND individual_id IN (SELECT feeder_individual_id FROM mapping_table WHERE meta_individual_id=" \
-               + str(portfolioId) + ")"
+        query = "SELECT * FROM tradesheet_data_table WHERE entry_date >= '" + str(startDate) + "' AND entry_date <= '" \
+               + str(endDate) + "' AND individual_id IN ( SELECT feeder_individual_id FROM mapping_table WHERE meta_individual_id=" \
+               + str(portfolioId) + " ) AND walk_forward=" + str(gv.walkforward)
         resultTrades = dbObject.dbQuery(query)
         c=0
         #Parameters for each individual
@@ -42,7 +42,7 @@ class Performance:
         DD_History = [] #List to store the DD values.
         Gain_History = []
 
-        for trade_id, individual_id, trade_type, trade_entry_date, trade_entry_time, trade_entry_price, trade_qty, trade_exit_date, trade_exit_time, trade_exit_price in resultTrades:
+        for individual_id, trade_type, trade_entry_date, trade_entry_time, trade_entry_price, trade_qty, trade_exit_date, trade_exit_time, trade_exit_price, walk_forward, category in resultTrades:
             CurrentDate=trade_entry_date
             if(c==0):
                 prev_trade_entry_date=trade_entry_date

@@ -9,7 +9,7 @@ class Mutation:
         numBits = str(gv.mutationProbability)[::-1].find('.')
         range = 10**numBits
         countNonFeasible = 0
-        resultCount = dbObject.getNonFeasibleCountLatest()
+        resultCount = dbObject.getNonFeasibleCount(gv.walkforward)
         for count, dummy in resultCount:
             if count:
                 countNonFeasible = count
@@ -23,7 +23,7 @@ class Mutation:
                 for id, dummy in resultOldIndividual:
                     if id:
                         oldIndividualId = id
-                resultNewIndividual = dbObject.getRandomNonFeasibleIndividualLatest(randint(0, countNonFeasible-1))
+                resultNewIndividual = dbObject.getRandomNonFeasibleIndividual(randint(0, countNonFeasible-1), gv.walkforward)
                 for id, dummy in resultNewIndividual:
                     if id:
                         newIndividualId = id

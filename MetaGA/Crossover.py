@@ -23,8 +23,8 @@ class Crossover:
             if i+1<gv.numPortfolios:
 
                 # Getting size of both portfolios
-                resultSize1 = dbObject.getPortfolioSizeByOffset(i, generation)
-                resultSize2 = dbObject.getPortfolioSizeByOffset(i+1, generation)
+                resultSize1 = dbObject.getPortfolioSizeByOffset(groups[i], generation)
+                resultSize2 = dbObject.getPortfolioSizeByOffset(groups[i+1], generation)
                 for size1, id1 in resultSize1:
                     for size2, id2 in resultSize2:
 

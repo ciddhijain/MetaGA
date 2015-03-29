@@ -29,51 +29,48 @@ class DBUtils:
         databaseObject.Close()
 
     # Function to return the count of Elite individuals in table feeder_individual_table
-    def getEliteCountLatest(self):
+    def getEliteCount(self, walkforward):
         global databaseObject
         query = "SELECT COUNT(*),1 FROM feeder_individual_table WHERE category=1 AND " \
-                "walk_forward=(SELECT MAX(walk_forward) FROM feeder_individual_table)"
+                "walk_forward=" + str(walkforward)
         return databaseObject.Execute(query)
 
     # Function to return the count of Feasible individuals in table feeder_individual_table
-    def getFeasibleCountLatest(self):
+    def getFeasibleCount(self, walkforward):
         global databaseObject
         query = "SELECT COUNT(*),1 FROM feeder_individual_table WHERE category=2 AND " \
-                "walk_forward=(SELECT MAX(walk_forward) FROM feeder_individual_table)"
+                "walk_forward=" + str(walkforward)
         return databaseObject.Execute(query)
 
     # Function to return the count of Non-Feasible individuals in table feeder_individual_table
-    def getNonFeasibleCountLatest(self):
+    def getNonFeasibleCount(self, walkforward):
         global databaseObject
         query = "SELECT COUNT(*),1 FROM feeder_individual_table WHERE category=3 AND " \
-                "walk_forward=(SELECT MAX(walk_forward) FROM feeder_individual_table)"
+                "walk_forward=" + str(walkforward)
         return databaseObject.Execute(query)
 
     # Function to return a random elite individual id
     # The provided offset should be within limit depending upon count of elite individuals
-    def getRandomEliteIndividualLatest(self, offset):
+    def getRandomEliteIndividual(self, offset, walkforward):
         global databaseObject
         queryIndividual = "SELECT individual_id,1 FROM feeder_individual_table WHERE category=1 AND" \
-                          " walk_forward=(SELECT MAX(walk_forward) FROM feeder_individual_table)" \
-                          " LIMIT 1 OFFSET " + str(offset)
+                          " walk_forward=" + str(walkforward) + " LIMIT 1 OFFSET " + str(offset)
         return databaseObject.Execute(queryIndividual)
 
     # Function to return a random feasible individual id.
     # The provided offset should be within limit depending upon count of feasible individuals
-    def getRandomFeasibleIndividualLatest(self, offset):
+    def getRandomFeasibleIndividual(self, offset, walkforward):
         global databaseObject
         queryIndividual = "SELECT individual_id,1 FROM feeder_individual_table WHERE category=2 AND" \
-                          " walk_forward=(SELECT MAX(walk_forward) FROM feeder_individual_table)" \
-                          " LIMIT 1 OFFSET " + str(offset)
+                          " walk_forward=" + str(walkforward) + " LIMIT 1 OFFSET " + str(offset)
         return databaseObject.Execute(queryIndividual)
 
     # Function to return a random non-feasible individual id
     # The provided offset should be within limit depending upon count of non-feasible individuals
-    def getRandomNonFeasibleIndividualLatest(self, offset):
+    def getRandomNonFeasibleIndividual(self, offset, walkforward):
         global databaseObject
         queryIndividual = "SELECT individual_id,1 FROM feeder_individual_table WHERE category=3 AND" \
-                          " walk_forward=(SELECT MAX(walk_forward) FROM feeder_individual_table)" \
-                          " LIMIT 1 OFFSET " + str(offset)
+                          " walk_forward=" + str(walkforward) + " LIMIT 1 OFFSET " + str(offset)
         return databaseObject.Execute(queryIndividual)
 
     def getRandomPortfolioIndividual(self, metaIndividualId, offset):
@@ -123,11 +120,11 @@ class DBUtils:
     # Function to get size of a portfolio in given generation, specified by offset for id
     def getPortfolioSizeByOffset(self, metaPortfolioIdOffset, generation):
         global databaseObject
-        queryId = "SELECT DISTINCT(meta_portfolio_id), 1 FROM mapping_table WHERE generation=" + str(generation) + \
+        queryId = "SELECT DISTINCT(meta_individual_id), 1 FROM mapping_table WHERE generation=" + str(generation) + \
                   " LIMIT 1 OFFSET " + str(metaPortfolioIdOffset)
         resultId = databaseObject.Execute(queryId)
         for metaPortfolioId, dummy in resultId:
-            query = "SELECT COUNT(*), meta_portfolio_id FROM mapping_table WHERE meta_portfolio_id=" + str(metaPortfolioId)
+            query = "SELECT COUNT(*), meta_individual_id FROM mapping_table WHERE meta_individual_id=" + str(metaPortfolioId)
             return databaseObject.Execute(query)
 
     # Function to insert children corresponding to crossover

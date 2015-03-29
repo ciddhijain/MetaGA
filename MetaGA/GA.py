@@ -14,15 +14,19 @@ if __name__ == "__main__":
     mutationObj = Mutation()
     convergenceObj = Convergence()
     dbObject = DBUtils()
+    dbObject.dbConnect()
+
+    dbObject.dbQuery("DELETE FROM mapping_table")
 
     combinationObj.combine(dbObject)
     generation = 1
 
     while (True):
-        crossoverObj.performCrossover(generation, dbObject)
+        crossoverObj.performCrossover(generation, dbObject, [(1, 2), (2, 2)])
         mutationObj.performMutation(generation, dbObject)
         selectionObj.select(generation, dbObject)
         if (convergenceObj.checkConvergence(generation, dbObject)):
             break
         else:
             generation += 1
+    dbObject.dbClose()
