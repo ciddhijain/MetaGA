@@ -5,7 +5,7 @@ from DBUtils import *
 if __name__ == "__main__":
     dbObject = DBUtils()
     dbObject.dbConnect()
-    '''
+
     dbObject.dbQuery("CREATE TABLE tradesheet_data_table"
                      " ("
                      " trade_id int,"
@@ -22,8 +22,6 @@ if __name__ == "__main__":
                      " category int"
                      " )")
 
-    '''
-    dbObject.dbQuery("DROP TABLE mapping_table")
     dbObject.dbQuery("CREATE TABLE mapping_table"
                      " ("
                      " meta_individual_id int,"
@@ -35,13 +33,11 @@ if __name__ == "__main__":
     dbObject.dbQuery("CREATE TABLE performance_table"
                      " ("
                      " meta_individual_id int,"
-                     " performance float,"
+                     " performance float"
                      " )")
 
+
     '''
-
-    dbObject.dbQuery("DROP TABLE feeder_individual_table")
-
     dbObject.dbQuery("CREATE TABLE feeder_individual_table"
                      " AS SELECT DISTINCT(individual_id), category, walk_forward"
                      " FROM tradesheet_data_table")
