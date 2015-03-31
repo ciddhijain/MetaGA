@@ -2,16 +2,17 @@ __author__ = 'Ciddhi'
 
 from datetime import timedelta, datetime
 
-databaseName = 'METAGA'                            # This is database name to which connection is made
+databaseName = 'METAGA'                         # This is database name to which connection is made
 userName = 'root'                               # This is the user name for database connection
 password = 'controljp'                          # This is the password for database connection
-dbHost = '127.0.0.1'
-dbPort = '3306'
-dbConnector = 'mysqlconnector'
-logFileName = 'MetaGA.log'
+dbHost = '127.0.0.1'                            # This is host address for database connection
+dbPort = '3306'                                 # This is port for database connection
+dbConnector = 'mysqlconnector'                  # This is the connector string to be used, depending upon python package
+logFileName = 'MetaGA.log'                      # This is the name of log file. It will append if file already exists
 
-walkforward = 3
-crossoverList = [(1, 2)]
+maxGenerations = 100                            # This is the maximum number of generations that GA will perform
+walkforward = 3                                 # This is walkforward from which individuals and trades will be picked
+crossoverList = [(1, 2)]                        # This list specifies types of crossovers and number of children
 # crossoverList = [(1, 2), (2, 2)]
 
 maxPortfolioSize = 10                           # This is the maximum size of portfolio
@@ -19,7 +20,7 @@ minPortfolioSize = 5                            # This is the minimum size of po
 
 feederEliteSelectionProbability = 0.6           # This is the probability of putting elite individuals from feeder in a portfolio
 feederNonEliteSelectionProbability = 0.4        # This is the probability of putting non-elite fit individuals from feeder in a portfolio
-mutationProbability = 0.05                     # This is the mutation probability
+mutationProbability = 0.05                      # This is the mutation probability
 
 numPortfolios = 10                              # This is the number of portfolios in one generation
 numElites = 5                                   # This is the number of top portfolios in a generation which are considered as elite

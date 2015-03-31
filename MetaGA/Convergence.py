@@ -3,8 +3,10 @@ __author__ = 'Ciddhi'
 class Convergence:
 
     def checkConvergence(self, generation, dbObject):
-        if generation==1:
+        if generation == 1:
             return False
+        elif generation == 100:
+            return True
         else:
             resultNew = dbObject.getOrderedElitePortfolios(generation)
             resultOld = dbObject.getOrderedElitePortfolios(generation-1)
