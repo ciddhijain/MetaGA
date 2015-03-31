@@ -8,8 +8,11 @@ password = 'controljp'                          # This is the password for datab
 dbHost = '127.0.0.1'
 dbPort = '3306'
 dbConnector = 'mysqlconnector'
+logFileName = 'MetaGA.log'
 
 walkforward = 3
+crossoverList = [(1, 2)]
+# crossoverList = [(1, 2), (2, 2)]
 
 maxPortfolioSize = 10                           # This is the maximum size of portfolio
 minPortfolioSize = 5                            # This is the minimum size of portfolio
@@ -19,6 +22,7 @@ feederNonEliteSelectionProbability = 0.4        # This is the probability of put
 mutationProbability = 0.05                     # This is the mutation probability
 
 numPortfolios = 10                              # This is the number of portfolios in one generation
+numElites = 5                                   # This is the number of top portfolios in a generation which are considered as elite
 
 startDate = datetime(2012, 1, 2).date()         # This is the start of trading period
 endDate = datetime(2012, 12, 31).date()           # This is the end of trading period

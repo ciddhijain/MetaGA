@@ -2,6 +2,7 @@ __author__ = 'Ciddhi'
 
 import GlobalVariables as gv
 from random import randint, sample
+import logging
 
 class CombinationToLists:
 
@@ -22,12 +23,17 @@ class CombinationToLists:
         for count, dummy in resultCountElite:
             if count:
                 countElite = count
+        logging.info("Number of elites - " + str(countElite))
         for count, dummy in resultCountFeasible:
             if count:
                 countFeasible = count
+        logging.info("Number of Feasible individuals - " + str(countFeasible))
         for count, dummy in resultCountNonFeasible:
             if count:
                 countNonFeasible = count
+        logging.info("Number of Non Feasible individuals - " + str(countNonFeasible))
+
+        logging.info("Generating Combinations :")
 
         # Terminate when required number of combinations have been generated
         while countPortfolios<gv.numPortfolios:
@@ -54,6 +60,8 @@ class CombinationToLists:
                     dbObject.insertPortfolioMapping(countPortfolios+1, individualId, 1, 0)
 
             countPortfolios += 1
+
+        logging.info("Generated " + str(countPortfolios) + " combinations")
 
 
 if __name__ == "__main__":

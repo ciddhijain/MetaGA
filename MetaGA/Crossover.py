@@ -2,6 +2,7 @@ __author__ = 'Ciddhi'
 
 from random import sample, randint
 import GlobalVariables as gv
+import logging
 
 class Crossover:
 
@@ -18,6 +19,7 @@ class Crossover:
     def performCrossover(self, generation, dbObject, type=[(1, 2)]):
 
         groups = sample(range(gv.numPortfolios), gv.numPortfolios)          # This provides a random ordered offset for pairing
+        logging.info("Combinations generated for crossover : ")
 
         for i in range(0, gv.numPortfolios, 2):
             if i+1<gv.numPortfolios:

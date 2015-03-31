@@ -4,6 +4,7 @@ from DatabaseManager import *
 from sqlalchemy import create_engine
 import GlobalVariables as gv
 from random import randint
+import logging
 
 class DBUtils:
 
@@ -176,6 +177,9 @@ class DBUtils:
                             " ( " + str(newId+2) + ", " + str(list1[i]) + ", " + str(generation) + ", " + str(0) + " )"
                     databaseObject.Execute(query)
 
+            logging.info(str(newId+1) + " and " + str(newId+2) + " generated from type " + str(crossoverType) + "crossover of "
+                         + str(id1) + " and " + str(id2) )
+
         # Two Point Crossover
         if crossoverType==2:
             for i in range(0, cut11, 1):
@@ -217,6 +221,9 @@ class DBUtils:
                             " ( " + str(newId+2) + ", " + str(list2[i]) + ", " + str(generation) + ", " + str(0) + " )"
                      databaseObject.Execute(query)
 
+            logging.info(str(newId+1) + " and " + str(newId+2) + " generated from type " + str(crossoverType) + "crossover of "
+                         + str(id1) + " and " + str(id2) )
+
         #if crossoverType==3:
 
     # Function to insert a portfolio's performance in performance_table
@@ -231,13 +238,20 @@ class DBUtils:
     # Function to get portfolios in a given generation ordered by performance
     def getOrderedPortfolios(self, generation):
         global databaseObject
-        query = "SELECT meta_individual_id, 1 FROM performance_table WHERE meta_individual_id IN " \
+        query = "SELECT meta_individual_id, performance FROM performance_table WHERE meta_individual_id IN " \
                 "(SELECT DISTINCT(meta_individual_id) FROM mapping_table WHERE generation=" + str(generation) + ") " \
                 "ORDER BY performance LIMIT " + str(gv.numPortfolios)
         return databaseObject.Execute(query)
 
+    def getOrderedElitePortfolios(self, generation):
+        global databaseObject
+        query = "SELECT meta_individual_id, performance FROM performance_table WHERE meta_individual_id IN " \
+                "(SELECT DISTINCT(meta_individual_id) FROM mapping_table WHERE generation=" + str(generation) + ") " \
+                "ORDER BY performance LIMIT " + str(gv.numElites)
+        return databaseObject.Execute(query)
+
     # Function to insert selected portfolios for next generation and update in current generation
-    def insertUpdateSelectedPortfolio(self, portfolioId, generation):
+    def insertUpdateSelectedPortfolio(self, portfolioId, performance, generation):
         global databaseObject
         queryNewId = "SELECT MAX(meta_individual_id), 1 FROM mapping_table"
         queryFeederIndividuals = "SELECT feeder_individual_id, 1 FROM mapping_table WHERE meta_individual_id=" + str(portfolioId)
@@ -251,4 +265,22 @@ class DBUtils:
                               " VALUES" \
                               " (" + str(newId+1) + ", " + str(feederIndividual) + ", " + str(generation+1) + ", " + str(0) + ")"
                 databaseObject.Execute(queryInsert)
+            queryPerformance = "INSERT INTO performance_table" \
+                               " (meta_individual_id, performance)" \
+                               " VALUES" \
+                               " (" + str(newId+1) + ", " + str(performance) + ")"
+            databaseObject.Execute(queryPerformance)
         return databaseObject.Execute(querUpdate)
+
+    # Function to check if performance for a portfolio has already been calculated
+    def checkPerformance(self, portfolioId):
+        global databaseObject
+        query =  "SELECT EXISTS (SELECT 1 FROM performance_table WHERE meta_individual_id=" + str(portfolioId) + "), 1"
+        return databaseObject.Execute(query)
+
+    # Function to get feeder individuals in a portfolio in an ascending order
+    def getFeederIndividuals(self, portfolioId):
+        global databaseObject
+        query = "SELECT DISTINCT(feeder_individual_id), 1 FROM mapping_table WHERE meta_individual_id=" + str(portfolioId) + \
+                "ORDER BY feeder_individual_id"
+        return databaseObject.Execute(query)
