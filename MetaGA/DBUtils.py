@@ -287,5 +287,5 @@ class DBUtils:
     def getFeederIndividuals(self, portfolioId):
         global databaseObject
         query = "SELECT DISTINCT(feeder_individual_id), 1 FROM mapping_table WHERE meta_individual_id=" + str(portfolioId) + \
-                "ORDER BY feeder_individual_id"
+                " ORDER BY feeder_individual_id"
         return databaseObject.Execute(query)

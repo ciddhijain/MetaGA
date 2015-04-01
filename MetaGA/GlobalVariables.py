@@ -11,8 +11,8 @@ dbConnector = 'mysqlconnector'                  # This is the connector string t
 
 logFileName = 'MetaGA.log'                      # This is the name of log file. It will append if file already exists
 
-tradesheetLocation = "C:\\Users\\Ciddhi\\Desktop\\Ciddhi\\DB\\IndividualInfo.csv"
-priceSeriesLocation = "C:\\Users\\Ciddhi\\Desktop\\Ciddhi\\DB\\IndividualInfo_Ver3.1.1_AXISBANK1.csv"
+tradesheetLocation = "IndividualInfo0.csv"
+priceSeriesLocation = "IndividualInfo_Ver3.1.1_AXISBANK1.csv"
 
 maxGenerations = 100                            # This is the maximum number of generations that GA will perform
 walkforward = 2                                 # This is walkforward from which individuals and trades will be picked
@@ -27,7 +27,7 @@ feederNonEliteSelectionProbability = 0.4        # This is the probability of put
 mutationProbability = 0.05                      # This is the mutation probability
 
 numPortfolios = 100                             # This is the number of portfolios in one generation
-numElites = 5                                   # This is the number of top portfolios in a generation which are considered as elite
+numElites = 25                                   # This is the number of top portfolios in a generation which are considered as elite
 
 startDate = datetime(2012, 1, 2).date()         # This is the start of trading period
 endDate = datetime(2012, 6, 30).date()         # This is the end of trading period

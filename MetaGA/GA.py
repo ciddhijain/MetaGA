@@ -7,7 +7,7 @@ from Mutation import *
 from Convergence import *
 from DBUtils import *
 import logging
-import datetime
+from datetime import datetime
 
 if __name__ == "__main__":
 
@@ -31,7 +31,7 @@ if __name__ == "__main__":
 
     while (True):
         logging.info("Starting generation " + str(generation))
-        print("Starting generation " + str(generation) + " at " + datetime.now())
+        print("Starting generation " + str(generation) + " at " + str(datetime.now()))
         crossoverObj.performCrossover(generation, dbObject, gv.crossoverList)
         mutationObj.performMutation(generation, dbObject)
         selectionObj.select(generation, dbObject)
