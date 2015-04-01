@@ -18,7 +18,13 @@ if __name__ == "__main__":
                      " volume int"
                      " )")
 
-    '''
+    print("Loading price series table ------ ")
+
+    dbObject.dbQuery("LOAD DATA INFILE '" + gv.priceSeriesLocation + "'"
+                     " INTO TABLE price_series_table"
+                     " FIELDS TERMINATED BY ','"
+                     " ENCLOSED BY '\"'"
+                     " LINES TERMINATED BY '\\n'")
 
     dbObject.dbQuery("CREATE TABLE tradesheet_data_table"
                      " ("
@@ -35,7 +41,9 @@ if __name__ == "__main__":
                      " category int"
                      " )")
 
-    dbObject.dbQuery("LOAD DATA INFILE 'E:\\Studies\\MTP\\Meta\ GA\ -\ DB\\IndividualInfo_Ver3.1.1_AXISBANK\\IndividualInfo.csv'"
+    print("Loading tradesheet -----------")
+
+    dbObject.dbQuery("LOAD DATA INFILE '" + gv.tradesheetLocation + "'"
                      " INTO TABLE tradesheet_data_table"
                      " FIELDS TERMINATED BY ','"
                      " ENCLOSED BY '\"'"
@@ -60,6 +68,5 @@ if __name__ == "__main__":
     dbObject.dbQuery("CREATE TABLE feeder_individual_table"
                      " AS SELECT DISTINCT(individual_id), category, walk_forward"
                      " FROM tradesheet_data_table")
-    '''
 
     dbObject.dbClose()
