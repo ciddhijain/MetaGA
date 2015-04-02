@@ -21,8 +21,6 @@ if __name__ == "__main__":
     dbObject = DBUtils()
     dbObject.dbConnect()
 
-    '''
-
     dbObject.dbQuery("DELETE FROM mapping_table")
     dbObject.dbQuery("DELETE FROM performance_table")
     logging.info("Deleted previous data")
@@ -44,8 +42,6 @@ if __name__ == "__main__":
             logging.info("Generation " + str(generation) + " finished")
             logging.info("\n")
             generation += 1
-
-    '''
 
     dbObject.dbQuery("SELECT * FROM mapping_table"
                      " INTO OUTFILE '" + gv.mappingOutfileName + "'"
