@@ -42,4 +42,17 @@ if __name__ == "__main__":
             logging.info("Generation " + str(generation) + " finished")
             logging.info("\n")
             generation += 1
+
+    dbObject.dbQuery("SELECT * FROM mapping_table"
+                     " INTO OUTFILE " + gv.mappingOutfileName +
+                     " FIELDS ENCLOSED BY '\"'"
+                     " TERMINATED BY ','"
+                     " LINES TERMINATED BY '\\n'")
+
+    dbObject.dbQuery("SELECT * FROM performance_table"
+                     " INTO OUTFILE " + gv.performanceOutfileName +
+                     " FIELDS ENCLOSED BY '\"'"
+                     " TERMINATED BY ','"
+                     " LINES TERMINATED BY '\\n'")
+
     dbObject.dbClose()
