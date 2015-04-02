@@ -21,6 +21,8 @@ if __name__ == "__main__":
     dbObject = DBUtils()
     dbObject.dbConnect()
 
+    '''
+
     dbObject.dbQuery("DELETE FROM mapping_table")
     dbObject.dbQuery("DELETE FROM performance_table")
     logging.info("Deleted previous data")
@@ -43,8 +45,10 @@ if __name__ == "__main__":
             logging.info("\n")
             generation += 1
 
+    '''
+
     dbObject.dbQuery("SELECT * FROM mapping_table"
-                     " INTO OUTFILE " + gv.mappingOutfileName +
+                     " INTO OUTFILE '" + gv.mappingOutfileName + "'"
                      " FIELDS ENCLOSED BY '\"'"
                      " TERMINATED BY ','"
                      " LINES TERMINATED BY '\\n'")
@@ -52,7 +56,7 @@ if __name__ == "__main__":
     dbObject.dbQuery("SELECT DISTINCT(p.meta_individual_id), p.performance, m.generation"
                      " FROM mapping_table m, performance_table p"
                      " WHERE m.meta_individual_id=p.meta_individual_id"
-                     " INTO OUTFILE " + gv.performanceOutfileName +
+                     " INTO OUTFILE '" + gv.performanceOutfileName + "'"
                      " FIELDS ENCLOSED BY '\"'"
                      " TERMINATED BY ','"
                      " LINES TERMINATED BY '\\n'")
@@ -61,7 +65,7 @@ if __name__ == "__main__":
                      " FROM mapping_table m, performance_table p"
                      " WHERE m.meta_individual_id=p.meta_individual_id"
                      " GROUP BY m.generation"
-                     " INTO OUTFILE " + gv.bestPerformanceOutfileName +
+                     " INTO OUTFILE '" + gv.bestPerformanceOutfileName + "'"
                      " FIELDS ENCLOSED BY '\"'"
                      " TERMINATED BY ','"
                      " LINES TERMINATED BY '\\n'")
