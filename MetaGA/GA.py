@@ -49,8 +49,19 @@ if __name__ == "__main__":
                      " TERMINATED BY ','"
                      " LINES TERMINATED BY '\\n'")
 
-    dbObject.dbQuery("SELECT * FROM performance_table"
+    dbObject.dbQuery("SELECT DISTINCT(p.meta_individual_id), p.performance, m.generation"
+                     " FROM mapping_table m, performance_table p"
+                     " WHERE m.meta_individual_id=p.meta_individual_id"
                      " INTO OUTFILE " + gv.performanceOutfileName +
+                     " FIELDS ENCLOSED BY '\"'"
+                     " TERMINATED BY ','"
+                     " LINES TERMINATED BY '\\n'")
+
+    dbObject.dbQuery("SELECT p.meta_individual_id, MAX(p.performance), m.generation"
+                     " FROM mapping_table m, performance_table p"
+                     " WHERE m.meta_individual_id=p.meta_individual_id"
+                     " GROUP BY m.generation"
+                     " INTO OUTFILE " + gv.bestPerformanceOutfileName +
                      " FIELDS ENCLOSED BY '\"'"
                      " TERMINATED BY ','"
                      " LINES TERMINATED BY '\\n'")

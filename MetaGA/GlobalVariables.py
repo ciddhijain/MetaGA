@@ -12,6 +12,7 @@ dbConnector = 'mysqlconnector'                  # This is the connector string t
 logFileName = 'MetaGA02.log'                      # This is the name of log file. It will append if file already exists
 mappingOutfileName = 'mapping02.csv'
 performanceOutfileName = 'performance02.csv'
+bestPerformanceOutfileName = 'bestPerformance02.csv'
 
 tradesheetLocation = "IndividualInfo0.csv"
 priceSeriesLocation = "IndividualInfo_Ver3.1.1_AXISBANK1.csv"
@@ -21,7 +22,7 @@ walkforward = 2                                 # This is walkforward from which
 crossoverList = [(1, 2), (2, 2)]                        # This list specifies types of crossovers and number of children
 # crossoverList = [(1, 2), (2, 2)]
 
-maxPortfolioSize = 50                           # This is the maximum size of portfolio
+maxPortfolioSize = 40                           # This is the maximum size of portfolio
 minPortfolioSize = 25                            # This is the minimum size of portfolio
 
 feederEliteSelectionProbability = 0.6           # This is the probability of putting elite individuals from feeder in a portfolio
