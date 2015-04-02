@@ -245,14 +245,14 @@ class DBUtils:
         global databaseObject
         query = "SELECT meta_individual_id, performance FROM performance_table WHERE meta_individual_id IN " \
                 "(SELECT DISTINCT(meta_individual_id) FROM mapping_table WHERE generation=" + str(generation) + ") " \
-                "ORDER BY performance LIMIT " + str(gv.numPortfolios)
+                "ORDER BY performance DESC LIMIT " + str(gv.numPortfolios)
         return databaseObject.Execute(query)
 
     def getOrderedElitePortfolios(self, generation):
         global databaseObject
         query = "SELECT meta_individual_id, performance FROM performance_table WHERE meta_individual_id IN " \
                 "(SELECT DISTINCT(meta_individual_id) FROM mapping_table WHERE generation=" + str(generation) + ") " \
-                "ORDER BY performance LIMIT " + str(gv.numElites)
+                "ORDER BY performance DESC LIMIT " + str(gv.numElites)
         return databaseObject.Execute(query)
 
     # Function to insert selected portfolios for next generation and update in current generation
