@@ -43,6 +43,7 @@ class Performance:
         Gain_History = []
 
         for individual_id, trade_type, trade_entry_date, trade_entry_time, trade_entry_price, trade_qty, trade_exit_date, trade_exit_time, trade_exit_price, walk_forward, category in resultTrades:
+            individual_id = portfolioId
             CurrentDate=trade_entry_date
             if(c==0):
                 prev_trade_entry_date=trade_entry_date
