@@ -18,6 +18,7 @@ if __name__ == "__main__":
     crossoverObj = Crossover()
     mutationObj = Mutation()
     convergenceObj = Convergence()
+    performanceObj = Performance()
     dbObject = DBUtils()
     dbObject.dbConnect()
 
@@ -43,6 +44,17 @@ if __name__ == "__main__":
             logging.info("\n")
             generation += 1
 
+    #dbObject.dbQuery("LOAD DATA INFILE 'E:\\\Studies\\\MTP\\\Results\ 9\ -\ 27th\ April\ 2015\\\performance02.csv' INTO TABLE performance_table FIELDS TERMINATED BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\\r\\n'")
+
+    resultElites = dbObject.getFinalElites()
+    elites = ()
+    for portfolioId, dummy in resultElites:
+        elites = elites + (portfolioId, )
+    performanceElites = performanceObj.calculatePerformancePortfolioList(gv.testingStartDate, gv.testingEndDate, elites, dbObject)
+    performanceTradesheet = performanceObj.calculatePerformanceTradesheet(gv.testingStartDate, gv.testingEndDate, dbObject)
+    print performanceElites[0][1]
+    print performanceTradesheet[0][1]
+
     dbObject.dbQuery("SELECT * FROM mapping_table"
                      " INTO OUTFILE '" + gv.mappingOutfileName + "'"
                      " FIELDS ENCLOSED BY '\"'"
@@ -53,15 +65,6 @@ if __name__ == "__main__":
                      " FROM mapping_table m, performance_table p"
                      " WHERE m.meta_individual_id=p.meta_individual_id"
                      " INTO OUTFILE '" + gv.performanceOutfileName + "'"
-                     " FIELDS ENCLOSED BY '\"'"
-                     " TERMINATED BY ','"
-                     " LINES TERMINATED BY '\\n'")
-
-    dbObject.dbQuery("SELECT p.meta_individual_id, MAX(p.performance), m.generation"
-                     " FROM mapping_table m, performance_table p"
-                     " WHERE m.meta_individual_id=p.meta_individual_id"
-                     " GROUP BY m.generation"
-                     " INTO OUTFILE '" + gv.bestPerformanceOutfileName + "'"
                      " FIELDS ENCLOSED BY '\"'"
                      " TERMINATED BY ','"
                      " LINES TERMINATED BY '\\n'")

@@ -294,3 +294,12 @@ class DBUtils:
         query = "SELECT DISTINCT(feeder_individual_id), 1 FROM mapping_table WHERE meta_individual_id=" + str(portfolioId) + \
                 " ORDER BY feeder_individual_id"
         return databaseObject.Execute(query)
+
+    # Function to get final elites from the mapping table
+    def getFinalElites(self):
+        global databaseObject
+        query = "SELECT meta_individual_id, performance FROM performance_table WHERE meta_individual_id IN " \
+                "(SELECT DISTINCT(meta_individual_id) FROM mapping_table WHERE generation=" \
+                "(SELECT MAX(generation) FROM mapping_table)) " \
+                "ORDER BY performance DESC LIMIT " + str(gv.numElites)
+        return databaseObject.Execute(query)

@@ -2,7 +2,7 @@ __author__ = 'Ciddhi'
 
 from datetime import timedelta, datetime
 
-databaseName = 'METAGA2'                         # This is database name to which connection is made
+databaseName = 'METAGA'                         # This is database name to which connection is made
 userName = 'root'                               # This is the user name for database connection
 password = 'controljp'                          # This is the password for database connection
 dbHost = '127.0.0.1'                            # This is host address for database connection
@@ -14,7 +14,7 @@ mappingOutfileName = 'mapping02.csv'
 performanceOutfileName = 'performance02.csv'
 bestPerformanceOutfileName = 'bestPerformance02.csv'
 
-tradesheetLocation = "IndividualInfo0.csv"
+tradesheetLocation = "E:\\\Studies\\\MTP\\\Meta\ GA\ -\ DB\\\IndividualInfo_Ver3.1.1_AXISBANK\\\IndividualInfo3.csv"
 priceSeriesLocation = "IndividualInfo_Ver3.1.1_AXISBANK1.csv"
 
 maxGenerations = 100                            # This is the maximum number of generations that GA will perform
@@ -34,3 +34,5 @@ numElites = 50                                   # This is the number of top por
 
 startDate = datetime(2012, 1, 2).date()         # This is the start of trading period
 endDate = datetime(2012, 6, 30).date()         # This is the end of trading period
+testingStartDate = endDate + timedelta(days=1)
+testingEndDate = datetime(2012, 12, 31).date()
