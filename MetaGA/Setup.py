@@ -7,6 +7,8 @@ if __name__ == "__main__":
     dbObject.dbConnect()
     '''
 
+    '''
+
     dbObject.dbQuery(" CREATE TABLE price_series_table"
                      " ("
                      " date date,"
