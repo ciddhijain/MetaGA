@@ -25,8 +25,8 @@ class Convergence:
                 # If performance of portfolios over same period of time is not same, they are not same
                 # This will hold due to the way performance is being calculated
                 if elitesOld[i][1]==elitesNew[i][1]:
-                    resultFeederNew = dbObject.getFeederIndividuals(elitesNew[i][0])
-                    resultFeederOld = dbObject.getFeederIndividuals(elitesOld[i][0])
+                    resultFeederNew = dbObject.getFeederIndividualsPortfolio(elitesNew[i][0])
+                    resultFeederOld = dbObject.getFeederIndividualsPortfolio(elitesOld[i][0])
                     feederNew = []
                     feederOld = []
                     for id, dummy in resultFeederNew:

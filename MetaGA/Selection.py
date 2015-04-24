@@ -19,7 +19,7 @@ class Selection:
                 resultExisting = dbObject.checkPerformance(portfolioList[count])
                 for check, dummy in resultExisting:
                     if check == 0:
-                        performance = performanceObject.calculatePerformance(gv.startDate, gv.endDate, portfolioList[count], dbObject)
+                        performance = performanceObject.calculatePerformancePortfolio(gv.startDate, gv.endDate, portfolioList[count], dbObject)
                         dbObject.insertPerformance(portfolioList[count], performance[0][1])
                         count += 1
                     else:

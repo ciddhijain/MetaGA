@@ -34,3 +34,5 @@ numElites = 400                                   # This is the number of top po
 
 startDate = datetime(2012, 1, 2).date()         # This is the start of trading period
 endDate = datetime(2012, 6, 30).date()         # This is the end of trading period
+testingStartDate = endDate + timedelta(days=1)
+testingEndDate = datetime(2012, 12, 31).date()
