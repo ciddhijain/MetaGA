@@ -7,9 +7,8 @@ import logging
 class Selection:
 
     # Select from generation i and insert in generation i+1
-    def select(self, generation, dbObject):
+    def select(self, generation, performanceObject, dbObject):
         resultPortfolios = dbObject.getPortfolios(generation)
-        performanceObject = Performance()
         portfolioList = []
         for portfolioId, size in resultPortfolios:
             portfolioList.append(portfolioId)
@@ -32,4 +31,4 @@ class Selection:
                 #dbObject.dbConnect()
         resultOrdered = dbObject.getOrderedPortfolios(generation)
         for portfolioId, portfolioPerformance in resultOrdered:
-            dbObject.insertUpdateSelectedPortfolio(portfolioId, portfolioPerformance, generation)
+            dbObject.updateSelectedPortfolio(portfolioId)

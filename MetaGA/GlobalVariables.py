@@ -12,11 +12,13 @@ dbConnector = 'mysqlconnector'                  # This is the connector string t
 logFileName = 'MetaGA02.log'                      # This is the name of log file. It will append if file already exists
 mappingOutfileName = 'mapping02.csv'
 performanceOutfileName = 'performance02.csv'
-bestPerformanceOutfileName = 'bestPerformance02.csv'
+testingPerformanceOutfileName = 'testingPerformance02.csv'
+
 
 tradesheetLocation = "E:\\\Studies\\\MTP\\\Meta\ GA\ -\ DB\\\IndividualInfo_Ver3.1.1_AXISBANK\\\IndividualInfo3.csv"
 priceSeriesLocation = "IndividualInfo_Ver3.1.1_AXISBANK1.csv"
 
+minGenerations = 20                             # This is the minimum number of generations that GA will perform
 maxGenerations = 100                            # This is the maximum number of generations that GA will perform
 walkforward = 2                                 # This is walkforward from which individuals and trades will be picked
 crossoverList = [(1, 2), (2, 2)]                        # This list specifies types of crossovers and number of children

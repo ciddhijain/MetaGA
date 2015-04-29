@@ -8,6 +8,7 @@ from Convergence import *
 from DBUtils import *
 import logging
 from datetime import datetime
+import csv
 
 if __name__ == "__main__":
 
@@ -35,7 +36,7 @@ if __name__ == "__main__":
         print("Starting generation " + str(generation) + " at " + str(datetime.now()))
         crossoverObj.performCrossover(generation, dbObject, gv.crossoverList)
         mutationObj.performMutation(generation, dbObject)
-        selectionObj.select(generation, dbObject)
+        selectionObj.select(generation, performanceObj, dbObject)
         if (convergenceObj.checkConvergence(generation, dbObject)):
             logging.info("The GA has converged in " + str(generation) + " generations")
             break
@@ -52,8 +53,13 @@ if __name__ == "__main__":
         elites = elites + (portfolioId, )
     performanceElites = performanceObj.calculatePerformancePortfolioList(gv.testingStartDate, gv.testingEndDate, elites, dbObject)
     performanceTradesheet = performanceObj.calculatePerformanceTradesheet(gv.testingStartDate, gv.testingEndDate, dbObject)
-    print performanceElites[0][1]
-    print performanceTradesheet[0][1]
+    logging.info("Performance of elites in testing period : " + str(performanceElites[0][1]))
+    logging.info("Performance of original tradesheet in testing period : " + str(performanceTradesheet[0][1]))
+    with open(gv.testingPerformanceOutfileName, 'w') as fp:
+        w = csv.writer(fp)
+        w.writerow(["performance elites", "performance original tradesheet"])
+        w.writerow([performanceElites[0][1], performanceTradesheet[0][1]])
+
 
     dbObject.dbQuery("SELECT * FROM mapping_table"
                      " INTO OUTFILE '" + gv.mappingOutfileName + "'"

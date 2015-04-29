@@ -48,13 +48,14 @@ if __name__ == "__main__":
                      " ENCLOSED BY '\"'"
                      " LINES TERMINATED BY '\\n'")
 
+    dbObject.dbQuery("DROP TABLE mapping_table")
 
     dbObject.dbQuery("CREATE TABLE mapping_table"
                      " ("
                      " meta_individual_id int,"
                      " feeder_individual_id int,"
-                     " generation int,"
-                     " selected int"
+                     " first_generation int,"
+                     " last_generation int"
                      " )")
 
     dbObject.dbQuery("CREATE TABLE performance_table"
@@ -62,7 +63,6 @@ if __name__ == "__main__":
                      " meta_individual_id int,"
                      " performance float"
                      " )")
-
 
     dbObject.dbQuery("CREATE TABLE feeder_individual_table"
                      " AS SELECT DISTINCT(individual_id), category, walk_forward"

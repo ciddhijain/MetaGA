@@ -1,11 +1,12 @@
 __author__ = 'Ciddhi'
 
+import GlobalVariables as gv
 class Convergence:
 
     def checkConvergence(self, generation, dbObject):
-        if generation == 1:
+        if generation <= gv.minGenerations:
             return False
-        elif generation == 100:
+        elif generation >= gv.maxGenerations:
             return True
         else:
             resultNew = dbObject.getOrderedElitePortfolios(generation)
