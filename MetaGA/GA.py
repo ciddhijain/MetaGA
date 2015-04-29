@@ -34,7 +34,7 @@ if __name__ == "__main__":
     while (True):
         logging.info("Starting generation " + str(generation))
         print("Starting generation " + str(generation) + " at " + str(datetime.now()))
-        crossoverObj.performCrossover(generation, dbObject, gv.crossoverList)
+        crossoverObj.performCrossoverRouletteWheel(generation, dbObject, gv.crossoverList)
         mutationObj.performMutation(generation, dbObject)
         selectionObj.select(generation, performanceObj, dbObject)
         if (convergenceObj.checkConvergence(generation, dbObject)):
