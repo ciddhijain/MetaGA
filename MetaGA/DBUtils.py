@@ -134,6 +134,12 @@ class DBUtils:
             query = "SELECT COUNT(*), meta_individual_id FROM mapping_table WHERE meta_individual_id=" + str(metaPortfolioId)
             return databaseObject.Execute(query)
 
+    # Function to get size of a given portfolio
+    def getPortfolioSize(self, portfolioId):
+        global databaseObject
+        query = "SELECT COUNT(*), 1 FROM mapping_table WHERE meta_individual_id=" + str(portfolioId)
+        return databaseObject.Execute(query)
+
     # Function to insert children corresponding to crossover
     def insertCrossoverPortfolio(self, crossoverType, numChildren, id1, cut11, cut12, id2, cut21, cut22, generation):
         global databaseObject
@@ -287,4 +293,11 @@ class DBUtils:
                 "(SELECT DISTINCT(meta_individual_id) FROM mapping_table WHERE last_generation=" \
                 "(SELECT MAX(last_generation) FROM mapping_table)) " \
                 "ORDER BY performance DESC LIMIT " + str(gv.numElites)
+        return databaseObject.Execute(query)
+
+    # Function to get total performance of all portfolios in a given generation
+    def getTotalPerformance(self, generation):
+        global databaseObject
+        query = "SELECT SUM(performance), 1 FROM performance_table WHERE meta_individual_id IN " \
+                "(SELECT DISTINCT(meta_individual_id) FROM mapping_table WHERE last_generation=" + str(generation) + ")"
         return databaseObject.Execute(query)

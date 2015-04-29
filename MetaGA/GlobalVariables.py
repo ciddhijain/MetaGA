@@ -28,7 +28,8 @@ minPortfolioSize = 25                            # This is the minimum size of p
 
 feederEliteSelectionProbability = 0.6           # This is the probability of putting elite individuals from feeder in a portfolio
 feederNonEliteSelectionProbability = 0.4        # This is the probability of putting non-elite fit individuals from feeder in a portfolio
-mutationProbability = 0.10005                      # This is the mutation probability
+mutationProbability = 0.05                      # This is the mutation probability
+crossoverProbability = 0.7                      # This corresponds to percentage of population subjected to crossover
 
 numPortfolios = 200                             # This is the number of portfolios in one generation
 numElites = 50                                   # This is the number of top portfolios in a generation which are considered as elite
