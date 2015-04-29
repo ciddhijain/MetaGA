@@ -100,14 +100,7 @@ class Crossover:
                                 break
                     if id2:
                         break
-
-
-
             count += 1
-
-
-
-
         return None
 
     def performCrossover(self, generation, dbObject, type=[(1, 2)]):
