@@ -14,8 +14,7 @@ mappingOutfileName = 'mapping02.csv'
 performanceOutfileName = 'performance02.csv'
 testingPerformanceOutfileName = 'testingPerformance02.csv'
 
-
-tradesheetLocation = "E:\\\Studies\\\MTP\\\Meta\ GA\ -\ DB\\\IndividualInfo_Ver3.1.1_AXISBANK\\\IndividualInfo3.csv"
+tradesheetLocation = "IndividualInfo7.csv"
 priceSeriesLocation = "IndividualInfo_Ver3.1.1_AXISBANK1.csv"
 
 minGenerations = 20                             # This is the minimum number of generations that GA will perform

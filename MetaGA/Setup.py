@@ -64,6 +64,7 @@ if __name__ == "__main__":
                      " performance float"
                      " )")
 
+
     dbObject.dbQuery("CREATE TABLE feeder_individual_table"
                      " AS SELECT DISTINCT(individual_id), category, walk_forward"
                      " FROM tradesheet_data_table")
