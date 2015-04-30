@@ -92,7 +92,7 @@ class DBUtils:
     # Function to insert a new individual in a portfolio with a single change in mapping
     def insertMutationPortfolio(self, metaIndividualId, oldFeederIndividualId, newFeederIndividualId):
         global databaseObject
-        queryCurrent = "SELECT feeder_individual_id, generation FROM mapping_table WHERE meta_individual_id=" + str(metaIndividualId)
+        queryCurrent = "SELECT feeder_individual_id, last_generation FROM mapping_table WHERE meta_individual_id=" + str(metaIndividualId)
         resultCurrent = databaseObject.Execute(queryCurrent)
         queryNewMetaId = "SELECT MAX(meta_individual_id), 1 FROM mapping_table"
         resultNewId = databaseObject.Execute(queryNewMetaId)

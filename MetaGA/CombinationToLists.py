@@ -6,7 +6,7 @@ import logging
 
 class CombinationToLists:
 
-    def combine(self, dbObject):
+    def combine(self, performanceObject, dbObject):
         numBitsEliteProbabilty = str(gv.feederEliteSelectionProbability)[::-1].find('.')
         numBitsNonEliteProbability = str(gv.feederNonEliteSelectionProbability)[::-1].find('.')
         numBits = max(numBitsEliteProbabilty, numBitsNonEliteProbability)
@@ -59,6 +59,8 @@ class CombinationToLists:
                     currentSize += 1
                     dbObject.insertPortfolioMapping(countPortfolios+1, individualId, 1, 1)
 
+            performance = performanceObject.calculatePerformancePortfolio(gv.startDate, gv.endDate, countPortfolios+1, dbObject)
+            dbObject.insertPerformance(countPortfolios+1, performance[0][1])
             countPortfolios += 1
 
         logging.info("Generated " + str(countPortfolios) + " combinations")

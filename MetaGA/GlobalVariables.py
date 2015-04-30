@@ -9,10 +9,10 @@ dbHost = '127.0.0.1'                            # This is host address for datab
 dbPort = '3306'                                 # This is port for database connection
 dbConnector = 'mysqlconnector'                  # This is the connector string to be used, depending upon python package
 
-logFileName = 'MetaGA02.log'                      # This is the name of log file. It will append if file already exists
-mappingOutfileName = 'mapping02.csv'
-performanceOutfileName = 'performance02.csv'
-testingPerformanceOutfileName = 'testingPerformance02.csv'
+logFileName = 'MetaGA100.log'                      # This is the name of log file. It will append if file already exists
+mappingOutfileName = 'mapping100.csv'
+performanceOutfileName = 'performance100.csv'
+testingPerformanceOutfileName = 'testingPerformance100.csv'
 
 tradesheetLocation = "IndividualInfo7.csv"
 priceSeriesLocation = "IndividualInfo_Ver3.1.1_AXISBANK1.csv"
@@ -23,7 +23,7 @@ walkforward = 2                                 # This is walkforward from which
 crossoverList = [(1, 2), (2, 2)]                        # This list specifies types of crossovers and number of children
 # crossoverList = [(1, 2), (2, 2)]
 
-maxPortfolioSize = 40                           # This is the maximum size of portfolio
+maxPortfolioSize = 100                           # This is the maximum size of portfolio
 minPortfolioSize = 25                            # This is the minimum size of portfolio
 
 feederEliteSelectionProbability = 0.6           # This is the probability of putting elite individuals from feeder in a portfolio
@@ -31,8 +31,8 @@ feederNonEliteSelectionProbability = 0.4        # This is the probability of put
 mutationProbability = 0.05                      # This is the mutation probability
 crossoverProbability = 0.7                      # This corresponds to percentage of population subjected to crossover
 
-numPortfolios = 200                             # This is the number of portfolios in one generation
-numElites = 50                                   # This is the number of top portfolios in a generation which are considered as elite
+numPortfolios = 500                             # This is the number of portfolios in one generation
+numElites = 25                                   # This is the number of top portfolios in a generation which are considered as elite
 
 startDate = datetime(2012, 1, 2).date()         # This is the start of trading period
 endDate = datetime(2012, 6, 30).date()         # This is the end of trading period
