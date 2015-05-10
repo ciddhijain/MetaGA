@@ -32,6 +32,8 @@ mutationProbability = 0.05                      # This is the mutation probabili
 crossoverProbability = 0.7                      # This corresponds to percentage of population subjected to crossover
 
 numPortfolios = 200                             # This is the number of portfolios in one generation
+maxNumPortfolios = numPortfolios
+minNumPortfolios = numPortfolios/2
 numElites = 50                                   # This is the number of top portfolios in a generation which are considered as elite
 
 startDate = datetime(2012, 1, 2).date()         # This is the start of trading period

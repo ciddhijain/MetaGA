@@ -8,24 +8,27 @@ class Mutation:
     def performMutation(self, generation, dbObject):
         numBits = str(gv.mutationProbability)[::-1].find('.')
         range = 10**numBits
-        countNonFeasible = 0
-        resultCount = dbObject.getNonFeasibleCount(gv.walkforward)
-        for count, dummy in resultCount:
-            if count:
-                countNonFeasible = count
+
         resultPortfolios = dbObject.getPortfolios(generation)
         for portfolioId, size in resultPortfolios:
             p = randint(1, range)
             if p<gv.mutationProbability*range:
                 oldIndividualId = None
                 newIndividualId = None
+                stockId = None
                 resultOldIndividual = dbObject.getRandomPortfolioIndividual(portfolioId, randint(0, size-1))
-                for id, dummy in resultOldIndividual:
+                for id, stock in resultOldIndividual:
                     if id:
                         oldIndividualId = id
-                resultNewIndividual = dbObject.getRandomNonFeasibleIndividual(randint(0, countNonFeasible-1), gv.walkforward)
+                        stockId = stock
+                countNonFeasible = 0
+                resultCount = dbObject.getNonFeasibleCountStock(gv.walkforward, stockId)
+                for count, dummy in resultCount:
+                    if count:
+                        countNonFeasible = count
+                resultNewIndividual = dbObject.getRandomNonFeasibleIndividualStock(randint(0, countNonFeasible-1), gv.walkforward, stockId)
                 for id, dummy in resultNewIndividual:
                     if id:
                         newIndividualId = id
                 if newIndividualId and oldIndividualId:
-                    dbObject.insertMutationPortfolio(portfolioId, oldIndividualId, newIndividualId)
+                    dbObject.insertMutationPortfolio(portfolioId, oldIndividualId, newIndividualId, stockId, generation)

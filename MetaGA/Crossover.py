@@ -16,6 +16,9 @@ class Crossover:
     # By default, a single point crossover gives two children.
     # The variable numChildren can take a list of values (each belonging to {1, 2}),
     # and gives corresponding number of children for respective type of crossover.
+
+    # TODO - Clarify role of new probabilities in ensuring distribution between final elites
+
     def performCrossoverRouletteWheel(self, generation, dbObject, type=[(1,2)]):
         numBits = str(gv.crossoverProbability)[::-1].find('.')
         range = 10**numBits
@@ -23,7 +26,7 @@ class Crossover:
         count = 0
         resultPortfolios = dbObject.getOrderedPortfolios(generation)
         portfolios = []
-        parents = []
+
         for portfolioId, portfolioPerformance in resultPortfolios:
             portfolios.append((portfolioId, portfolioPerformance))
 
@@ -54,18 +57,18 @@ class Crossover:
 
                 # We find a random individual till we find one distinct from first one.
                 while (True):
-                    resultSize2 = dbObject.getPortfolioSizeByOffset(randint(0, gv.numPortfolios-1), generation)
+                    resultSize2 = dbObject.getPortfolioSizeByOffset(randint(0, len(portfolios)-1), generation)
                     for size2, id in resultSize2:
                         if id!=id1:
                             cont = False
 
                             # Ensuring that the pair has already not been in a crossover ????
-                            if id>id1:
-                                if (id1, id) not in parents:
+                            resultCheck = dbObject.checkCrossoverPairs(id, id1, generation)
+                            for check, dummy in resultCheck:
+                                if check==1:
                                     cont = True
-                            else:
-                                if (id, id1) not in parents:
-                                    cont = True
+                                    dbObject.insertCrossoverPair(id, id1, generation)
+
                             if cont:
                                 id2 = id
                                 for size1, dummy in resultSize1:
@@ -103,6 +106,7 @@ class Crossover:
             count += 1
         return None
 
+    # NOTE - This function has not been adjusted corresponding to change in DB structure
     def performCrossover(self, generation, dbObject, type=[(1, 2)]):
 
         groups = sample(range(gv.numPortfolios), gv.numPortfolios)          # This provides a random ordered offset for pairing

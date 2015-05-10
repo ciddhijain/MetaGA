@@ -55,10 +55,11 @@ class CombinationToLists:
                     resultIndividual = dbObject.getRandomEliteIndividual(eliteOffsets[currentSize], gv.walkforward)
                 else:
                     resultIndividual = dbObject.getRandomFeasibleIndividual(feasibleOffsets[currentSize], gv.walkforward)
-                for individualId, dummy in resultIndividual:
+                for individualId, stockId in resultIndividual:
                     currentSize += 1
-                    dbObject.insertPortfolioMapping(countPortfolios+1, individualId, 1, 1)
+                    dbObject.insertPortfolioMapping(countPortfolios+1, individualId, stockId)
 
+            dbObject.insertPortfolio(countPortfolios+1, 1, 1)
             countPortfolios += 1
 
         logging.info("Generated " + str(countPortfolios) + " combinations")
