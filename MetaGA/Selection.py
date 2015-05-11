@@ -7,7 +7,7 @@ import logging
 class Selection:
 
     # Select from generation i and insert in generation i+1
-    def select(self, generation, performanceObject, dbObject):
+    def select(self, generation, performanceObject, crossoverObject, dbObject):
         resultPortfolios = dbObject.getPortfolios(generation)
         portfolioList = []
         for portfolioId, size in resultPortfolios:
@@ -30,9 +30,14 @@ class Selection:
                 #dbObject.dbClose()
                 #dbObject.dbConnect()
 
-        # TODO - Check feasibility of portfolios. Then select top ones from among those.
-        # TODO - If not sufficient number selected, perform crossover till selected number within limits.
-
-        resultOrdered = dbObject.getOrderedPortfolios(generation)
-        for portfolioId, portfolioPerformance in resultOrdered:
-            dbObject.updateSelectedPortfolio(portfolioId)
+        done = False
+        while (not done):
+            resultCount = dbObject.getOrderedFeasiblePortfolioCount(generation)
+            for countPortfolios, dummy in resultCount:
+                if countPortfolios>=gv.minNumPortfolios:
+                    resultOrdered = dbObject.getOrderedFeasiblePortfolios(generation)
+                    for portfolioId, portfolioPerformance in resultOrdered:
+                        dbObject.updateSelectedPortfolio(portfolioId)
+                    done = True
+                else:
+                    crossoverObject.performCrossoverRouletteWheel(generation, dbObject, gv.crossoverList)

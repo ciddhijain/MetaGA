@@ -36,7 +36,12 @@ maxNumPortfolios = numPortfolios
 minNumPortfolios = numPortfolios/2
 numElites = 50                                   # This is the number of top portfolios in a generation which are considered as elite
 
-startDate = datetime(2012, 1, 2).date()         # This is the start of trading period
-endDate = datetime(2012, 6, 30).date()         # This is the end of trading period
+startDate = datetime(2012, 1, 2).date()          # This is the start of trading period
+endDate = datetime(2012, 6, 30).date()           # This is the end of trading period
 testingStartDate = endDate + timedelta(days=1)
 testingEndDate = datetime(2012, 12, 31).date()
+
+thresholdPerformance = 0
+thresholdPortfolioExposure = 10000000
+factor = 5
+thresholdStockExposure = thresholdPortfolioExposure/factor

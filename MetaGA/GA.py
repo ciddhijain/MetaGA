@@ -36,7 +36,7 @@ if __name__ == "__main__":
         print("Starting generation " + str(generation) + " at " + str(datetime.now()))
         crossoverObj.performCrossoverRouletteWheel(generation, dbObject, gv.crossoverList)
         mutationObj.performMutation(generation, dbObject)
-        selectionObj.select(generation, performanceObj, dbObject)
+        selectionObj.select(generation, performanceObj, crossoverObj, dbObject)
         if (convergenceObj.checkConvergence(generation, dbObject)):
             logging.info("The GA has converged in " + str(generation) + " generations")
             break

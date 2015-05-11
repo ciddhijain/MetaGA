@@ -96,4 +96,12 @@ if __name__ == "__main__":
                      " generation int"
                      " )")
 
+    dbObject.dbQuery("CREATE TABLE exposure_table"
+                     " ("
+                     " meta_individual_id int,"
+                     " stock_id int,"
+                     " date date,"
+                     " time time,"
+                     " exposure float")
+
     dbObject.dbClose()

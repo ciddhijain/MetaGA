@@ -274,11 +274,26 @@ class DBUtils:
                 "ORDER BY performance DESC"
         return databaseObject.Execute(query)
 
+    # Function to get top elite portfolios in a given generation, ordered by performance
     def getOrderedElitePortfolios(self, generation):
         global databaseObject
         query = "SELECT meta_individual_id, performance FROM portfolio_table WHERE last_generation>=" + \
                 str(generation) + " AND first_generation<=" + str(generation) + \
                 "ORDER BY performance DESC LIMIT " + str(gv.numElites)
+        return databaseObject.Execute(query)
+
+    # Function to get top feasible portfolios in a given generation, ordered by performance
+    def getOrderedFeasiblePortfolios(self, generation):
+        global databaseObject
+        query = "SELECT meta_individual_id, performance FROM portfolio_table WHERE last_generation=" + str(generation) + \
+                " AND feasible_by_performance=1 AND feasible_by_exposure=1 ORDER BY performance DESC LIMIT " + str(gv.maxNumPortfolios)
+        return databaseObject.Execute(query)
+
+    # Function to get number of feasible portfolios in a given generation
+    def getOrderedFeasiblePortfolioCount(self, generation):
+        global databaseObject
+        query = "SELECT COUNT(*), 1 FROM portfolio_table WHERE last_generation=" + str(generation) + " AND feasible_by_performance=1 " \
+                "AND feasible_by_exposure=1 ORDER BY performance DESC"
         return databaseObject.Execute(query)
 
     # Function to insert selected portfolios for next generation and update in current generation
@@ -331,4 +346,96 @@ class DBUtils:
                 " (meta_individual_id_1, meta_individual_id_2, generation)" \
                 " VALUES" \
                 " (" + str(id1) + ", " + str(id2) + ", " + str(generation) + ")"
+        return databaseObject.Execute(query)
+
+    # Function to update feasibility based on performance
+    def updatePerformanceFeasibility(self):
+        global databaseObject
+        query = "UPDATE portfolio_table SET feasible_by_performance=1 WHERE performance>" + str(gv.thresholdPerformance)
+        return databaseObject.Execute(query)
+
+    # Function to get all trades corresponding to a portfolio
+    def getTradesPortfolioStock(self, portfolioId, stockId, startDate, endDate):
+        global databaseObject
+        query = "SELECT * FROM tradesheet_data_table WHERE individual_id IN ( SELECT feeder_individual_id" \
+                " FROM mapping_table WHERE meta_individual_id=" + str(portfolioId) + " AND stock_id=" + str(stockId) + \
+                " ) AND stock_id=" + str(stockId) + " AND entry_date>='" + str(startDate) + "' AND entry_date<=" + \
+                str(endDate) + "' ORDER BY entry_date, entry_time, exit_date, exit_time"
+        return databaseObject.Execute(query)
+
+    # Function to get price series for a given stock for a given day and duration in between
+    def getPriceSeriesDayDuration(self, stockId, date, startTime, endTime):
+        global databaseObject
+        query = "SELECT date, time, close FROM price_series_table WHERE stock_id=" + str(stockId) + " AND date='" + \
+                str(date) + "' AND time>='" + str(startTime) + "' AND time<='" + str(endTime) + "'"
+        return databaseObject.Execute(query)
+
+    # Function to get price series for a given stock for a given day from a start time to day end
+    def getPriceSeriesDayEnd(self, stockId, date, startTime):
+        global databaseObject
+        query = "SELECT date, time, close FROM price_series_table WHERE stock_id=" + str(stockId) + " AND date='" + \
+                str(date) + "' AND time>='" + str(startTime) + "'"
+        return databaseObject.Execute(query)
+
+    # Function to get price series for a given stock for a given day from a day start time to a end time
+    def getPriceSeriesDayStart(self, stockId, date, endTime):
+        global databaseObject
+        query = "SELECT date, time, close FROM price_series_table WHERE stock_id=" + str(stockId) + " AND date='" + \
+                str(date) + "' AND time<='" + str(endTime) + "'"
+        return databaseObject.Execute(query)
+
+    # Function to get price series for a given stock for multiple days (excluding start and end dates)
+    def getPriceSeriesDays(self, stockId, startDate, endDate):
+        global databaseObject
+        query = "SELECT date, time, close FROM price_series_table WHERE stock_id=" + str(stockId) + " AND date>'" + \
+                str(startDate) + "' AND date<'" + str(endDate) + "'"
+        return databaseObject.Execute(query)
+
+    # Function to add or update stock wise exposure for a portfolio
+    def addOrUpdateStockExposure(self, portfolioId, stockId, entryPrice, entryQty, tradeType, date, time, price):
+        global databaseObject
+        queryCheck = "SELECT EXISTS (SELECT 1 FROM exposure_table WHERE meta_individual_id=" + str(portfolioId) + \
+                     " AND stock_id=" + str(stockId) + " AND date='" + str(date) + "' AND time='" + str(time) + "'" + "), 1"
+        resultCheck = databaseObject.Execute(queryCheck)
+
+        exposure = None
+        if tradeType == 0:
+            exposure = (entryPrice-price) * entryQty
+        else:
+            exposure = (price - entryPrice) * entryQty
+
+        for check, dummy in resultCheck:
+            if check==1:
+                query = "UPDATE exposure_table SET exposure=exposure+" + str(exposure) + " WHERE meta_individual_id=" + str(portfolioId) + \
+                        " AND stock_id=" + str(stockId) + " AND date='" + str(date) + "' AND time='" + str(time) + "'"
+                databaseObject.Execute(query)
+            else:
+                query = "INSERT INTO exposure_table" \
+                        " (meta_individual_id, stock_id, date, time, exposure)" \
+                        " VALUES" \
+                        " (" + str(portfolioId) + ", " + str(stockId) + ", " + str(date) + ", " + str(time) + ", " + str(exposure) + ")"
+                databaseObject.Execute(query)
+
+    # Function to get various stocks that have individuals in a portfolio
+    def getPortfolioStocks(self, portfolioId):
+        global databaseObject
+        query = "SELECT DISTINCT(stock_id), 1 FROM mapping_table WHERE meta_individual_id=" + str(portfolioId)
+        return databaseObject.Execute(query)
+
+    # Function to get maximum exposure corresponding to every stock in the portfolio
+    def getMaxExposurePortfolioStock(self, portfolioId):
+        global databaseObject
+        query = "SELECT MAX(exposure), stock_id FROM exposure_table WHERE meta_individual_id=" + str(portfolioId) + " GROUP BY stock_id"
+        return databaseObject.Execute(query)
+
+    # Function to get portfolio exposure at every time point
+    def getExposurePortfolio(self, portfolioId):
+        global databaseObject
+        query = "SELECT SUM(exposure), 1 FROM exposure_table WHERE meta_individual_id=" + str(portfolioId) + " GROUP BY date, time"
+        return databaseObject.Execute(query)
+
+    # Function to update exposure feasibility in portfolio_table
+    def updateExposureFeasibility(self, portfolioId, feasibility):
+        global databaseObject
+        query = "UPDATE portfolio_table SET feasibility_by_exposure=" + str(feasibility) + " WHERE meta_portfolio_id=" + str(portfolioId)
         return databaseObject.Execute(query)
