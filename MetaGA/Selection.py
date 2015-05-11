@@ -29,6 +29,10 @@ class Selection:
                 #logging.info("Reconnecting to database ---------")
                 #dbObject.dbClose()
                 #dbObject.dbConnect()
+
+        # TODO - Check feasibility of portfolios. Then select top ones from among those.
+        # TODO - If not sufficient number selected, perform crossover till selected number within limits.
+
         resultOrdered = dbObject.getOrderedPortfolios(generation)
         for portfolioId, portfolioPerformance in resultOrdered:
             dbObject.updateSelectedPortfolio(portfolioId)

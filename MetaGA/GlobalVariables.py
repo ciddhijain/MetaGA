@@ -23,7 +23,7 @@ walkforward = 2                                 # This is walkforward from which
 crossoverList = [(1, 2), (2, 2)]                        # This list specifies types of crossovers and number of children
 # crossoverList = [(1, 2), (2, 2)]
 
-maxPortfolioSize = 100                           # This is the maximum size of portfolio
+maxPortfolioSize = 40                           # This is the maximum size of portfolio
 minPortfolioSize = 25                            # This is the minimum size of portfolio
 
 feederEliteSelectionProbability = 0.6           # This is the probability of putting elite individuals from feeder in a portfolio
@@ -31,8 +31,10 @@ feederNonEliteSelectionProbability = 0.4        # This is the probability of put
 mutationProbability = 0.05                      # This is the mutation probability
 crossoverProbability = 0.7                      # This corresponds to percentage of population subjected to crossover
 
-numPortfolios = 500                             # This is the number of portfolios in one generation
-numElites = 25                                   # This is the number of top portfolios in a generation which are considered as elite
+numPortfolios = 200                             # This is the number of portfolios in one generation
+maxNumPortfolios = numPortfolios
+minNumPortfolios = numPortfolios/2
+numElites = 50                                   # This is the number of top portfolios in a generation which are considered as elite
 
 startDate = datetime(2012, 1, 2).date()         # This is the start of trading period
 endDate = datetime(2012, 6, 30).date()         # This is the end of trading period
