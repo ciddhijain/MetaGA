@@ -59,9 +59,10 @@ class CombinationToLists:
                     currentSize += 1
                     dbObject.insertPortfolioMapping(countPortfolios+1, individualId, stockId)
 
+            dbObject.insertPortfolio(countPortfolios+1, 1, 1)
             performance = performanceObject.calculatePerformancePortfolio(gv.startDate, gv.endDate, countPortfolios+1, dbObject)
             dbObject.insertPerformance(countPortfolios+1, performance[0][1])
-            dbObject.insertPortfolio(countPortfolios+1, 1, 1)
+
             countPortfolios += 1
 
         logging.info("Generated " + str(countPortfolios) + " combinations")
