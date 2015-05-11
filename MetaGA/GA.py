@@ -28,7 +28,7 @@ if __name__ == "__main__":
     logging.info("Deleted previous data")
 
 
-    combinationObj.combine(dbObject)
+    combinationObj.combine(performanceObj, dbObject)
     generation = 1
 
     while (True):

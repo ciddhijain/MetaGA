@@ -9,10 +9,10 @@ dbHost = '127.0.0.1'                            # This is host address for datab
 dbPort = '3306'                                 # This is port for database connection
 dbConnector = 'mysqlconnector'                  # This is the connector string to be used, depending upon python package
 
-logFileName = 'MetaGA02.log'                      # This is the name of log file. It will append if file already exists
-mappingOutfileName = 'mapping02.csv'
-performanceOutfileName = 'performance02.csv'
-testingPerformanceOutfileName = 'testingPerformance02.csv'
+logFileName = 'MetaGA100.log'                      # This is the name of log file. It will append if file already exists
+mappingOutfileName = 'mapping100.csv'
+performanceOutfileName = 'performance100.csv'
+testingPerformanceOutfileName = 'testingPerformance100.csv'
 
 tradesheetLocation = "IndividualInfo7.csv"
 priceSeriesLocation = "IndividualInfo_Ver3.1.1_AXISBANK1.csv"
