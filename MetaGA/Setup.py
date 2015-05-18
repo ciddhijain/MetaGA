@@ -98,10 +98,18 @@ if __name__ == "__main__":
 
     dbObject.dbQuery("CREATE TABLE exposure_table"
                      " ("
-                     " meta_individual_id int,"
+                     " individual_id int,"
                      " stock_id int,"
                      " date date,"
                      " time time,"
                      " exposure float")
+
+    dbObject.dbQuery("CREATE TABLE individual_table"
+                     " ("
+                     " individual_id int,"
+                     " stock_id int,"
+                     " individual_signature varchar(100),"
+                     " individual_type int"
+                     " )")
 
     dbObject.dbClose()

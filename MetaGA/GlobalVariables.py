@@ -30,6 +30,9 @@ feederEliteSelectionProbability = 0.6           # This is the probability of put
 feederNonEliteSelectionProbability = 0.4        # This is the probability of putting non-elite fit individuals from feeder in a portfolio
 mutationProbability = 0.05                      # This is the mutation probability
 crossoverProbability = 0.7                      # This corresponds to percentage of population subjected to crossover
+longShortProbability = 0.5
+longLongProbability = 0.25
+shortShortProbability = 0.25
 
 numPortfolios = 200                             # This is the number of portfolios in one generation
 maxNumPortfolios = numPortfolios

@@ -6,12 +6,13 @@ import logging
 
 class CombinationToLists:
 
-    def combine(self, performanceObject, dbObject):
+    def combine(self, performanceObject, feasibilityObject, dbObject):
         numBitsEliteProbabilty = str(gv.feederEliteSelectionProbability)[::-1].find('.')
         numBitsNonEliteProbability = str(gv.feederNonEliteSelectionProbability)[::-1].find('.')
         numBits = max(numBitsEliteProbabilty, numBitsNonEliteProbability)
         rangeBits = 10**numBits
         countPortfolios = 0
+        countFeasiblePortfolios = 0
         countElite = 0
         countFeasible = 0
         countNonFeasible = 0
@@ -36,7 +37,7 @@ class CombinationToLists:
         logging.info("Generating Combinations :")
 
         # Terminate when required number of combinations have been generated
-        while countPortfolios<gv.numPortfolios:
+        while countFeasiblePortfolios<gv.numPortfolios:
 
             # We generate a list of following size
             sizePortfolio = randint(gv.minPortfolioSize, gv.maxPortfolioSize)
@@ -63,6 +64,9 @@ class CombinationToLists:
             performance = performanceObject.calculatePerformancePortfolio(gv.startDate, gv.endDate, countPortfolios+1, dbObject)
             dbObject.insertPerformance(countPortfolios+1, performance[0][1])
 
+            feasible = feasibilityObject.updateFeasibilityByExposurePortfolio(countPortfolios+1, dbObject)
+            if feasible:
+                countFeasiblePortfolios += 1
             countPortfolios += 1
 
         logging.info("Generated " + str(countPortfolios) + " combinations")
