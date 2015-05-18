@@ -44,6 +44,12 @@ class DBUtils:
         return databaseObject.Execute(query)
 
     # Function to return the count of Non-Feasible individuals in table feeder_individual_table
+    def getNonFeasibleCount(self, walkforward):
+        global databaseObject
+        query = "SELECT COUNT(*),1 FROM feeder_individual_table WHERE category=3 AND walk_forward=" + str(walkforward)
+        return databaseObject.Execute(query)
+
+    # Function to return the count of Non-Feasible individuals in table feeder_individual_table
     def getNonFeasibleCountStock(self, walkforward, stockId):
         global databaseObject
         query = "SELECT COUNT(*),1 FROM feeder_individual_table WHERE category=3 AND stock_id=" + str(stockId) + \
@@ -68,9 +74,17 @@ class DBUtils:
 
     # Function to return a random non-feasible individual id
     # The provided offset should be within limit depending upon count of non-feasible individuals
+    def getRandomNonFeasibleIndividual(self, offset, walkforward):
+        global databaseObject
+        queryIndividual = "SELECT individual_id, stock_id FROM feeder_individual_table WHERE category=3 AND" \
+                          " walk_forward=" + str(walkforward) + " LIMIT 1 OFFSET " + str(offset)
+        return databaseObject.Execute(queryIndividual)
+
+    # Function to return a random non-feasible individual id from a given stock
+    # The provided offset should be within limit depending upon count of non-feasible individuals
     def getRandomNonFeasibleIndividualStock(self, offset, walkforward, stockId):
         global databaseObject
-        queryIndividual = "SELECT individual_id, 1 FROM feeder_individual_table WHERE category=3 AND" \
+        queryIndividual = "SELECT individual_id, stock_id FROM feeder_individual_table WHERE category=3 AND" \
                           " walk_forward=" + str(walkforward) + " AND stock_id=" + str(stockId) + " LIMIT 1 OFFSET " + str(offset)
         return databaseObject.Execute(queryIndividual)
 
@@ -99,7 +113,7 @@ class DBUtils:
         return databaseObject.Execute(query)
 
     # Function to insert a new individual in a portfolio with a single change in mapping
-    def insertMutationPortfolio(self, metaIndividualId, oldFeederIndividualId, newFeederIndividualId, stockId, generation):
+    def insertMutationPortfolio(self, metaIndividualId, oldFeederIndividualId, newFeederIndividualId, oldStockId, newStockId, generation):
         global databaseObject
         queryCurrent = "SELECT feeder_individual_id, stock_id FROM mapping_table WHERE meta_individual_id=" + str(metaIndividualId)
         resultCurrent = databaseObject.Execute(queryCurrent)
@@ -107,11 +121,11 @@ class DBUtils:
         resultNewId = databaseObject.Execute(queryNewMetaId)
         for newMetaId, dummy in resultNewId:
             for feederIndividualId, stock in resultCurrent:
-                if feederIndividualId==oldFeederIndividualId:
+                if feederIndividualId==oldFeederIndividualId and stock==oldStockId:
                     query = "INSERT INTO mapping_table" \
                             " (meta_individual_id, feeder_individual_id, stock_id)" \
                             " VALUES" \
-                            " ( " + str(newMetaId+1) + ", " + str(newFeederIndividualId) + ", " + str(stockId) + " )"
+                            " ( " + str(newMetaId+1) + ", " + str(newFeederIndividualId) + ", " + str(newStockId) + " )"
                     databaseObject.Execute(query)
                 else:
                     query = "INSERT INTO mapping_table" \

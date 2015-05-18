@@ -7,7 +7,7 @@ import math
 
 class Crossover:
 
-    def performCrossoverRouletteWheelBiased(self, generation, dbObject, type=[(1,2)]):
+    def performCrossoverRouletteWheelBiased(self, generation, dbObject):
         numBits = str(gv.longLongProbability)[::-1].find('.')
         rangeLongLong = 10**numBits
         numBits = str(gv.longShortProbability)[::-1].find('.')

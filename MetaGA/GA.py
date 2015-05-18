@@ -27,14 +27,13 @@ if __name__ == "__main__":
     dbObject.dbQuery("DELETE FROM performance_table")
     logging.info("Deleted previous data")
 
-
     combinationObj.combine(performanceObj, dbObject)
     generation = 1
 
     while (True):
         logging.info("Starting generation " + str(generation))
         print("Starting generation " + str(generation) + " at " + str(datetime.now()))
-        crossoverObj.performCrossoverRouletteWheel(generation, dbObject, gv.crossoverList)
+        crossoverObj.performCrossoverRouletteWheelBiased(generation, dbObject)
         mutationObj.performMutation(generation, dbObject)
         selectionObj.select(generation, performanceObj, crossoverObj, dbObject)
         if (convergenceObj.checkConvergence(generation, dbObject)):

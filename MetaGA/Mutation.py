@@ -15,20 +15,22 @@ class Mutation:
             if p<gv.mutationProbability*range:
                 oldIndividualId = None
                 newIndividualId = None
-                stockId = None
+                oldStockId = None
+                newStockId = None
                 resultOldIndividual = dbObject.getRandomPortfolioIndividual(portfolioId, randint(0, size-1))
                 for id, stock in resultOldIndividual:
                     if id:
                         oldIndividualId = id
-                        stockId = stock
+                        oldStockId = stock
                 countNonFeasible = 0
-                resultCount = dbObject.getNonFeasibleCountStock(gv.walkforward, stockId)
+                resultCount = dbObject.getNonFeasibleCount(gv.walkforward)
                 for count, dummy in resultCount:
                     if count:
                         countNonFeasible = count
-                resultNewIndividual = dbObject.getRandomNonFeasibleIndividualStock(randint(0, countNonFeasible-1), gv.walkforward, stockId)
-                for id, dummy in resultNewIndividual:
+                resultNewIndividual = dbObject.getRandomNonFeasibleIndividual(randint(0, countNonFeasible-1), gv.walkforward)
+                for id, stock in resultNewIndividual:
                     if id:
                         newIndividualId = id
+                        newStockId = stock
                 if newIndividualId and oldIndividualId:
-                    dbObject.insertMutationPortfolio(portfolioId, oldIndividualId, newIndividualId, stockId, generation)
+                    dbObject.insertMutationPortfolio(portfolioId, oldIndividualId, newIndividualId, oldStockId, newStockId, generation)
