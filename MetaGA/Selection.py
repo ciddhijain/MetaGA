@@ -31,6 +31,15 @@ class Selection:
                 #dbObject.dbConnect()
 
         feasibilityObject.updateFeasibilityByPerformance(dbObject)
-        resultOrdered = dbObject.getOrderedFeasiblePortfolios(generation)
-        for portfolioId, portfolioPerformance in resultOrdered:
-            dbObject.updateSelectedPortfolio(portfolioId)
+
+        done = False
+        while (not done):
+            resultCount = dbObject.getOrderedFeasiblePortfolioCount(generation)
+            for countPortfolios, dummy in resultCount:
+                if countPortfolios>=gv.minNumPortfolios:
+                    resultOrdered = dbObject.getOrderedFeasiblePortfolios(generation)
+                    for portfolioId, portfolioPerformance in resultOrdered:
+                        dbObject.updateSelectedPortfolio(portfolioId)
+                    done = True
+                else:
+                    crossoverObject.performCrossoverRouletteWheelBiased(generation, dbObject)
