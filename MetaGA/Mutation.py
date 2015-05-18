@@ -5,7 +5,7 @@ from random import randint, sample
 
 class Mutation:
 
-    def performMutation(self, generation, dbObject):
+    def performMutation(self, generation, feasibilityObject, dbObject):
         numBits = str(gv.mutationProbability)[::-1].find('.')
         range = 10**numBits
 
@@ -33,4 +33,5 @@ class Mutation:
                         newIndividualId = id
                         newStockId = stock
                 if newIndividualId and oldIndividualId:
-                    dbObject.insertMutationPortfolio(portfolioId, oldIndividualId, newIndividualId, oldStockId, newStockId, generation)
+                    newId = dbObject.insertMutationPortfolio(portfolioId, oldIndividualId, newIndividualId, oldStockId, newStockId, generation)
+                    feasibilityObject.updateFeasibilityByExposurePortfolio(newId, dbObject)

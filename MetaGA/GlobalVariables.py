@@ -37,6 +37,7 @@ shortShortProbability = 0.25
 numPortfolios = 200                             # This is the number of portfolios in one generation
 maxNumPortfolios = numPortfolios
 minNumPortfolios = numPortfolios/2
+numCrossoverPortfolios = 0.9 * numPortfolios
 numElites = 50                                   # This is the number of top portfolios in a generation which are considered as elite
 
 startDate = datetime(2012, 1, 2).date()          # This is the start of trading period

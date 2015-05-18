@@ -138,7 +138,8 @@ class DBUtils:
                     " (meta_individual_id, first_generation, last_generation)" \
                     " VALUES" \
                     " (" + str(newMetaId+1) + ", " + str(generation) + ", " + str(generation) + ")"
-            return databaseObject.Execute(query)
+            databaseObject.Execute(query)
+            return newMetaId+1
 
     def getFeederIndividuals(self, walkforward):
         global databaseObject
@@ -791,3 +792,4 @@ class DBUtils:
                     " VALUES" \
                     " (" + str(newId+2) + ", " + str(generation) + ", " + str(generation) + ")"
             databaseObject.Execute(query)
+        return [newId+1, newId+2]

@@ -7,7 +7,7 @@ import math
 
 class Crossover:
 
-    def performCrossoverRouletteWheelBiased(self, generation, dbObject):
+    def performCrossoverRouletteWheelBiased(self, generation, feasibilityObject, dbObject):
         numBits = str(gv.longLongProbability)[::-1].find('.')
         rangeLongLong = 10**numBits
         numBits = str(gv.longShortProbability)[::-1].find('.')
@@ -17,8 +17,8 @@ class Crossover:
         rangeBias = max(rangeLongLong, rangeLongShort, rangeShortShort)
         numBits = str(gv.crossoverProbability)[::-1].find('.')
         range = 10**numBits
-        numParents = math.ceil(gv.numPortfolios/2)
-        count = 0
+        numPortfolios = math.ceil(gv.numCrossoverPortfolios)
+        countFeasiblePortfolios = 0
         resultPortfolios = dbObject.getOrderedPortfolios(generation)
         portfolios = []
 
@@ -33,13 +33,14 @@ class Crossover:
                 totalPerformance = total
 
         # Performing crossover till a fraction of parents are generated
-        while (count<numParents):
+        while (countFeasiblePortfolios<numPortfolios):
 
             p = randint(1, range)
             if p<gv.crossoverProbability*range:
 
                 # Finding first portfolio by roulette wheel method
                 n = randint(1, math.ceil(totalPerformance))
+                newIdList = []
                 subTotal = 0
                 id1 = -1
                 id2 = None
@@ -98,7 +99,9 @@ class Crossover:
                                             newSize1 = size1 - cut1 + cut2
                                             newSize2 = size2 - cut2 + cut1
                                             if (newSize1<=gv.maxPortfolioSize and newSize1>=gv.minPortfolioSize and newSize2<=gv.maxPortfolioSize and newSize2>=gv.minPortfolioSize):
-                                                dbObject.insertBiasedCrossoverPortfolio(id1, id2, cut1, cut2, long1, size1, long2, size2, biasType, generation)
+                                                newIds = dbObject.insertBiasedCrossoverPortfolio(id1, id2, cut1, cut2, long1, size1, long2, size2, biasType, generation)
+                                                for newId in newIds:
+                                                    newIdList.append(newId)
                                                 break
                                     elif biasType==2:
                                         while(True):
@@ -113,7 +116,9 @@ class Crossover:
                                             newSize1 = size1 - cut1 + cut2
                                             newSize2 = size2 - cut2 + cut1
                                             if (newSize1<=gv.maxPortfolioSize and newSize1>=gv.minPortfolioSize and newSize2<=gv.maxPortfolioSize and newSize2>=gv.minPortfolioSize):
-                                                dbObject.insertBiasedCrossoverPortfolio(id1, id2, cut1, cut2, long1, size1, long2, size2, biasType, generation)
+                                                newIds = dbObject.insertBiasedCrossoverPortfolio(id1, id2, cut1, cut2, long1, size1, long2, size2, biasType, generation)
+                                                for newId in newIds:
+                                                    newIdList.append(newId)
                                                 break
                                     else:
                                         while(True):
@@ -122,12 +127,17 @@ class Crossover:
                                             newSize1 = size1 - cut1 + cut2
                                             newSize2 = size2 - cut2 + cut1
                                             if (newSize1<=gv.maxPortfolioSize and newSize1>=gv.minPortfolioSize and newSize2<=gv.maxPortfolioSize and newSize2>=gv.minPortfolioSize):
-                                                dbObject.insertBiasedCrossoverPortfolio(id1, id2, cut1, cut2, long1, size1, long2, size2, biasType, generation)
+                                                newIds = dbObject.insertBiasedCrossoverPortfolio(id1, id2, cut1, cut2, long1, size1, long2, size2, biasType, generation)
+                                                for newId in newIds:
+                                                    newIdList.append(newId)
                                                 break
                                 break
                     if id2:
                         break
-            count += 1
+            for newId in newIdList:
+                feasible = feasibilityObject.updateFeasibilityByExposurePortfolio(newId, dbObject)
+                if feasible:
+                    countFeasiblePortfolios += 1
         return None
 
     # Function to perform Crossover.

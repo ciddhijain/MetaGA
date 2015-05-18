@@ -6,6 +6,8 @@ from Crossover import *
 from Mutation import *
 from Convergence import *
 from DBUtils import *
+from Feasibility import *
+from Performance import *
 import logging
 from datetime import datetime
 import csv
@@ -20,6 +22,7 @@ if __name__ == "__main__":
     mutationObj = Mutation()
     convergenceObj = Convergence()
     performanceObj = Performance()
+    feasibilityObj = Feasibility()
     dbObject = DBUtils()
     dbObject.dbConnect()
 
@@ -27,14 +30,14 @@ if __name__ == "__main__":
     dbObject.dbQuery("DELETE FROM performance_table")
     logging.info("Deleted previous data")
 
-    combinationObj.combine(performanceObj, dbObject)
+    combinationObj.combine(performanceObj, feasibilityObj, dbObject)
     generation = 1
 
     while (True):
         logging.info("Starting generation " + str(generation))
         print("Starting generation " + str(generation) + " at " + str(datetime.now()))
-        crossoverObj.performCrossoverRouletteWheelBiased(generation, dbObject)
-        mutationObj.performMutation(generation, dbObject)
+        crossoverObj.performCrossoverRouletteWheelBiased(generation, feasibilityObj, dbObject)
+        mutationObj.performMutation(generation, feasibilityObj, dbObject)
         selectionObj.select(generation, performanceObj, crossoverObj, dbObject)
         if (convergenceObj.checkConvergence(generation, dbObject)):
             logging.info("The GA has converged in " + str(generation) + " generations")
