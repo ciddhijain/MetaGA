@@ -64,8 +64,9 @@ class CombinationToLists:
             performance = performanceObject.calculatePerformancePortfolio(gv.startDate, gv.endDate, countPortfolios+1, dbObject)
             dbObject.insertPerformance(countPortfolios+1, performance[0][1])
 
-            feasible = feasibilityObject.updateFeasibilityByExposurePortfolio(countPortfolios+1, dbObject)
-            if feasible:
+            feasibleExposure = feasibilityObject.updateFeasibilityByExposurePortfolio(countPortfolios+1, dbObject)
+            feasiblePerformance = feasibilityObject.updateFeasibilityByPerformancePortfolio(countPortfolios+1, dbObject)
+            if feasibleExposure and feasiblePerformance:
                 countFeasiblePortfolios += 1
             countPortfolios += 1
 

@@ -135,8 +135,9 @@ class Crossover:
                     if id2:
                         break
             for newId in newIdList:
-                feasible = feasibilityObject.updateFeasibilityByExposurePortfolio(newId, dbObject)
-                if feasible:
+                feasibleExposure = feasibilityObject.updateFeasibilityByExposurePortfolio(newId, dbObject)
+                feasiblePerformance = feasibilityObject.updateFeasibilityByPerformancePortfolio(newId, dbObject)
+                if feasibleExposure and feasiblePerformance:
                     countFeasiblePortfolios += 1
         return None
 

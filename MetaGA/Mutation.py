@@ -35,3 +35,4 @@ class Mutation:
                 if newIndividualId and oldIndividualId:
                     newId = dbObject.insertMutationPortfolio(portfolioId, oldIndividualId, newIndividualId, oldStockId, newStockId, generation)
                     feasibilityObject.updateFeasibilityByExposurePortfolio(newId, dbObject)
+                    feasibilityObject.updateFeasibilityByPerformancePortfolio(newId, dbObject)
