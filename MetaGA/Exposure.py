@@ -59,6 +59,7 @@ class Exposure:
 if __name__ == "__main__":
     dbObject = DBUtils()
     dbObject.dbConnect()
+    dbObject.dbQuery("DELETE FROM exposure_table")
     exposureObject = Exposure()
     exposureObject.calculateExposureIndividuals(dbObject)
     dbObject.dbClose()
