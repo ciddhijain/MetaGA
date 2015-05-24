@@ -7,7 +7,7 @@ import logging
 class Selection:
 
     # Select from generation i and insert in generation i+1
-    def select(self, generation, performanceObject, feasibilityObject, crossoverObject, dbObject):
+    def select(self, generation, performanceObject, dbObject):
         resultPortfolios = dbObject.getPortfolios(generation)
         portfolioList = []
         for portfolioId, size in resultPortfolios:

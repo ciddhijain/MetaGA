@@ -7,7 +7,7 @@ import math
 
 class Crossover:
 
-    def performCrossoverRouletteWheelBiased(self, generation, feasibilityObject, dbObject):
+    def performCrossoverRouletteWheelBiased(self, generation, performanceObject, feasibilityObject, dbObject):
         numBits = str(gv.longLongProbability)[::-1].find('.')
         rangeLongLong = 10**numBits
         numBits = str(gv.longShortProbability)[::-1].find('.')
@@ -39,7 +39,7 @@ class Crossover:
             if p<gv.crossoverProbability*range:
 
                 # Finding first portfolio by roulette wheel method
-                n = randint(1, math.ceil(totalPerformance))
+                n = randint(1, math.floor(totalPerformance))
                 newIdList = []
                 subTotal = 0
                 id1 = -1
@@ -72,9 +72,9 @@ class Crossover:
                                 for size1, dummy in resultSize1:
                                     k = randint(1, rangeBias)
                                     biasType = None
-                                    if k<=gv.longLongProbability:
+                                    if k<=gv.longLongProbability*rangeBias:
                                         biasType = 1
-                                    elif k<=gv.longShortProbability:
+                                    elif k<=(gv.longShortProbability + gv.longLongProbability)*rangeBias:
                                         biasType = 2
                                     else:
                                         biasType = 3
@@ -135,6 +135,8 @@ class Crossover:
                     if id2:
                         break
                 for newId in newIdList:
+                    performance = performanceObject.calculatePerformancePortfolio(gv.startDate, gv.endDate, newId, dbObject)
+                    dbObject.insertPerformance(newId, performance[0][1])
                     feasibleExposure = feasibilityObject.updateFeasibilityByExposurePortfolio(newId, dbObject)
                     feasiblePerformance = feasibilityObject.updateFeasibilityByPerformancePortfolio(newId, dbObject)
                     if feasibleExposure and feasiblePerformance:

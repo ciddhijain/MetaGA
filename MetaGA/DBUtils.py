@@ -151,14 +151,14 @@ class DBUtils:
         global databaseObject
         query = "SELECT meta_individual_id, COUNT(*) FROM mapping_table WHERE meta_individual_id IN " \
                 "(SELECT meta_individual_id FROM portfolio_table WHERE last_generation=" + str(generation)\
-                + ") GROUP BY meta_individual_id"
+                + " AND feasible_by_performance=1 AND feasible_by_exposure=1) GROUP BY meta_individual_id"
         return databaseObject.Execute(query)
 
     # Function to get size of a portfolio in given generation, specified by offset for id
     def getPortfolioSizeByOffset(self, metaPortfolioIdOffset, generation):
         global databaseObject
         queryId = "SELECT meta_individual_id, 1 FROM portfolio_table WHERE last_generation=" + str(generation) + \
-                  " LIMIT 1 OFFSET " + str(metaPortfolioIdOffset)
+                  " AND feasible_by_performance=1 AND feasible_by_exposure=1 LIMIT 1 OFFSET " + str(metaPortfolioIdOffset)
         resultId = databaseObject.Execute(queryId)
         for metaPortfolioId, dummy in resultId:
             query = "SELECT COUNT(*), meta_individual_id FROM mapping_table WHERE meta_individual_id=" + str(metaPortfolioId)
@@ -522,10 +522,10 @@ class DBUtils:
     def insertBiasedCrossoverPortfolio(self, id1, id2, cut1, cut2, long1, size1, long2, size2, biasType, generation):
         global databaseObject
         queryCurrent1 = "SELECT m.feeder_individual_id, m.stock_id, i.individual_type FROM mapping_table m, individual_table i" \
-                        " WHERE m.meta_individual_id=" + str(id1) + " AND m.meta_individual_id=i.individual_id AND m.stock_id=i.stock_id"
+                        " WHERE m.meta_individual_id=" + str(id1) + " AND m.feeder_individual_id=i.individual_id AND m.stock_id=i.stock_id"
         resultCurrent1 = databaseObject.Execute(queryCurrent1)
         queryCurrent2 = "SELECT m.feeder_individual_id, m.stock_id, i.individual_type FROM mapping_table m, individual_table i" \
-                        " WHERE m.meta_individual_id=" + str(id2) + " AND m.meta_individual_id=i.individual_id AND m.stock_id=i.stock_id"
+                        " WHERE m.meta_individual_id=" + str(id2) + " AND m.feeder_individual_id=i.individual_id AND m.stock_id=i.stock_id"
         resultCurrent2 = databaseObject.Execute(queryCurrent2)
         queryNewMetaId = "SELECT MAX(meta_individual_id), 1 FROM mapping_table"
         resultNewId = databaseObject.Execute(queryNewMetaId)

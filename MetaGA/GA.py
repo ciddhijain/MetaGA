@@ -28,8 +28,8 @@ if __name__ == "__main__":
     dbObject = DBUtils()
     dbObject.dbConnect()
 
-    #dbObject.dbQuery("DELETE FROM mapping_table")
-    #dbObject.dbQuery("DELETE FROM portfolio_table")
+    dbObject.dbQuery("DELETE FROM mapping_table")
+    dbObject.dbQuery("DELETE FROM portfolio_table")
     dbObject.dbQuery("DELETE FROM crossover_pairs_table")
     logging.info("Deleted previous data")
 
@@ -41,9 +41,9 @@ if __name__ == "__main__":
     while (True):
         logging.info("Starting generation " + str(generation))
         print("Starting generation " + str(generation) + " at " + str(datetime.now()))
-        crossoverObj.performCrossoverRouletteWheelBiased(generation, feasibilityObj, dbObject)
+        crossoverObj.performCrossoverRouletteWheelBiased(generation, performanceObj, feasibilityObj, dbObject)
         mutationObj.performMutation(generation, feasibilityObj, dbObject)
-        selectionObj.select(generation, performanceObj, crossoverObj, dbObject)
+        selectionObj.select(generation, performanceObj, dbObject)
         if (convergenceObj.checkConvergence(generation, dbObject)):
             logging.info("The GA has converged in " + str(generation) + " generations")
             break
