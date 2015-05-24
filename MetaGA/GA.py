@@ -28,14 +28,14 @@ if __name__ == "__main__":
     dbObject = DBUtils()
     dbObject.dbConnect()
 
-    dbObject.dbQuery("DELETE FROM mapping_table")
-    dbObject.dbQuery("DELETE FROM portfolio_table")
+    #dbObject.dbQuery("DELETE FROM mapping_table")
+    #dbObject.dbQuery("DELETE FROM portfolio_table")
     dbObject.dbQuery("DELETE FROM crossover_pairs_table")
     logging.info("Deleted previous data")
 
-    exposureObj.calculateExposureIndividuals(dbObject)
+    #exposureObj.calculateExposureIndividuals(dbObject)
 
-    combinationObj.combine(performanceObj, feasibilityObj, dbObject)
+    #combinationObj.combine(performanceObj, feasibilityObj, dbObject)
     generation = 1
 
     while (True):

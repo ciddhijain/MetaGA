@@ -37,7 +37,7 @@ class CombinationToLists:
         logging.info("Generating Combinations :")
 
         # Terminate when required number of combinations have been generated
-        while countFeasiblePortfolios<gv.numPortfolios:
+        while countFeasiblePortfolios<=gv.numPortfolios:
 
             # We generate a list of following size
             sizePortfolio = randint(gv.minPortfolioSize, gv.maxPortfolioSize)
@@ -66,7 +66,7 @@ class CombinationToLists:
 
             feasibleExposure = feasibilityObject.updateFeasibilityByExposurePortfolio(countPortfolios+1, dbObject)
             feasiblePerformance = feasibilityObject.updateFeasibilityByPerformancePortfolio(countPortfolios+1, dbObject)
-            if feasibleExposure and feasiblePerformance:
+            if feasibleExposure==1 and feasiblePerformance==1:
                 countFeasiblePortfolios += 1
             countPortfolios += 1
 

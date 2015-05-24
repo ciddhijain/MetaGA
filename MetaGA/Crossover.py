@@ -61,7 +61,7 @@ class Crossover:
                             # Ensuring that the pair has already not been in a crossover ????
                             resultCheck = dbObject.checkCrossoverPairs(id, id1, generation)
                             for check, dummy in resultCheck:
-                                if check==1:
+                                if check==0:
                                     cont = True
                                     dbObject.insertCrossoverPair(id, id1, generation)
 
@@ -134,11 +134,11 @@ class Crossover:
                                 break
                     if id2:
                         break
-            for newId in newIdList:
-                feasibleExposure = feasibilityObject.updateFeasibilityByExposurePortfolio(newId, dbObject)
-                feasiblePerformance = feasibilityObject.updateFeasibilityByPerformancePortfolio(newId, dbObject)
-                if feasibleExposure and feasiblePerformance:
-                    countFeasiblePortfolios += 1
+                for newId in newIdList:
+                    feasibleExposure = feasibilityObject.updateFeasibilityByExposurePortfolio(newId, dbObject)
+                    feasiblePerformance = feasibilityObject.updateFeasibilityByPerformancePortfolio(newId, dbObject)
+                    if feasibleExposure and feasiblePerformance:
+                        countFeasiblePortfolios += 1
         return None
 
     # Function to perform Crossover.

@@ -9,8 +9,7 @@ class Feasibility:
         return
 
     def updateFeasibilityByPerformancePortfolio(self, portfolioId, dbObject):
-        dbObject.updatePerformanceFeasibilityPortfolio(portfolioId)
-        return
+        return dbObject.updatePerformanceFeasibilityPortfolio(portfolioId)
 
     # Delete later
     def updateFeasibilityByExposure(self, generation, dbObject, exposureObject):

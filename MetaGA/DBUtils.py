@@ -302,7 +302,7 @@ class DBUtils:
     def getOrderedPortfolios(self, generation):
         global databaseObject
         query = "SELECT meta_individual_id, performance FROM portfolio_table WHERE last_generation=" + str(generation) + \
-                "ORDER BY performance DESC"
+                " AND feasible_by_performance=1 AND feasible_by_exposure=1 ORDER BY performance DESC"
         return databaseObject.Execute(query)
 
     # Function to get top elite portfolios in a given generation, ordered by performance
@@ -359,21 +359,22 @@ class DBUtils:
     # Function to get total performance of all portfolios in a given generation
     def getTotalPerformance(self, generation):
         global databaseObject
-        query = "SELECT SUM(performance), 1 FROM portfolio_table WHERE last_generation=" + str(generation)
+        query = "SELECT SUM(performance), 1 FROM portfolio_table WHERE last_generation=" + str(generation) + \
+                " AND feasible_by_performance=1 AND feasible_by_exposure=1"
         return databaseObject.Execute(query)
 
     # Function to check if a pair has already been involved in crossover in a generation
     def checkCrossoverPairs(self, id1, id2, generation):
         global databaseObject
-        query = "SELECT EXISTS (SELECT 1 FROM crossover_table WHERE ((meta_individual_id_1=" + str(id1) + \
+        query = "SELECT EXISTS (SELECT 1 FROM crossover_pairs_table WHERE ((meta_individual_id_1=" + str(id1) + \
                 " AND meta_individual_id_2=" + str(id2) + ") OR (meta_individual_id_1=" + str(id2) + \
-                " AND meta_individual_id_2=" + str(id1) + ")) AND last_generation=" + str(generation) + "), 1"
+                " AND meta_individual_id_2=" + str(id1) + ")) AND generation=" + str(generation) + "), 1"
         return databaseObject.Execute(query)
 
     # Function to insert a new crossover pair in table
     def insertCrossoverPair(self, id1, id2, generation):
         global databaseObject
-        query = "INSERT INTO crossover_table" \
+        query = "INSERT INTO crossover_pairs_table" \
                 " (meta_individual_id_1, meta_individual_id_2, generation)" \
                 " VALUES" \
                 " (" + str(id1) + ", " + str(id2) + ", " + str(generation) + ")"
@@ -388,9 +389,17 @@ class DBUtils:
     # Function to update feasibility of an individual based on performance
     def updatePerformanceFeasibilityPortfolio(self, portfolioId):
         global databaseObject
-        query = "UPDATE portfolio_table SET feasible_by_performance=1 WHERE performance>" + str(gv.thresholdPerformance) + \
-                " AND meta_individual_id=" + str(portfolioId)
-        return databaseObject.Execute(query)
+        queryCheck = "SELECT performance, 1 FROM portfolio_table WHERE meta_individual_id=" + str(portfolioId)
+        resultCheck = databaseObject.Execute(queryCheck)
+        for performance, dummy in resultCheck:
+            if performance>gv.thresholdPerformance:
+                query = "UPDATE portfolio_table SET feasible_by_performance=1 WHERE meta_individual_id=" + str(portfolioId)
+                databaseObject.Execute(query)
+                return 1
+            else:
+                query = "UPDATE portfolio_table SET feasible_by_performance=0 WHERE meta_individual_id=" + str(portfolioId)
+                databaseObject.Execute(query)
+                return 0
 
     # Function to get all trades corresponding to a portfolio
     def getTradesPortfolioStock(self, portfolioId, stockId, startDate, endDate):
@@ -487,7 +496,7 @@ class DBUtils:
     # Function to update exposure feasibility in portfolio_table
     def updateExposureFeasibility(self, portfolioId, feasibility):
         global databaseObject
-        query = "UPDATE portfolio_table SET feasibility_by_exposure=" + str(feasibility) + " WHERE meta_portfolio_id=" + str(portfolioId)
+        query = "UPDATE portfolio_table SET feasible_by_exposure=" + str(feasibility) + " WHERE meta_individual_id=" + str(portfolioId)
         return databaseObject.Execute(query)
 
     # Function to get all individuals from individual_table
