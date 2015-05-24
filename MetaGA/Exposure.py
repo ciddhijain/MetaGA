@@ -2,6 +2,7 @@ __author__ = 'Ciddhi'
 
 import GlobalVariables as gv
 from DBUtils import *
+import logging
 
 class Exposure:
 
@@ -30,6 +31,8 @@ class Exposure:
 
     # This function calculates exposure for every individual in database
     def calculateExposureIndividuals(self, dbObject):
+        logging.info("Starting calculation of exposure for all individuals")
+        print("Starting calculation of exposure for all individuals")
         resultIndividuals = dbObject.getFeederIndividuals(gv.walkforward)
         for individualId, stockId in resultIndividuals:
             resultTrades = dbObject.getTradesFeederIndividuals(individualId, stockId, gv.startDate, gv.endDate)
@@ -50,6 +53,9 @@ class Exposure:
                     resultPriceSeriesStart = dbObject.getPriceSeriesDayStart(stock, exitDate, exitTime)
                     for date, time, price in resultPriceSeriesStart:
                         dbObject.addOrUpdateStockExposure(individualId, stock, entryPrice, entryQty, tradeType, date, time, price)
+            break
+        logging.info("All exposures calculated")
+        print("All exposures calculated")
 
 if __name__ == "__main__":
     dbObject = DBUtils()

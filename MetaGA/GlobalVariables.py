@@ -14,10 +14,13 @@ mappingOutfileName = 'mapping100.csv'
 performanceOutfileName = 'performance100.csv'
 testingPerformanceOutfileName = 'testingPerformance100.csv'
 
-tradesheetLocation = "IndividualInfo7.csv"
-priceSeriesLocation = "IndividualInfo_Ver3.1.1_AXISBANK1.csv"
+tradesheetLocation = "TradesheetTable.csv"
+priceSeriesLocation = "PriceSeriesTable.csv"
+stockTableLocation = "StockTable.csv"
+feederIndividualLocation = "FeederIndividualTable.csv"
+individualTableLocation = "IndividualTable.csv"
 
-minGenerations = 20                             # This is the minimum number of generations that GA will perform
+minGenerations = 10                             # This is the minimum number of generations that GA will perform
 maxGenerations = 100                            # This is the maximum number of generations that GA will perform
 walkforward = 2                                 # This is walkforward from which individuals and trades will be picked
 crossoverList = [(1, 2), (2, 2)]                        # This list specifies types of crossovers and number of children

@@ -5,6 +5,38 @@ from DBUtils import *
 if __name__ == "__main__":
     dbObject = DBUtils()
     dbObject.dbConnect()
+    '''
+
+    dbObject.dbQuery("ALTER TABLE tblindividualcategoryinfo"
+                     " RENAME TO feeder_individual_table")
+
+    dbObject.dbQuery("ALTER TABLE tblindividuallist"
+                     " RENAME TO individual_table")
+
+    dbObject.dbQuery("ALTER TABLE tblindividualtradesheet"
+                     " RENAME TO tradesheet_data_table")
+
+    dbObject.dbQuery("ALTER TABLE tblstockidlist"
+                     " RENAME TO stock_table")
+
+    dbObject.dbQuery("ALTER TABLE tblstockpricedata"
+                     " RENAME TO price_series_table")
+
+    dbObject.dbQuery("ALTER TABLE feeder_individual_table"
+                     " DROP FOREIGN KEY tblIndividualCategoryInfo_SecIDIndID")
+
+
+    dbObject.dbQuery("ALTER TABLE feeder_individual_table"
+                     " DROP FOREIGN KEY tblIndividualCategoryInfo_WlkFwdID")
+
+    dbObject.dbQuery("ALTER TABLE individual_table"
+                     " DROP FOREIGN KEY tblIndividualList_SecID")
+
+    dbObject.dbQuery("ALTER TABLE tradesheet_data_table"
+                     " DROP FOREIGN KEY tblIndividualTradesheet_SecID")
+
+    dbObject.dbQuery("ALTER TABLE price_series_table"
+                     " DROP FOREIGN KEY SecID")
 
     dbObject.dbQuery("CREATE TABLE stock_table"
                      " ("
@@ -13,6 +45,14 @@ if __name__ == "__main__":
                      " stock_name varchar(50),"
                      " lot_size int"
                      " )")
+
+    print("Loading stock table ------ ")
+
+    dbObject.dbQuery("LOAD DATA INFILE '" + gv.stockTableLocation + "'"
+                     " INTO TABLE stock_table"
+                     " FIELDS TERMINATED BY ','"
+                     " ENCLOSED BY '\"'"
+                     " LINES TERMINATED BY '\\n'")
 
     dbObject.dbQuery(" CREATE TABLE price_series_table"
                      " ("
@@ -26,6 +66,7 @@ if __name__ == "__main__":
                      " volume int"
                      " )")
 
+
     print("Loading price series table ------ ")
 
     dbObject.dbQuery("LOAD DATA INFILE '" + gv.priceSeriesLocation + "'"
@@ -34,18 +75,20 @@ if __name__ == "__main__":
                      " ENCLOSED BY '\"'"
                      " LINES TERMINATED BY '\\n'")
 
+    '''
+
     dbObject.dbQuery("CREATE TABLE tradesheet_data_table"
                      " ("
                      " stock_id int,"
                      " individual_id int,"
-                     " trade_type int,"
                      " entry_date date,"
                      " entry_time time,"
                      " entry_price float,"
-                     " entry_qty int,"
                      " exit_date date,"
                      " exit_time time,"
-                     " exit_price float"
+                     " exit_price float,"
+                     " entry_qty int,"
+                     " trade_type int"
                      " )")
 
     print("Loading tradesheet -----------")
@@ -56,7 +99,10 @@ if __name__ == "__main__":
                      " ENCLOSED BY '\"'"
                      " LINES TERMINATED BY '\\n'")
 
+    '''
+
     dbObject.dbQuery("DROP TABLE mapping_table")
+
 
     dbObject.dbQuery("CREATE TABLE mapping_table"
                      " ("
@@ -80,6 +126,7 @@ if __name__ == "__main__":
     dbObject.dbQuery("CREATE TABLE feeder_individual_table"
                      " AS SELECT DISTINCT(individual_id), category, walk_forward, stock_id"
                      " FROM tradesheet_data_table")
+    '''
 
     dbObject.dbQuery("CREATE TABLE feeder_individual_table"
                      " ("
@@ -88,6 +135,15 @@ if __name__ == "__main__":
                      " individual_id int,"
                      " category int"
                      " )")
+
+    print("Loading feeder_individual_table -----------")
+
+    dbObject.dbQuery("LOAD DATA INFILE '" + gv.feederIndividualLocation + "'"
+                     " INTO TABLE feeder_individual_table"
+                     " FIELDS TERMINATED BY ','"
+                     " ENCLOSED BY '\"'"
+                     " LINES TERMINATED BY '\\n'")
+    '''
 
     dbObject.dbQuery("CREATE TABLE crossover_pairs_table"
                      " ("
@@ -102,7 +158,9 @@ if __name__ == "__main__":
                      " stock_id int,"
                      " date date,"
                      " time time,"
-                     " exposure float")
+                     " exposure float"
+                     " )")
+    '''
 
     dbObject.dbQuery("CREATE TABLE individual_table"
                      " ("
@@ -111,5 +169,13 @@ if __name__ == "__main__":
                      " individual_signature varchar(100),"
                      " individual_type int"
                      " )")
+
+    print("Loading individual_table -----------")
+
+    dbObject.dbQuery("LOAD DATA INFILE '" + gv.individualTableLocation + "'"
+                     " INTO TABLE individual_table"
+                     " FIELDS TERMINATED BY ','"
+                     " ENCLOSED BY '\"'"
+                     " LINES TERMINATED BY '\\n'")
 
     dbObject.dbClose()

@@ -8,6 +8,7 @@ from Convergence import *
 from DBUtils import *
 from Feasibility import *
 from Performance import *
+from Exposure import *
 import logging
 from datetime import datetime
 import csv
@@ -23,12 +24,16 @@ if __name__ == "__main__":
     convergenceObj = Convergence()
     performanceObj = Performance()
     feasibilityObj = Feasibility()
+    exposureObj = Exposure()
     dbObject = DBUtils()
     dbObject.dbConnect()
 
     dbObject.dbQuery("DELETE FROM mapping_table")
-    dbObject.dbQuery("DELETE FROM performance_table")
+    dbObject.dbQuery("DELETE FROM portfolio_table")
+    dbObject.dbQuery("DELETE FROM crossover_pairs_table")
     logging.info("Deleted previous data")
+
+    exposureObj.calculateExposureIndividuals(dbObject)
 
     combinationObj.combine(performanceObj, feasibilityObj, dbObject)
     generation = 1
