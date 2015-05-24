@@ -141,7 +141,7 @@ class DBUtils:
             databaseObject.Execute(query)
             return newMetaId+1
 
-    def getFeederIndividuals(self, walkforward):
+    def getFeederIndividualsWalkforward(self, walkforward):
         global databaseObject
         query = "SELECT individual_id, 1 FROM feeder_individual_table WHERE walk_forward=" + str(walkforward)
         return databaseObject.Execute(query)
@@ -454,7 +454,7 @@ class DBUtils:
                 query = "INSERT INTO exposure_table" \
                         " (individual_id, stock_id, date, time, exposure)" \
                         " VALUES" \
-                        " (" + str(portfolioId) + ", " + str(stockId) + ", " + str(date) + ", " + str(time) + ", " + str(exposure) + ")"
+                        " (" + str(portfolioId) + ", " + str(stockId) + ", '" + str(date) + "', '" + str(time) + "', " + str(exposure) + ")"
                 databaseObject.Execute(query)
 
     # Function to get various stocks that have individuals in a portfolio
@@ -502,8 +502,6 @@ class DBUtils:
         query = "SELECT * FROM tradesheet_data_table WHERE individual_id=" + str(individualId) + " AND stock_id=" + str(stockId) + \
                 " AND entry_date<='" + str(endDate) + "' AND entry_date>='" + str(startDate) + "'"
         return databaseObject.Execute(query)
-
-    # TODO
 
     # Function to get number of long individuals in a portfolio
     def getLongIndividualsPortfolio(self, portfolioId):

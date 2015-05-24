@@ -11,7 +11,7 @@ class Exposure:
     def calculateExposurePortfolioStock(self, portfolioId, stockId, dbObject):
         resultTrades = dbObject.getTradesPortfolioStock(portfolioId, stockId, gv.startDate, gv.endDate)
 
-        for stock, individualId, tradeType, entryDate, entryTime, entryPrice, entryQty, exitDate, exitTime, exitPrice in resultTrades:
+        for stock, individualId, entryDate, entryTime, entryPrice, exitDate, exitTime, exitPrice, entryQty, tradeType in resultTrades:
             # For intra-day trading
             if entryDate==exitDate:
                 resultPriceSeries = dbObject.getPriceSeriesDayDuration(stock, entryDate, entryTime, exitTime)
@@ -33,10 +33,10 @@ class Exposure:
     def calculateExposureIndividuals(self, dbObject):
         logging.info("Starting calculation of exposure for all individuals")
         print("Starting calculation of exposure for all individuals")
-        resultIndividuals = dbObject.getFeederIndividuals(gv.walkforward)
+        resultIndividuals = dbObject.getFeederIndividuals()
         for individualId, stockId in resultIndividuals:
             resultTrades = dbObject.getTradesFeederIndividuals(individualId, stockId, gv.startDate, gv.endDate)
-            for stock, individualId, tradeType, entryDate, entryTime, entryPrice, entryQty, exitDate, exitTime, exitPrice in resultTrades:
+            for stock, individualId, entryDate, entryTime, entryPrice, exitDate, exitTime, exitPrice, entryQty, tradeType in resultTrades:
                 # For intra-day trading
                 if entryDate==exitDate:
                     resultPriceSeries = dbObject.getPriceSeriesDayDuration(stock, entryDate, entryTime, exitTime)
