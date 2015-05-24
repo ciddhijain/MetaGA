@@ -53,7 +53,6 @@ class Exposure:
                     resultPriceSeriesStart = dbObject.getPriceSeriesDayStart(stock, exitDate, exitTime)
                     for date, time, price in resultPriceSeriesStart:
                         dbObject.addOrUpdateStockExposure(individualId, stock, entryPrice, entryQty, tradeType, date, time, price)
-            break
         logging.info("All exposures calculated")
         print("All exposures calculated")
 
