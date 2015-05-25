@@ -31,6 +31,7 @@ if __name__ == "__main__":
     dbObject.dbQuery("DELETE FROM mapping_table")
     dbObject.dbQuery("DELETE FROM portfolio_table")
     dbObject.dbQuery("DELETE FROM crossover_pairs_table")
+    #dbObject.dbQuery("UPDATE portfolio_table SET last_generation=1")
     logging.info("Deleted previous data")
 
     #exposureObj.calculateExposureIndividuals(dbObject)
@@ -42,7 +43,7 @@ if __name__ == "__main__":
         logging.info("Starting generation " + str(generation))
         print("Starting generation " + str(generation) + " at " + str(datetime.now()))
         crossoverObj.performCrossoverRouletteWheelBiased(generation, performanceObj, feasibilityObj, dbObject)
-        mutationObj.performMutation(generation, feasibilityObj, dbObject)
+        mutationObj.performMutation(generation, performanceObj, feasibilityObj, dbObject)
         selectionObj.select(generation, performanceObj, dbObject)
         if (convergenceObj.checkConvergence(generation, dbObject)):
             logging.info("The GA has converged in " + str(generation) + " generations")
@@ -53,7 +54,7 @@ if __name__ == "__main__":
             generation += 1
 
     #dbObject.dbQuery("LOAD DATA INFILE 'E:\\\Studies\\\MTP\\\Results\ 9\ -\ 27th\ April\ 2015\\\performance02.csv' INTO TABLE performance_table FIELDS TERMINATED BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\\r\\n'")
-
+    '''
     resultElites = dbObject.getFinalElites()
     elites = ()
     for portfolioId, dummy in resultElites:
@@ -66,6 +67,7 @@ if __name__ == "__main__":
         w = csv.writer(fp)
         w.writerow(["performance elites", "performance original tradesheet"])
         w.writerow([performanceElites[0][1], performanceTradesheet[0][1]])
+    '''
 
 
     dbObject.dbQuery("SELECT * FROM mapping_table"
@@ -74,10 +76,8 @@ if __name__ == "__main__":
                      " TERMINATED BY ','"
                      " LINES TERMINATED BY '\\n'")
 
-    dbObject.dbQuery("SELECT DISTINCT(p.meta_individual_id), p.performance, m.generation"
-                     " FROM mapping_table m, performance_table p"
-                     " WHERE m.meta_individual_id=p.meta_individual_id"
-                     " INTO OUTFILE '" + gv.performanceOutfileName + "'"
+    dbObject.dbQuery("SELECT * FROM portfolio_table"
+                     " INTO OUTFILE '" + gv.portfolioOutfileName + "'"
                      " FIELDS ENCLOSED BY '\"'"
                      " TERMINATED BY ','"
                      " LINES TERMINATED BY '\\n'")

@@ -35,6 +35,7 @@ class Exposure:
         print("Starting calculation of exposure for all individuals")
         resultIndividuals = dbObject.getFeederIndividuals()
         for individualId, stockId in resultIndividuals:
+            print("Calculating exposures for individual " + str(individualId))
             resultTrades = dbObject.getTradesFeederIndividuals(individualId, stockId, gv.startDate, gv.endDate)
             for stock, individualId, entryDate, entryTime, entryPrice, exitDate, exitTime, exitPrice, entryQty, tradeType in resultTrades:
                 # For intra-day trading

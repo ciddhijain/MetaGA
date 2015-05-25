@@ -310,7 +310,8 @@ class DBUtils:
         global databaseObject
         query = "SELECT meta_individual_id, performance FROM portfolio_table WHERE last_generation>=" + \
                 str(generation) + " AND first_generation<=" + str(generation) + \
-                "ORDER BY performance DESC LIMIT " + str(gv.numElites)
+                " AND feasible_by_performance=1 AND feasible_by_exposure=1" \
+                " ORDER BY performance DESC LIMIT " + str(gv.numElites)
         return databaseObject.Execute(query)
 
     # Function to get top feasible portfolios in a given generation, ordered by performance
@@ -343,8 +344,8 @@ class DBUtils:
     # Function to get feeder individuals in a portfolio in an ascending order
     def getFeederIndividualsPortfolio(self, portfolioId):
         global databaseObject
-        query = "SELECT DISTINCT(feeder_individual_id), 1 FROM mapping_table WHERE meta_individual_id=" + str(portfolioId) + \
-                " ORDER BY feeder_individual_id"
+        query = "SELECT stock_id, feeder_individual_id  FROM mapping_table WHERE meta_individual_id=" + str(portfolioId) + \
+                " ORDER BY stock_id, feeder_individual_id"
         return databaseObject.Execute(query)
 
     # Function to get final elites from the mapping table

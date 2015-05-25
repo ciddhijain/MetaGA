@@ -25,7 +25,6 @@ if __name__ == "__main__":
     dbObject.dbQuery("ALTER TABLE feeder_individual_table"
                      " DROP FOREIGN KEY tblIndividualCategoryInfo_SecIDIndID")
 
-
     dbObject.dbQuery("ALTER TABLE feeder_individual_table"
                      " DROP FOREIGN KEY tblIndividualCategoryInfo_WlkFwdID")
 
@@ -37,6 +36,7 @@ if __name__ == "__main__":
 
     dbObject.dbQuery("ALTER TABLE price_series_table"
                      " DROP FOREIGN KEY SecID")
+    '''
 
     dbObject.dbQuery("CREATE TABLE stock_table"
                      " ("
@@ -75,8 +75,6 @@ if __name__ == "__main__":
                      " ENCLOSED BY '\"'"
                      " LINES TERMINATED BY '\\n'")
 
-    '''
-
     dbObject.dbQuery("CREATE TABLE tradesheet_data_table"
                      " ("
                      " stock_id int,"
@@ -99,11 +97,6 @@ if __name__ == "__main__":
                      " ENCLOSED BY '\"'"
                      " LINES TERMINATED BY '\\n'")
 
-    '''
-
-    dbObject.dbQuery("DROP TABLE mapping_table")
-
-
     dbObject.dbQuery("CREATE TABLE mapping_table"
                      " ("
                      " meta_individual_id int,"
@@ -121,13 +114,6 @@ if __name__ == "__main__":
                      " performance float DEFAULT NULL"
                      " )")
 
-    # Comment one of the following.
-
-    dbObject.dbQuery("CREATE TABLE feeder_individual_table"
-                     " AS SELECT DISTINCT(individual_id), category, walk_forward, stock_id"
-                     " FROM tradesheet_data_table")
-    '''
-
     dbObject.dbQuery("CREATE TABLE feeder_individual_table"
                      " ("
                      " walk_forward int,"
@@ -143,7 +129,6 @@ if __name__ == "__main__":
                      " FIELDS TERMINATED BY ','"
                      " ENCLOSED BY '\"'"
                      " LINES TERMINATED BY '\\n'")
-    '''
 
     dbObject.dbQuery("CREATE TABLE crossover_pairs_table"
                      " ("
@@ -160,7 +145,6 @@ if __name__ == "__main__":
                      " time time,"
                      " exposure float"
                      " )")
-    '''
 
     dbObject.dbQuery("CREATE TABLE individual_table"
                      " ("

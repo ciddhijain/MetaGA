@@ -5,7 +5,7 @@ from random import randint, sample
 
 class Mutation:
 
-    def performMutation(self, generation, feasibilityObject, dbObject):
+    def performMutation(self, generation, performanceObject, feasibilityObject, dbObject):
         numBits = str(gv.mutationProbability)[::-1].find('.')
         range = 10**numBits
 
@@ -23,16 +23,20 @@ class Mutation:
                         oldIndividualId = id
                         oldStockId = stock
                 countNonFeasible = 0
-                resultCount = dbObject.getNonFeasibleCount(gv.walkforward)
+                # TODO
+                resultCount = dbObject.getFeasibleCount(gv.walkforward)
                 for count, dummy in resultCount:
                     if count:
                         countNonFeasible = count
-                resultNewIndividual = dbObject.getRandomNonFeasibleIndividual(randint(0, countNonFeasible-1), gv.walkforward)
+                # TODO
+                resultNewIndividual = dbObject.getRandomFeasibleIndividual(randint(0, countNonFeasible-1), gv.walkforward)
                 for id, stock in resultNewIndividual:
                     if id:
                         newIndividualId = id
                         newStockId = stock
                 if newIndividualId and oldIndividualId:
                     newId = dbObject.insertMutationPortfolio(portfolioId, oldIndividualId, newIndividualId, oldStockId, newStockId, generation)
+                    performance = performanceObject.calculatePerformancePortfolio(gv.startDate, gv.endDate, newId, dbObject)
+                    dbObject.insertPerformance(newId, performance[0][1])
                     feasibilityObject.updateFeasibilityByExposurePortfolio(newId, dbObject)
                     feasibilityObject.updateFeasibilityByPerformancePortfolio(newId, dbObject)
