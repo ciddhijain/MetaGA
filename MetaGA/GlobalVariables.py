@@ -27,7 +27,7 @@ crossoverList = [(1, 2), (2, 2)]                        # This list specifies ty
 # crossoverList = [(1, 2), (2, 2)]
 
 maxPortfolioSize = 100                           # This is the maximum size of portfolio
-minPortfolioSize = 50                            # This is the minimum size of portfolio
+minPortfolioSize = 25                            # This is the minimum size of portfolio
 
 feederEliteSelectionProbability = 0.6           # This is the probability of putting elite individuals from feeder in a portfolio
 feederNonEliteSelectionProbability = 0.4        # This is the probability of putting non-elite fit individuals from feeder in a portfolio
@@ -40,7 +40,7 @@ shortShortProbability = 0.25
 numPortfolios = 100                             # This is the number of portfolios in one generation
 maxNumPortfolios = numPortfolios
 minNumPortfolios = numPortfolios/2
-numCrossoverPortfolios = 0.9 * numPortfolios
+numCrossoverPortfolios = 0.8 * numPortfolios
 numElites = 5                                   # This is the number of top portfolios in a generation which are considered as elite
 
 startDate = datetime(2012, 1, 2).date()          # This is the start of trading period
@@ -52,3 +52,5 @@ thresholdPerformance = 0
 thresholdPortfolioExposure = 10000000
 factor = 5
 thresholdStockExposure = thresholdPortfolioExposure/factor
+
+admissiblePerformanceGap = 0.005                 # This takes all portfolios within this range to next generation

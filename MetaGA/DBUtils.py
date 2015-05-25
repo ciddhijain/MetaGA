@@ -321,6 +321,13 @@ class DBUtils:
                 " AND feasible_by_performance=1 AND feasible_by_exposure=1 ORDER BY performance DESC LIMIT " + str(gv.maxNumPortfolios)
         return databaseObject.Execute(query)
 
+    def getOrderedFeasiblePortfoliosPerformanceRange(self, generation, minPerformance, maxPerformance):
+        global databaseObject
+        query = "SELECT meta_individual_id, performance FROM portfolio_table WHERE last_generation=" + str(generation) + \
+                " AND feasible_by_performance=1 AND feasible_by_exposure=1 AND performance<" + str(maxPerformance) + \
+                " AND performance>=" + str(minPerformance) + " ORDER BY performance DESC"
+        return databaseObject.Execute(query)
+
     # Function to get number of feasible portfolios in a given generation
     def getOrderedFeasiblePortfolioCount(self, generation):
         global databaseObject
