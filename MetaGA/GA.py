@@ -28,8 +28,8 @@ if __name__ == "__main__":
     dbObject = DBUtils()
     dbObject.dbConnect()
 
-    dbObject.dbQuery("DELETE FROM mapping_table WHERE meta_individual_id>12")
-    dbObject.dbQuery("DELETE FROM portfolio_table WHERE meta_individual_id>12")
+    dbObject.dbQuery("DELETE FROM mapping_table")
+    dbObject.dbQuery("DELETE FROM portfolio_table")
     dbObject.dbQuery("DELETE FROM crossover_pairs_table")
     #dbObject.dbQuery("UPDATE portfolio_table SET last_generation=1")
     logging.info("Deleted previous data")
