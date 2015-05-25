@@ -35,6 +35,7 @@ class CombinationToLists:
         logging.info("Number of Non Feasible individuals - " + str(countNonFeasible))
 
         logging.info("Generating Combinations :")
+        print("Generating initial combinations")
 
         # Terminate when required number of combinations have been generated
         while countFeasiblePortfolios<=gv.numPortfolios:
