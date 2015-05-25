@@ -36,7 +36,7 @@ if __name__ == "__main__":
 
     #exposureObj.calculateExposureIndividuals(dbObject)
 
-    #combinationObj.combine(performanceObj, feasibilityObj, dbObject)
+    combinationObj.combine(performanceObj, feasibilityObj, dbObject)
     generation = 1
 
     while (True):
