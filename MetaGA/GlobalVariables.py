@@ -13,6 +13,7 @@ logFileName = 'MetaGA100.log'                      # This is the name of log fil
 mappingOutfileName = 'mapping100.csv'
 portfolioOutfileName = 'portfolio100.csv'
 testingPerformanceOutfileName = 'testingPerformance100.csv'
+bestPerformanceOutfileName = 'bestPerformance100.csv'
 
 tradesheetLocation = "TradesheetTable.csv"
 priceSeriesLocation = "PriceSeriesTable.csv"
@@ -54,3 +55,5 @@ factor = 5
 thresholdStockExposure = thresholdPortfolioExposure/factor
 
 admissiblePerformanceGap = 0.005                 # This takes all portfolios within this range to next generation
+
+dummyPerformance = -50000

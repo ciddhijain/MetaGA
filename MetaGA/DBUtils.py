@@ -358,9 +358,8 @@ class DBUtils:
     # Function to get final elites from the mapping table
     def getFinalElites(self):
         global databaseObject
-        query = "SELECT meta_individual_id, performance FROM performance_table WHERE meta_individual_id IN " \
-                "(SELECT DISTINCT(meta_individual_id) FROM mapping_table WHERE last_generation=" \
-                "(SELECT MAX(last_generation) FROM mapping_table)) " \
+        query = "SELECT meta_individual_id, performance FROM portfolio_table WHERE last_generation=" \
+                "(SELECT MAX(last_generation) FROM portfolio_table)) " \
                 "ORDER BY performance DESC LIMIT " + str(gv.numElites)
         return databaseObject.Execute(query)
 

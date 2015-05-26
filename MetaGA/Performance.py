@@ -79,7 +79,7 @@ class Performance:
                         total_DD=DD_Daily_Value
                 TotalTrades= total_Win_Short_Trades+total_Loss_Short_Trades+total_Win_Long_Trades+total_Loss_Long_Trades
                 if(TotalTrades==0 or total_DD==0):
-                    Performance_Measures.append((-50000,-50000, 0, -50000, -50000, 0, 0.0))
+                    Performance_Measures.append((gv.dummyPerformance,gv.dummyPerformance, 0, gv.dummyPerformance, gv.dummyPerformance, 0, 0.0))
                 else:
                     if(tmp_daily_running_pl[0]>0):
                         Gain_History.append(tmp_daily_running_pl[0])
@@ -163,7 +163,7 @@ class Performance:
         TotalTrades= total_Win_Short_Trades+total_Loss_Short_Trades+total_Win_Long_Trades+total_Loss_Long_Trades
 
         if(TotalTrades==0 or total_DD==0):
-            Performance_Measures.append((-50000,-50000, 0, -50000, -50000, 0, 0.0))
+            Performance_Measures.append((gv.dummyPerformance,gv.dummyPerformance, 0, gv.dummyPerformance, gv.dummyPerformance, 0, 0.0))
         else:
             #calculation of MaxGain (Similar to DD Calculation):
             if(tmp_daily_running_pl[0]>0):
@@ -187,7 +187,7 @@ class Performance:
             Performance_Measures.append((NetPL/(TotalTrades), NetPL/(-total_DD), total_Gain, total_DD, NetPL, TotalTrades, ProfitMakingEpochs))
         return Performance_Measures
 
-    def calculatePerformanceIndividuals(self, startDate, endDate, individualId, dbObject):
+    def calculateReferencePerformanceIndividual(self, individualId, stockId,  startDate, endDate, dbObject):
         resultDates = dbObject.dbQuery("SELECT DISTINCT(date), 1 FROM price_series_table WHERE date >= '" + str(startDate)+
                                        "' AND date <= '"+str(endDate)+"'")
         DictOfDates={}
@@ -195,8 +195,8 @@ class Performance:
         for date,dummy in resultDates:
             DictOfDates[date]=date_count_range
             date_count_range=date_count_range+1
-        query = "SELECT * FROM tradesheet_data_table WHERE entry_date >= '" + str(startDate) + "' AND entry_date <= '" \
-               + str(endDate) + "' AND individual_id=" + str(individualId) + " AND walk_forward=" + str(gv.walkforward)
+        query = "SELECT * FROM old_tradesheet_data_table WHERE entry_date >= '" + str(startDate) + "' AND entry_date <= '" \
+               + str(endDate) + "' AND individual_id=" + str(individualId) + " AND stock_id=" + str(stockId)
         resultTrades = dbObject.dbQuery(query)
         c=0
         #Parameters for each individual
@@ -221,7 +221,7 @@ class Performance:
         DD_History = [] #List to store the DD values.
         Gain_History = []
 
-        for individual_id, trade_type, trade_entry_date, trade_entry_time, trade_entry_price, trade_qty, trade_exit_date, trade_exit_time, trade_exit_price, walk_forward, category in resultTrades:
+        for stock_id, individual_id, trade_entry_date, trade_entry_time, trade_entry_price, trade_exit_date, trade_exit_time, trade_exit_price, trade_qty, trade_type in resultTrades:
             CurrentDate=trade_entry_date
             if(c==0):
                 prev_trade_entry_date=trade_entry_date
@@ -245,7 +245,7 @@ class Performance:
                         total_DD=DD_Daily_Value
                 TotalTrades= total_Win_Short_Trades+total_Loss_Short_Trades+total_Win_Long_Trades+total_Loss_Long_Trades
                 if(TotalTrades==0 or total_DD==0):
-                    Performance_Measures.append((-50000,-50000, 0, -50000, -50000, 0, 0.0))
+                    Performance_Measures.append((gv.dummyPerformance,gv.dummyPerformance, 0, gv.dummyPerformance, gv.dummyPerformance, 0, 0.0))
                 else:
                     if(tmp_daily_running_pl[0]>0):
                         Gain_History.append(tmp_daily_running_pl[0])
@@ -329,7 +329,7 @@ class Performance:
         TotalTrades= total_Win_Short_Trades+total_Loss_Short_Trades+total_Win_Long_Trades+total_Loss_Long_Trades
 
         if(TotalTrades==0 or total_DD==0):
-            Performance_Measures.append((-50000,-50000, 0, -50000, -50000, 0, 0.0))
+            Performance_Measures.append((gv.dummyPerformance, gv.dummyPerformance, 0, gv.dummyPerformance, gv.dummyPerformance, 0, 0.0))
         else:
             #calculation of MaxGain (Similar to DD Calculation):
             if(tmp_daily_running_pl[0]>0):
@@ -388,7 +388,7 @@ class Performance:
         DD_History = [] #List to store the DD values.
         Gain_History = []
 
-        for individual_id, trade_type, trade_entry_date, trade_entry_time, trade_entry_price, trade_qty, trade_exit_date, trade_exit_time, trade_exit_price, walk_forward, category in resultTrades:
+        for stock_id, individual_id, trade_entry_date, trade_entry_time, trade_entry_price, trade_exit_date, trade_exit_time, trade_exit_price, trade_qty, trade_type in resultTrades:
             individual_id = 0
             CurrentDate=trade_entry_date
             if(c==0):
@@ -413,7 +413,7 @@ class Performance:
                         total_DD=DD_Daily_Value
                 TotalTrades= total_Win_Short_Trades+total_Loss_Short_Trades+total_Win_Long_Trades+total_Loss_Long_Trades
                 if(TotalTrades==0 or total_DD==0):
-                    Performance_Measures.append((-50000,-50000, 0, -50000, -50000, 0, 0.0))
+                    Performance_Measures.append((gv.dummyPerformance,gv.dummyPerformance, 0, gv.dummyPerformance, gv.dummyPerformance, 0, 0.0))
                 else:
                     if(tmp_daily_running_pl[0]>0):
                         Gain_History.append(tmp_daily_running_pl[0])
@@ -497,7 +497,7 @@ class Performance:
         TotalTrades= total_Win_Short_Trades+total_Loss_Short_Trades+total_Win_Long_Trades+total_Loss_Long_Trades
 
         if(TotalTrades==0 or total_DD==0):
-            Performance_Measures.append((-50000,-50000, 0, -50000, -50000, 0, 0.0))
+            Performance_Measures.append((gv.dummyPerformance,gv.dummyPerformance, 0, gv.dummyPerformance, gv.dummyPerformance, 0, 0.0))
         else:
             #calculation of MaxGain (Similar to DD Calculation):
             if(tmp_daily_running_pl[0]>0):
@@ -529,8 +529,7 @@ class Performance:
         for date,dummy in resultDates:
             DictOfDates[date]=date_count_range
             date_count_range=date_count_range+1
-        query = "SELECT * FROM tradesheet_data_table WHERE entry_date >= '" + str(startDate) + "' AND entry_date <= '" \
-               + str(endDate) + "' AND walk_forward=" + str(gv.walkforward)
+        query = "SELECT * FROM tradesheet_data_table WHERE entry_date >= '" + str(startDate) + "' AND entry_date <= '" + str(endDate) + "'"
         resultTrades = dbObject.dbQuery(query)
         c=0
         #Parameters for each individual
@@ -555,7 +554,7 @@ class Performance:
         DD_History = [] #List to store the DD values.
         Gain_History = []
 
-        for individual_id, trade_type, trade_entry_date, trade_entry_time, trade_entry_price, trade_qty, trade_exit_date, trade_exit_time, trade_exit_price, walk_forward, category in resultTrades:
+        for stock_id, individual_id, trade_entry_date, trade_entry_time, trade_entry_price, trade_exit_date, trade_exit_time, trade_exit_price, trade_qty, trade_type in resultTrades:
             individual_id = 0
             CurrentDate=trade_entry_date
             if(c==0):
@@ -580,7 +579,7 @@ class Performance:
                         total_DD=DD_Daily_Value
                 TotalTrades= total_Win_Short_Trades+total_Loss_Short_Trades+total_Win_Long_Trades+total_Loss_Long_Trades
                 if(TotalTrades==0 or total_DD==0):
-                    Performance_Measures.append((-50000,-50000, 0, -50000, -50000, 0, 0.0))
+                    Performance_Measures.append((gv.dummyPerformance,gv.dummyPerformance, 0, gv.dummyPerformance, gv.dummyPerformance, 0, 0.0))
                 else:
                     if(tmp_daily_running_pl[0]>0):
                         Gain_History.append(tmp_daily_running_pl[0])
@@ -664,7 +663,7 @@ class Performance:
         TotalTrades= total_Win_Short_Trades+total_Loss_Short_Trades+total_Win_Long_Trades+total_Loss_Long_Trades
 
         if(TotalTrades==0 or total_DD==0):
-            Performance_Measures.append((-50000,-50000, 0, -50000, -50000, 0, 0.0))
+            Performance_Measures.append((gv.dummyPerformance,gv.dummyPerformance, 0, gv.dummyPerformance, gv.dummyPerformance, 0, 0.0))
         else:
             #calculation of MaxGain (Similar to DD Calculation):
             if(tmp_daily_running_pl[0]>0):
