@@ -65,21 +65,35 @@ if __name__ == "__main__":
             generation += 1
 
     #dbObject.dbQuery("LOAD DATA INFILE 'E:\\\Studies\\\MTP\\\Results\ 9\ -\ 27th\ April\ 2015\\\performance02.csv' INTO TABLE performance_table FIELDS TERMINATED BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\\r\\n'")
-    '''
     resultElites = dbObject.getFinalElites()
     elites = ()
-    for portfolioId, dummy in resultElites:
+    for portfolioId, performance in resultElites:
         elites = elites + (portfolioId, )
     performanceElites = performanceObj.calculatePerformancePortfolioList(gv.testingStartDate, gv.testingEndDate, elites, dbObject)
     performanceTradesheet = performanceObj.calculatePerformanceTradesheet(gv.testingStartDate, gv.testingEndDate, dbObject)
-    logging.info("Performance of elites in testing period : " + str(performanceElites[0][1]))
+    #logging.info("Performance of elites in testing period : " + str(performanceElites[0][1]))
     logging.info("Performance of original tradesheet in testing period : " + str(performanceTradesheet[0][1]))
+    print(performanceTradesheet[0][1])
     with open(gv.testingPerformanceOutfileName, 'w') as fp:
         w = csv.writer(fp)
-        w.writerow(["performance elites", "performance original tradesheet"])
-        w.writerow([performanceElites[0][1], performanceTradesheet[0][1]])
-    '''
+        #w.writerow(["performance elites", "performance original tradesheet"])
+        #w.writerow([performanceElites[0][1], performanceTradesheet[0][1]])
+        w.writerow(["performance original tradesheet"])
+        w.writerow([performanceTradesheet[0][1]])
 
+    generation = 1
+    done = True
+    with open(gv.bestPerformanceOutfileName, 'w') as fp:
+        w = csv.writer(fp)
+        w.writerow(["generation", "performance"])
+        while(done):
+            resultBestPerformance = dbObject.dbQuery("SELECT MAX(performance),1 FROM portfolio_table WHERE last_generation>=" + str(generation) + " AND first_generation<=" + str(generation))
+            done = False
+            for performance, dummy in resultBestPerformance:
+                if performance:
+                    done = True
+                    w.writerow([generation, performance])
+            generation += 1
 
     dbObject.dbQuery("SELECT * FROM mapping_table"
                      " INTO OUTFILE '" + gv.mappingOutfileName + "'"

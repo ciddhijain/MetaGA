@@ -67,15 +67,6 @@ class Crossover:
 
                             # BiasType 1 corresponds to long-long, 2 corresponds to long-short, 3 corresponds to short-short
                             for size1, dummy in resultSize1:
-                                k = randint(1, rangeBias)
-                                biasType = None
-                                if k<=gv.longLongProbability*rangeBias:
-                                    biasType = 1
-                                elif k<=(gv.longShortProbability + gv.longLongProbability)*rangeBias:
-                                    biasType = 2
-                                else:
-                                    biasType = 3
-
                                 resultLong1 = dbObject.getLongIndividualsPortfolio(id1)
                                 resultLong2 = dbObject.getLongIndividualsPortfolio(id2)
                                 long1 = None
@@ -88,6 +79,68 @@ class Crossover:
                                 for numLong, dummy in resultLong2:
                                     long2 = numLong
                                     short2 = size2 - long2
+
+                                k = randint(1, rangeBias)
+                                biasType = None
+
+                                # If first individual has no long, either short-short or short-long crossovers are possible
+                                if long1==0:
+                                    # If second one has no long, only short-short is possible
+                                    if long2==0:
+                                        biasType = 3
+                                    else:
+                                        # If second one has no short, only short-long is possible
+                                        if short2==0:
+                                            biasType = 22
+                                        else:
+                                            if k<=gv.longShortProbability * rangeBias:
+                                                biasType = 22
+                                            else:
+                                                biasType = 3
+
+                                # If secong individual has no long (and we already know that first one definitely has long),
+                                # either short-short or long-short crossovers are possible
+                                elif long2==0:
+                                    # If first one has no short, only long-short is possible
+                                    if short1==0:
+                                        biasType = 21
+                                    else:
+                                        if k<=gv.longShortProbability* rangeBias:
+                                            biasType = 21
+                                        else:
+                                            biasType = 3
+
+                                # If first portfolio has no short (we know that both portfolios definitely have longs),
+                                # either long-long or long-short is possible
+                                elif short1==0:
+                                    # If none has short, only long-long possible
+                                    if short2==0:
+                                        biasType = 1
+                                    else:
+                                        if k<(gv.longLongProbability + gv.shortShortProbability) * rangeBias:
+                                            biasType = 1
+                                        else:
+                                            biasType = 21
+
+                                # If second portfolio has no short (we know that first has both long and short),
+                                # either long-long or short-long is possible
+                                elif short2==0:
+                                    if k<(gv.longLongProbability + gv.shortShortProbability) * rangeBias:
+                                        biasType = 1
+                                    else:
+                                        biasType = 21
+
+                                # If both type of individuals exist in both portfolios, all 3 types of crossovers are possible
+                                else:
+                                    if k<=gv.longLongProbability * rangeBias:
+                                        biasType = 1
+                                    elif k<=(gv.longShortProbability + gv.longLongProbability) * rangeBias:
+                                        if randint(1,100)<=50:
+                                            biasType =  21
+                                        else:
+                                            biasType = 22
+                                    else:
+                                        biasType = 3
 
                                 if biasType==1:
                                     while(True):

@@ -358,9 +358,8 @@ class DBUtils:
     # Function to get final elites from the mapping table
     def getFinalElites(self):
         global databaseObject
-        query = "SELECT meta_individual_id, performance FROM performance_table WHERE meta_individual_id IN " \
-                "(SELECT DISTINCT(meta_individual_id) FROM mapping_table WHERE last_generation=" \
-                "(SELECT MAX(last_generation) FROM mapping_table)) " \
+        query = "SELECT meta_individual_id, performance FROM portfolio_table WHERE last_generation=" \
+                "(SELECT MAX(last_generation) FROM portfolio_table)) " \
                 "ORDER BY performance DESC LIMIT " + str(gv.numElites)
         return databaseObject.Execute(query)
 
@@ -873,4 +872,158 @@ class DBUtils:
         global databaseObject
         queryUpdate = "UPDATE ranking_table SET ranking=" + str(rank) + " WHERE meta__individual_id=" + str(portfolioId) + \
                       " AND feeder_individual_id=" + str(feederIndividualId) + " AND stock_id=" + str(stockId)
-        databaseObject.Execute(queryUpdate)
+        return databaseObject.Execute(queryUpdate)
+
+    # TODO - Test the query and result
+    # Function to get new trades from original tradesheet based on ranking of
+    def getRankedTradesOrdered (self, portfolioId, date, startTime, endTime):
+        global databaseObject
+        queryIndividuals = "SELECT feeder_individual_id, stock_id FROM mapping_table WHERE meta_individual_id=" + str(portfolioId)
+        resultIndividuals = databaseObject.Execute(queryIndividuals)
+
+        queryTrades = "SELECT t.* FROM old_tradesheet_data_table t, ranking_table r WHERE t.individual_id=r.individual_id AND t.stock_id=r.stock_id" \
+                      " AND t.entry_date='" + str(date) + "' AND t.entry_time<'" + str(endTime) + "' AND t.entry_time>='" + str(startTime) + \
+                      "' AND r.meta_individual_id=" + str(portfolioId) + "("
+        individualCount = 0
+        for feederId, stockId in resultIndividuals:
+            if individualCount==0:
+                queryTrades += " ( t.individual_id=" + str(feederId) + " AND t.stock_id=" + str(stockId) + " ) "
+            else:
+                queryTrades += " OR ( t.individual_id=" + str(feederId) + " AND t.stock_id=" + str(stockId) + " ) "
+            individualCount += 1
+        queryTrades +=  ") ORDER BY t.entry_time, r.ranking"
+        return databaseObject.Execute(queryTrades)
+
+    # Function to get trades that are to exit in a given interval
+    def getTradesExit(self, portfolioId, date, startTime, endTime):
+        global databaseObject
+        queryTrades = "SELECT individual_id, stock_id, trade_type, entry_qty, entry_price, exit_price FROM tradesheet_data_table WHERE exit_date='" + str(date) + \
+                      "' AND exit_time>='" + str(startTime) + "' AND exit_time<'" + str(endTime) + "' AND meta_individual_id=" + str(portfolioId)
+        return databaseObject.Execute(queryTrades)
+
+    # Function to get trades that are to exit at day end
+    def getTradesExitEnd(self, portfolioId, date, startTime):
+        global databaseObject
+        queryTrades = "SELECT individual_id, stock_id, trade_type, entry_qty, entry_price, exit_price FROM tradesheet_data_table WHERE exit_date='" + str(date) + \
+                      "' AND exit_time>='" + str(startTime) + "' AND meta_individual_id=" + str(portfolioId)
+        return databaseObject.Execute(queryTrades)
+
+    # Function to get trades that are to exit in a given interval during training
+    def getTrainingTradesExit(self, portfolioId, date, startTime, endTime):
+        global databaseObject
+        queryTrades = "SELECT individual_id, stock_id, trade_type, entry_qty, entry_price, exit_price FROM training_tradesheet_data_table WHERE exit_date='" + str(date) + \
+                      "' AND exit_time>='" + str(startTime) + "' AND exit_time<'" + str(endTime) + "' AND meta_individual_id=" + str(portfolioId)
+        return databaseObject.Execute(queryTrades)
+
+    # Function to get trades that are to exit at day end during training
+    def getTrainingTradesExitEnd(self, portfolioId, date, startTime):
+        global databaseObject
+        queryTrades = "SELECT individual_id, stock_id, trade_type, entry_qty, entry_price, exit_price FROM training_tradesheet_data_table WHERE exit_date='" + str(date) + \
+                      "' AND exit_time>='" + str(startTime) + "' AND meta_individual_id=" + str(portfolioId)
+        return databaseObject.Execute(queryTrades)
+
+    # Function to update individual's asset
+    def updateIndividualAsset(self, portfolioId, feederIndividualId, stockId, toBeUsedAsset):
+        global databaseObject
+        queryOldAsset = "SELECT total_asset, used_asset, free_asset FROM asset_allocation_table WHERE meta_individual_id=" + str(portfolioId) + \
+                        " AND feeder_individual_id=" + str(feederIndividualId) + " AND stock_id=" + str(stockId)
+        resultOldAsset = databaseObject.Execute(queryOldAsset)
+        for totalAsset, usedAsset, freeAsset in resultOldAsset:
+            newUsedAsset = float(usedAsset) + toBeUsedAsset
+            newFreeAsset = float(freeAsset) - toBeUsedAsset
+            queryUpdate = "UPDATE asset_allocation_table SET used_asset=" + str(round(newUsedAsset,4)) + ", free_asset=" + str(round(newFreeAsset,4)) + \
+                          " WHERE meta_individual_id=" + str(portfolioId) + " AND feeder_individual_id=" + str(feederIndividualId) + " AND stock_id=" + str(stockId)
+            return databaseObject.Execute(queryUpdate)
+
+    # Function to update individual's asset during training
+    def updateTrainingIndividualAsset(self, portfolioId, feederIndividualId, stockId, toBeUsedAsset):
+        global databaseObject
+        queryOldAsset = "SELECT total_asset, used_asset, free_asset FROM training_asset_allocation_table WHERE meta_individual_id=" + str(portfolioId) + \
+                        " AND feeder_individual_id=" + str(feederIndividualId) + " AND stock_id=" + str(stockId)
+        resultOldAsset = databaseObject.Execute(queryOldAsset)
+        for totalAsset, usedAsset, freeAsset in resultOldAsset:
+            newUsedAsset = float(usedAsset) + toBeUsedAsset
+            newFreeAsset = float(freeAsset) - toBeUsedAsset
+            queryUpdate = "UPDATE training_asset_allocation_table SET used_asset=" + str(round(newUsedAsset,4)) + ", free_asset=" + str(round(newFreeAsset,4)) + \
+                          " WHERE meta_individual_id=" + str(portfolioId) + " AND feeder_individual_id=" + str(feederIndividualId) + " AND stock_id=" + str(stockId)
+            return databaseObject.Execute(queryUpdate)
+
+    # Function to get current free asset for an individual
+    def getFreeAsset(self, portfolioId, feederIndividualId, stockId):
+        global databaseObject
+        queryCheck = "SELECT free_asset, 1 FROM asset_allocation_table WHERE meta_individual_id=" + str(portfolioId) + " AND feeder_individual_id=" + \
+                     str(feederIndividualId) + " AND stock_id=" + str(stockId)
+        return databaseObject.Execute(queryCheck)
+
+    # Function to get current free asset for an individual during training
+    def getTrainingFreeAsset(self, portfolioId, feederIndividualId, stockId):
+        global databaseObject
+        queryCheck = "SELECT free_asset, 1 FROM training_asset_allocation_table WHERE meta_individual_id=" + str(portfolioId) + " AND feeder_individual_id=" + \
+                     str(feederIndividualId) + " AND stock_id=" + str(stockId)
+        return databaseObject.Execute(queryCheck)
+
+    # Function to check if an individual's entry exists in asset_allocation_table
+    def checkIndividualAssetExists (self, portfolioId, feederIndividualId, stockId):
+        global databaseObject
+        queryCheck = "SELECT EXISTS (SELECT 1 FROM asset_allocation_table WHERE meta_individual_id=" + str(portfolioId) + " AND feeder_individual_id=" + \
+                     str(feederIndividualId) + " AND stock_id=" + str(stockId) + "), 0"
+        return databaseObject.Execute(queryCheck)
+
+    # Function to check if an individual's entry exists in training_asset_allocation_table
+    def checkTrainingIndividualAssetExists (self, portfolioId, feederIndividualId, stockId):
+        global databaseObject
+        queryCheck = "SELECT EXISTS (SELECT 1 FROM training_asset_allocation_table WHERE meta_individual_id=" + str(portfolioId) + " AND feeder_individual_id=" + \
+                     str(feederIndividualId) + " AND stock_id=" + str(stockId) + "), 0"
+        return databaseObject.Execute(queryCheck)
+
+    # Function to insert individual entry in asset_allocation_table
+    def addIndividualAsset (self, portfolioId, feederIndividualId, stockId, usedAsset):
+        global databaseObject
+        queryAddAsset = "INSERT INTO asset_allocation_table" \
+                        "(meta_individual_id, feeder_individual_id, stock_id, total_asset, used_asset, free_asset)" \
+                        "VALUES" \
+                        "(" + str(portfolioId) + ", " + str(feederIndividualId) + ", " + str(stockId) + ", " + str(round(gv.maxAsset,4)) + ", " + str(round(usedAsset,4)) + ", " + str(round((gv.maxAsset-usedAsset),4)) + ")"
+        return databaseObject.Execute(queryAddAsset)
+
+    # Function to insert individual entry in training_asset_allocation_table
+    def addTrainingIndividualAsset (self, portfolioId, feederIndividualId, stockId, usedAsset):
+        global databaseObject
+        queryAddAsset = "INSERT INTO training_asset_allocation_table" \
+                        "(meta_individual_id, feeder_individual_id, stock_id, total_asset, used_asset, free_asset)" \
+                        "VALUES" \
+                        "(" + str(portfolioId) + ", " + str(feederIndividualId) + ", " + str(stockId) + ", " + str(round(gv.maxAsset,4)) + ", " + str(round(usedAsset,4)) + ", " + str(round((gv.maxAsset-usedAsset),4)) + ")"
+        return databaseObject.Execute(queryAddAsset)
+
+    # Function to insert new trade in tradesheet
+    def insertNewTrade(self, stockId, individualId, entryDate, entryTime, entryPrice, exitDate, exitTime, exitPrice, entryQty, tradeType):
+        global databaseObject
+        queryInsertTrade = "INSERT INTO tradesheet_data_table" \
+                           " (stock_id, individual_id, entry_date, entry_time, entry_price, exit_date, exit_time, exit_price, entry_qty, trade_type)" \
+                           " VALUES" \
+                           " (" + str(stockId) + ", " + str(individualId) + ", '" + str(entryDate) + "', '" + str(entryTime) + "', " + str(entryPrice) + \
+                           ", '" + str(exitDate) + "', '" + str(exitTime) + "', " + str(exitPrice) + ", " + str(entryQty) + ", " + str(tradeType) + ")"
+        databaseObject.Execute(queryInsertTrade)
+
+    # Function to insert new trade in training_tradesheet
+    def insertTrainingNewTrade(self, stockId, individualId, entryDate, entryTime, entryPrice, exitDate, exitTime, exitPrice, entryQty, tradeType):
+        global databaseObject
+        queryInsertTrade = "INSERT INTO training_tradesheet_data_table" \
+                           " (stock_id, individual_id, entry_date, entry_time, entry_price, exit_date, exit_time, exit_price, entry_qty, trade_type)" \
+                           " VALUES" \
+                           " (" + str(stockId) + ", " + str(individualId) + ", '" + str(entryDate) + "', '" + str(entryTime) + "', " + str(entryPrice) + \
+                           ", '" + str(exitDate) + "', '" + str(exitTime) + "', " + str(exitPrice) + ", " + str(entryQty) + ", " + str(tradeType) + ")"
+        databaseObject.Execute(queryInsertTrade)
+
+    # Function to insert individual id in latest_individual_table every walk-forward
+    def insertLatestIndividual(self, portfolioId, feederIndividualId, stockId):
+        global databaseObject
+        queryCheck = "SELECT EXISTS (SELECT 1 FROM latest_individual_table WHERE meta_individual_id=" + str(portfolioId) + " AND feeder_individual_id=" + \
+                     str(feederIndividualId) + " AND stock_id=" + str(stockId) + "), 0"
+        resultCheck = databaseObject.Execute(queryCheck)
+        for check, dummy in resultCheck:
+            if check==0:
+                queryInsert = "INSERT INTO latest_individual_table" \
+                              " (meta_individual_id, feeder_individual_id, stock_id)" \
+                              " VALUES" \
+                              " (" + str(portfolioId) + ", " + str(feederIndividualId) + ", " + str(stockId) + ")"
+                databaseObject.Execute(queryInsert)

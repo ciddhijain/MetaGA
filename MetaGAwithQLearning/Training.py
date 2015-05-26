@@ -20,42 +20,43 @@ class Training:
 
         while (not done):
             isTradingDay = False
-            resultTrades = dbObject.getRankedTradesOrdered(date, startTime, endTime)
-            for tradeId, individualId, tradeType, entryDate, entryTime, entryPrice, entryQty, exitDate, exitTime, exitPrice in resultTrades:
-                isTradingDay = True
-                resultTradesExit = dbObject.getTrainingTradesExit(date, lastCheckedTime, entryTime)
-                for id, type, qty, entry_price, exit_price in resultTradesExit:
-                    #print('Exiting Trades')
-                    freedAsset = 0
-                    if type==0:
-                        freedAsset = qty*exit_price*(-1)
-                    else:
-                        freedAsset = qty*(2*entry_price - exit_price)*(-1)
-                    dbObject.updateTrainingIndividualAsset(gv.dummyIndividualId, freedAsset)
-                    dbObject.updateTrainingIndividualAsset(id, freedAsset)
-                lastCheckedTime = entryTime
-                resultAvailable = dbObject.getTrainingFreeAsset(gv.dummyIndividualId)
-                usedAsset = entryQty*entryPrice
-                for freeAssetTotal, dummy1 in resultAvailable:
-                    if float(freeAssetTotal)>=usedAsset:
-                        print('Overall asset is available')
-                        resultExists = dbObject.checkTrainingIndividualAssetExists(individualId)
-                        for exists, dummy2 in resultExists:
-                            if exists==0:
-                                print('Individual does not exist in asset table yet. Adding it.')
-                                dbObject.addTrainingIndividualAsset(individualId, usedAsset)
-                                print('Taking this trade. Asset used = ' + str(usedAsset))
-                                dbObject.insertTrainingNewTrade(tradeId, individualId, tradeType, entryDate, entryTime, entryPrice, entryQty, exitDate, exitTime, exitPrice)
-                                dbObject.updateTrainingIndividualAsset(gv.dummyIndividualId, usedAsset)
-                            else:
-                                print('Individual exists already')
-                                resultFreeAsset = dbObject.getTrainingFreeAsset(individualId)
-                                for freeAsset, dummy3 in resultFreeAsset:
-                                    if freeAsset>=usedAsset:
-                                        print('Individual Asset is available. Taking this trade. Asset used = ' + str(usedAsset))
-                                        dbObject.insertTrainingNewTrade(tradeId, individualId, tradeType, entryDate, entryTime, entryPrice, entryQty, exitDate, exitTime, exitPrice)
-                                        dbObject.updateTrainingIndividualAsset(gv.dummyIndividualId, usedAsset)
-                                        dbObject.updateTrainingIndividualAsset(individualId, usedAsset)
+            resultTrades = dbObject.getRankedTradesOrdered(portfolioId, date, startTime, endTime)
+            for stockId, individualId, entryDate, entryTime, entryPrice, exitDate, exitTime, exitPrice, entryQty, tradeType in resultTrades:
+                if stockId:
+                    isTradingDay = True
+                    resultTradesExit = dbObject.getTrainingTradesExit(portfolioId, date, lastCheckedTime, entryTime)
+                    for id, stock, type, qty, entry_price, exit_price in resultTradesExit:
+                        #print('Exiting Trades')
+                        freedAsset = 0
+                        if type==0:
+                            freedAsset = qty*exit_price*(-1)
+                        else:
+                            freedAsset = qty*(2*entry_price - exit_price)*(-1)
+                        dbObject.updateTrainingIndividualAsset(portfolioId, gv.dummyIndividualId, gv.dummyStockId, freedAsset)
+                        dbObject.updateTrainingIndividualAsset(portfolioId, id, stock, freedAsset)
+                    lastCheckedTime = entryTime
+                    resultAvailable = dbObject.getTrainingFreeAsset(portfolioId, gv.dummyIndividualId, gv.dummyStockId)
+                    usedAsset = entryQty*entryPrice
+                    for freeAssetTotal, dummy1 in resultAvailable:
+                        if float(freeAssetTotal)>=usedAsset:
+                            #print('Overall asset is available')
+                            resultExists = dbObject.checkTrainingIndividualAssetExists(portfolioId, individualId, stockId)
+                            for exists, dummy2 in resultExists:
+                                if exists==0:
+                                    #print('Individual does not exist in asset table yet. Adding it.')
+                                    dbObject.addTrainingIndividualAsset(portfolioId, individualId, stockId, usedAsset)
+                                    #print('Taking this trade. Asset used = ' + str(usedAsset))
+                                    dbObject.insertTrainingNewTrade(stockId, individualId, entryDate, entryTime, entryPrice, exitDate, exitTime, exitPrice, entryQty, tradeType)
+                                    dbObject.updateTrainingIndividualAsset(portfolioId, gv.dummyIndividualId, gv.dummyStockId, usedAsset)
+                                else:
+                                    print('Individual exists already')
+                                    resultFreeAsset = dbObject.getTrainingFreeAsset(portfolioId, individualId, stockId)
+                                    for freeAsset, dummy3 in resultFreeAsset:
+                                        if freeAsset>=usedAsset:
+                                            print('Individual Asset is available. Taking this trade. Asset used = ' + str(usedAsset))
+                                            dbObject.insertTrainingNewTrade(stockId, individualId, entryDate, entryTime, entryPrice, exitDate, exitTime, exitPrice, entryQty, tradeType)
+                                            dbObject.updateTrainingIndividualAsset(portfolioId, gv.dummyIndividualId, gv.dummyStockId, usedAsset)
+                                            dbObject.updateTrainingIndividualAsset(portfolioId, individualId, stockId, usedAsset)
 
             if isTradingDay:
                 resultIndividuals = dbObject.getTrainingIndividuals(date, startTime, date, endTime)
