@@ -49,20 +49,20 @@ class Training:
                                     dbObject.insertTrainingNewTrade(stockId, individualId, entryDate, entryTime, entryPrice, exitDate, exitTime, exitPrice, entryQty, tradeType)
                                     dbObject.updateTrainingIndividualAsset(portfolioId, gv.dummyIndividualId, gv.dummyStockId, usedAsset)
                                 else:
-                                    print('Individual exists already')
+                                    #print('Individual exists already')
                                     resultFreeAsset = dbObject.getTrainingFreeAsset(portfolioId, individualId, stockId)
                                     for freeAsset, dummy3 in resultFreeAsset:
                                         if freeAsset>=usedAsset:
-                                            print('Individual Asset is available. Taking this trade. Asset used = ' + str(usedAsset))
+                                            #print('Individual Asset is available. Taking this trade. Asset used = ' + str(usedAsset))
                                             dbObject.insertTrainingNewTrade(stockId, individualId, entryDate, entryTime, entryPrice, exitDate, exitTime, exitPrice, entryQty, tradeType)
                                             dbObject.updateTrainingIndividualAsset(portfolioId, gv.dummyIndividualId, gv.dummyStockId, usedAsset)
                                             dbObject.updateTrainingIndividualAsset(portfolioId, individualId, stockId, usedAsset)
 
             if isTradingDay:
-                resultIndividuals = dbObject.getTrainingIndividuals(date, startTime, date, endTime)
-                for individualId, dummy in resultIndividuals:
+                resultIndividuals = dbObject.getTrainingIndividuals(portfolioId, date, startTime, date, endTime)
+                for individualId, stockId in resultIndividuals:
                     print('Calculating mtm')
-                    mtmObject.calculateTrainingMTM(individualId, gv.aggregationUnit, date, startTime, date, endTime, dbObject)
+                    mtmObject.calculateTrainingMTM(portfolioId, individualId, stockId, gv.aggregationUnit, date, startTime, date, endTime, dbObject)
                     print('Calculating reward matrix')
                     rewardMatrix = rewardMatrixObject.computeTrainingRM(individualId, date, startTime, date, endTime, dbObject)
                     print('Calculating q matrix')

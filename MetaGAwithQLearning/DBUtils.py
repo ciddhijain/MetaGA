@@ -1027,3 +1027,85 @@ class DBUtils:
                               " VALUES" \
                               " (" + str(portfolioId) + ", " + str(feederIndividualId) + ", " + str(stockId) + ")"
                 databaseObject.Execute(queryInsert)
+
+    # TODO - Test the query and result
+    # Function to get individuals which have active trades in a given interval of time on a given day
+    def getIndividuals (self, portfolioId, startDate, startTime, endDate, endTime):
+        global databaseObject
+        queryIndividuals = "SELECT DISTINCT individual_id, stock_id FROM tradesheet_data_table WHERE entry_time<'" + str(endTime) + \
+                           "' AND exit_time>'" + str(startTime) + "' AND entry_date='" + str(startDate) + "' AND meta_individual_id=" + str(portfolioId)
+        return databaseObject.Execute(queryIndividuals)
+
+    # Function to get individuals which have active trades in a given interval of time on a given day during training
+    def getTrainingIndividuals (self, portfolioId, startDate, startTime, endDate, endTime):
+        global databaseObject
+        queryIndividuals = "SELECT DISTINCT individual_id, stock_id FROM training_tradesheet_data_table WHERE entry_time<'" + str(endTime) + \
+                           "' AND exit_time>'" + str(startTime) + "' AND entry_date='" + str(startDate) + "' AND meta_individual_id=" + str(portfolioId)
+        return databaseObject.Execute(queryIndividuals)
+
+    # Function to get trades taken by an individual in an interval
+    def getTradesIndividual(self, portfolioId, feederIndividualId, stockId, startDate, startTime, endDate, endTime):
+        global databaseObject
+        queryTrades = "SELECT * FROM tradesheet_data_table WHERE entry_date='" + str(startDate) + "' AND entry_time<='" + str(endTime) + \
+                      "' AND exit_time>='" + str(startTime) + "' AND meta_individual_id=" + str(portfolioId) + " AND feeder_individual_id=" \
+                      + str(feederIndividualId) + " AND stock_id=" + str(stockId)
+        return databaseObject.Execute(queryTrades)
+
+    # Function to get trades taken by an individual in an interval during training
+    def getTrainingTradesIndividual(self, portfolioId, feederIndividualId, stockId, startDate, startTime, endDate, endTime):
+        global databaseObject
+        queryTrades = "SELECT * FROM training_tradesheet_data_table WHERE entry_date='" + str(startDate) + "' AND entry_time<='" + str(endTime) + \
+                      "' AND exit_time>='" + str(startTime) + "' AND meta_individual_id=" + str(portfolioId) + " AND feeder_individual_id=" \
+                      + str(feederIndividualId) + " AND stock_id=" + str(stockId)
+        return databaseObject.Execute(queryTrades)
+
+    # Function to get price from price series for a given date and time
+    def getPrice(self, stockId, startDate, startTime):
+        global databaseObject
+        queryPrice = "SELECT time, close FROM price_series_table WHERE date='" + str(startDate) + "' AND time='" + str(startTime) +\
+                     "' AND stock_id=" + str(stockId)
+        return databaseObject.Execute(queryPrice)
+
+    # Function to insert MTM value in db
+    def addOrUpdatetMTM(self, portfolioId, feederIndividualId, stockId, tradeType, entryDate, mtmTime, mtm):
+        global databaseObject
+        queryCheckRecord = "SELECT EXISTS (SELECT 1 FROM mtm_table WHERE meta_individual_id=" + str(portfolioId) + \
+                           " AND feeder_individual_id=" + str(feederIndividualId) + " AND stock_id=" + str(stockId) + \
+                           " AND trade_type=" + str(tradeType) + " AND date='" + str(entryDate) + "' AND time='" + str(mtmTime) + "'), 0"
+
+        resultRecord = databaseObject.Execute(queryCheckRecord)
+        for result, dummy in resultRecord:
+            if result==0:
+                queryInsertMTM = "INSERT INTO mtm_table " \
+                                 "(meta_individual_id, feeder_individual_id, stock_id, trade_type, date, time, mtm) " \
+                                 "VALUES " \
+                                 "(" + str(portfolioId) + ", " + str(feederIndividualId) + ", " + str(stockId) + ", " + str(tradeType) + \
+                                 ", '" + str(entryDate) + "', '" + str(mtmTime) + "', " + str(mtm) + ")"
+                return databaseObject.Execute(queryInsertMTM)
+            else:
+                queryUpdateMTM = "UPDATE mtm_table SET mtm=mtm+" + str(mtm) + " WHERE meta_individual_id=" + str(portfolioId) + \
+                                 " AND feeder_individual_id=" + str(feederIndividualId) + " AND stock_id=" + str(stockId) + \
+                                 " AND trade_type=" + str(tradeType) + " AND date='" + str(entryDate) + "' AND time='" + str(mtmTime)
+                return databaseObject.Execute(queryUpdateMTM)
+
+    # Function to insert MTM value in db during training
+    def addOrUpdateTrainingMTM(self, portfolioId, feederIndividualId, stockId, tradeType, entryDate, mtmTime, mtm):
+        global databaseObject
+        queryCheckRecord = "SELECT EXISTS (SELECT 1 FROM training_mtm_table WHERE meta_individual_id=" + str(portfolioId) + \
+                           " AND feeder_individual_id=" + str(feederIndividualId) + " AND stock_id=" + str(stockId) + \
+                           " AND trade_type=" + str(tradeType) + " AND date='" + str(entryDate) + "' AND time='" + str(mtmTime) + "'), 0"
+
+        resultRecord = databaseObject.Execute(queryCheckRecord)
+        for result, dummy in resultRecord:
+            if result==0:
+                queryInsertMTM = "INSERT INTO training_mtm_table " \
+                                 "(meta_individual_id, feeder_individual_id, stock_id, trade_type, date, time, mtm) " \
+                                 "VALUES " \
+                                 "(" + str(portfolioId) + ", " + str(feederIndividualId) + ", " + str(stockId) + ", " + str(tradeType) + \
+                                 ", '" + str(entryDate) + "', '" + str(mtmTime) + "', " + str(mtm) + ")"
+                return databaseObject.Execute(queryInsertMTM)
+            else:
+                queryUpdateMTM = "UPDATE training_mtm_table SET mtm=mtm+" + str(mtm) + " WHERE meta_individual_id=" + str(portfolioId) + \
+                                 " AND feeder_individual_id=" + str(feederIndividualId) + " AND stock_id=" + str(stockId) + \
+                                 " AND trade_type=" + str(tradeType) + " AND date='" + str(entryDate) + "' AND time='" + str(mtmTime)
+                return databaseObject.Execute(queryUpdateMTM)
