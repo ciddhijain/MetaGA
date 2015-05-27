@@ -9,11 +9,11 @@ dbHost = '127.0.0.1'                            # This is host address for datab
 dbPort = '3306'                                 # This is port for database connection
 dbConnector = 'mysqlconnector'                  # This is the connector string to be used, depending upon python package
 
-logFileName = 'MetaGA100.log'                      # This is the name of log file. It will append if file already exists
-mappingOutfileName = 'mapping100.csv'
-portfolioOutfileName = 'portfolio100.csv'
-testingPerformanceOutfileName = 'testingPerformance100.csv'
-bestPerformanceOutfileName = 'bestPerformance100.csv'
+logFileName = 'MetaGA102.log'                      # This is the name of log file. It will append if file already exists
+mappingOutfileName = 'mapping102.csv'
+portfolioOutfileName = 'portfolio102.csv'
+testingPerformanceOutfileName = 'testingPerformance102.csv'
+bestPerformanceOutfileName = 'bestPerformance102.csv'
 
 tradesheetLocation = "TradesheetTable.csv"
 priceSeriesLocation = "PriceSeriesTable.csv"
@@ -30,9 +30,9 @@ crossoverList = [(1, 2), (2, 2)]                        # This list specifies ty
 maxPortfolioSize = 100                           # This is the maximum size of portfolio
 minPortfolioSize = 25                            # This is the minimum size of portfolio
 
-feederEliteSelectionProbability = 0.6           # This is the probability of putting elite individuals from feeder in a portfolio
-feederNonEliteSelectionProbability = 0.4        # This is the probability of putting non-elite fit individuals from feeder in a portfolio
-mutationProbability = 0.05                      # This is the mutation probability
+feederEliteSelectionProbability = 0.7           # This is the probability of putting elite individuals from feeder in a portfolio
+feederNonEliteSelectionProbability = 0.3        # This is the probability of putting non-elite fit individuals from feeder in a portfolio
+mutationProbability = 0.025                      # This is the mutation probability
 crossoverProbability = 0.7                      # This corresponds to percentage of population subjected to crossover
 longShortProbability = 0.5
 longLongProbability = 0.25
@@ -41,7 +41,7 @@ shortShortProbability = 0.25
 numPortfolios = 100                             # This is the number of portfolios in one generation
 maxNumPortfolios = numPortfolios
 minNumPortfolios = numPortfolios/2
-numCrossoverPortfolios = 0.8 * numPortfolios
+numCrossoverPortfolios = 0.9 * numPortfolios
 numElites = 5                                   # This is the number of top portfolios in a generation which are considered as elite
 
 startDate = datetime(2012, 1, 2).date()          # This is the start of trading period
@@ -50,9 +50,9 @@ testingStartDate = endDate + timedelta(days=1)
 testingEndDate = datetime(2012, 12, 31).date()
 
 thresholdPerformance = 0
-thresholdPortfolioExposure = 10000000
+thresholdPortfolioExposure = 10000000                                       # This is the maximum cap for portfolio exposure
 factor = 5
-thresholdStockExposure = thresholdPortfolioExposure/factor
+thresholdStockExposure = thresholdPortfolioExposure/factor                  # This is the maximum cap for stock exposure in a portfolio
 
 admissiblePerformanceGap = 0.005                 # This takes all portfolios within this range to next generation
 

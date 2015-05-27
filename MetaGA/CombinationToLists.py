@@ -62,6 +62,8 @@ class CombinationToLists:
                     dbObject.insertPortfolioMapping(countPortfolios+1, individualId, stockId)
 
             dbObject.insertPortfolio(countPortfolios+1, 1, 1)
+
+            # TODO - generate tradesheet for the portfolio
             performance = performanceObject.calculatePerformancePortfolio(gv.startDate, gv.endDate, countPortfolios+1, dbObject)
             dbObject.insertPerformance(countPortfolios+1, performance[0][1])
 

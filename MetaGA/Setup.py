@@ -97,6 +97,21 @@ if __name__ == "__main__":
                      " ENCLOSED BY '\"'"
                      " LINES TERMINATED BY '\\n'")
 
+    dbObject.dbQuery("CREATE TABLE portfolio_tradesheet_data_table"
+                     " ("
+                     " meta_individual_table int,"
+                     " stock_id int,"
+                     " individual_id int,"
+                     " entry_date date,"
+                     " entry_time time,"
+                     " entry_price float,"
+                     " exit_date date,"
+                     " exit_time time,"
+                     " exit_price float,"
+                     " entry_qty int,"
+                     " trade_type int"
+                     " )")
+
     dbObject.dbQuery("CREATE TABLE mapping_table"
                      " ("
                      " meta_individual_id int,"
@@ -110,7 +125,6 @@ if __name__ == "__main__":
                      " first_generation int,"
                      " last_generation int,"
                      " feasible_by_performance int DEFAULT NULL,"
-                     " feasible_by_exposure int DEFAULT NULL,"
                      " performance float DEFAULT NULL"
                      " )")
 
@@ -139,7 +153,8 @@ if __name__ == "__main__":
 
     dbObject.dbQuery("CREATE TABLE exposure_table"
                      " ("
-                     " individual_id int,"
+                     " meta_individual_id int,"
+                     " feeder_individual_id int,"
                      " stock_id int,"
                      " date date,"
                      " time time,"

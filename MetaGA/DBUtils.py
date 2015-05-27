@@ -409,6 +409,8 @@ class DBUtils:
                 return 0
 
     # Function to get all trades corresponding to a portfolio
+    # Not being used
+    # TODO
     def getTradesPortfolioStock(self, portfolioId, stockId, startDate, endDate):
         global databaseObject
         query = "SELECT * FROM tradesheet_data_table WHERE individual_id IN ( SELECT feeder_individual_id" \
@@ -513,6 +515,7 @@ class DBUtils:
         return databaseObject.Execute(query)
 
     # Function to get all trades of an individual in a given period
+    # TODO
     def getTradesFeederIndividuals(self, individualId, stockId, startDate, endDate):
         global databaseObject
         query = "SELECT * FROM tradesheet_data_table WHERE individual_id=" + str(individualId) + " AND stock_id=" + str(stockId) + \
@@ -807,3 +810,53 @@ class DBUtils:
                     " (" + str(newId+2) + ", " + str(generation) + ", " + str(generation) + ")"
             databaseObject.Execute(query)
         return [newId+1, newId+2]
+
+    # Function to set exposure for start of the day
+    def setInitialExposure(self, portfolioId, date, time):
+        global databaseObject
+        queryIndividuals = "SELECT feeder_individual_id, stock_id FROM mapping_table WHERE meta_individual_id=" + str(portfolioId)
+        resultIndividuals = databaseObject.Execute(queryIndividuals)
+        for feederId, stockId in resultIndividuals:
+            query = "INSERT INTO exposure_table" \
+                    " (meta_individual_id, feeder_individual_id, stock_id, date, time, exposure)" \
+                    " VALUES" \
+                    " (" + str(portfolioId) + ", " + str(feederId) + ", " + str(stockId) + ", '" + str(date) + "', '" + str(time) + "', " + str(0) + ")"
+            databaseObject.Execute(query)
+        return
+
+    # Function to get daily trades for a portfolio from original tradesheet
+    def getDayTrades(self, portfolioId, date):
+        global databaseObject
+        queryIndividuals = "SELECT feeder_individual_id, stock_id FROM mapping_table WHERE meta_individual_id=" + str(portfolioId)
+        resultIndividuals = databaseObject.Execute(queryIndividuals)
+        query = "SELECT * FROM old_tradesheet_data_table WHERE entry_date='" + str(date) + "' AND ("
+        individualCount = 0
+        for feederId, stockId in resultIndividuals:
+            if individualCount==0:
+                query = query + " ( individual_id=" + str(feederId) + " AND stock_id=" + str(stockId) + ") "
+            else:
+                query = query + " OR ( individual_id=" + str(feederId) + " AND stock_id=" + str(stockId) + ") "
+            individualCount += 1
+        query = query + ") ORDER BY entry_time"
+        return databaseObject.Execute(query)
+
+    # Function to update current exposure for all feeder individuals in a portfolio
+    def updateCurrentExposure(self, portfolioId, date, time):
+        global databaseObject
+        queryIndividuals = "SELECT feeder_individual_id, stock_id FROM mapping_table WHERE meta_individual_id=" + str(portfolioId)
+        resultIndividuals = databaseObject.Execute(queryIndividuals)
+        exposure = 0
+        for feederId, stockId in resultIndividuals:
+            queryQty = "SELECT SUM(entry_qty), 1 FROM portfolio_tradesheet_data_table WHERE meta_individual_id=" + str(portfolioId) + \
+                       " AND feeder_individual_id=" + str(feederId) + " AND stock_id=" + str(stockId) + " AND entry_date='" + str(date) + \
+                       "' AND entry_time<='" + str(time) + "' AND exit_time>'" + str(time) + "'"
+            queryPrice = "SELECT close, 1 FROM price_series_table WHERE stock_id=" + str(stockId) + " AND date='" + str(date) + "' AND time='" + str(time) + "'"
+            resultQty = databaseObject.Execute(queryQty)
+            resultPrice = databaseObject.Execute(queryPrice)
+            for qty, dummy1 in resultQty:
+                for price, dummy2 in resultPrice:
+                    exposure = qty * price
+
+
+    # Function to get current exposure for a given stock in a portfolio
+    #def getCurrentStockExposure(self, portfolioId, stockId, date, time):
