@@ -407,17 +407,6 @@ class DBUtils:
                 databaseObject.Execute(query)
                 return 0
 
-    # Function to get all trades corresponding to a portfolio
-    # Not being used
-    # TODO
-    def getTradesPortfolioStock(self, portfolioId, stockId, startDate, endDate):
-        global databaseObject
-        query = "SELECT * FROM tradesheet_data_table WHERE individual_id IN ( SELECT feeder_individual_id" \
-                " FROM mapping_table WHERE meta_individual_id=" + str(portfolioId) + " AND stock_id=" + str(stockId) + \
-                " ) AND stock_id=" + str(stockId) + " AND entry_date>='" + str(startDate) + "' AND entry_date<=" + \
-                str(endDate) + "' ORDER BY entry_date, entry_time, exit_date, exit_time"
-        return databaseObject.Execute(query)
-
     # Function to get price series for a given stock for a given day and duration in between
     def getPriceSeriesDayDuration(self, stockId, date, startTime, endTime):
         global databaseObject
@@ -505,14 +494,6 @@ class DBUtils:
     def getFeederIndividuals(self):
         global databaseObject
         query = "SELECT individual_id, stock_id FROM individual_table"
-        return databaseObject.Execute(query)
-
-    # Function to get all trades of an individual in a given period
-    # TODO
-    def getTradesFeederIndividuals(self, individualId, stockId, startDate, endDate):
-        global databaseObject
-        query = "SELECT * FROM tradesheet_data_table WHERE individual_id=" + str(individualId) + " AND stock_id=" + str(stockId) + \
-                " AND entry_date<='" + str(endDate) + "' AND entry_date>='" + str(startDate) + "'"
         return databaseObject.Execute(query)
 
     # Function to get number of long individuals in a portfolio

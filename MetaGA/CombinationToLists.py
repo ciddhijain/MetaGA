@@ -38,7 +38,7 @@ class CombinationToLists:
         print("Generating initial combinations")
 
         # Terminate when required number of combinations have been generated
-        while countFeasiblePortfolios<=gv.numPortfolios:
+        while countFeasiblePortfolios<gv.numPortfolios:
 
             # We generate a list of following size
             sizePortfolio = randint(gv.minPortfolioSize, gv.maxPortfolioSize)
@@ -63,7 +63,6 @@ class CombinationToLists:
 
             dbObject.insertPortfolio(countPortfolios+1, 1, 1)
 
-            # TODO - generate tradesheet for the portfolio
             tradesheetObject.generateTradesheet(countPortfolios+1, gv.startDate, gv.endDate, dbObject)
             performance = performanceObject.calculatePerformancePortfolio(gv.startDate, gv.endDate, countPortfolios+1, dbObject)
             dbObject.insertPerformance(countPortfolios+1, performance[0][1])
