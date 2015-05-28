@@ -36,6 +36,8 @@ if __name__ == "__main__":
     dbObject.dbQuery("DELETE FROM portfolio_tradesheet_data_table")
     logging.info("Deleted previous data")
 
+    #performanceObj.calculatePerformancePortfolio(gv.startDate, gv.endDate, 2, dbObject)
+
     combinationObj.combine(performanceObj, feasibilityObj, tradesheetObj, dbObject)
     generation = 1
 

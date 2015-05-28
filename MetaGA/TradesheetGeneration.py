@@ -25,7 +25,7 @@ class TradesheetGeneration:
                     if totalExposure<gv.thresholdMaxPortfolioExposure and stockExposure<gv.thresholdMaxStockExposure and totalExposure>gv.thresholdMinPortfolioExposure and stockExposure>gv.thresholdMinStockExposure:
                         dbObject.insertTrade(portfolioId, stockId, individualId, entryDate, entryTime, entryPrice, exitDate, exitTime, exitPrice, entryQty, tradeType)
                         newExposure = 0
-                        if tradeType==0:
+                        if tradeType==1:
                             newExposure = float(entryQty) * entryPrice
                         else:
                             newExposure = float(entryQty) * entryPrice * (-1)
