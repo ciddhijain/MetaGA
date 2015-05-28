@@ -57,6 +57,7 @@ if __name__ == "__main__":
     resultElites = dbObject.getFinalElites()
     elites = ()
     for portfolioId, performance in resultElites:
+        tradesheetObj.generateTradesheet(portfolioId, gv.testingStartDate, gv.testingEndDate, dbObject)
         elites = elites + (portfolioId, )
     performanceElites = performanceObj.calculatePerformancePortfolioList(gv.testingStartDate, gv.testingEndDate, elites, dbObject)
     performanceTradesheet = performanceObj.calculateReferencePerformanceTradesheet(gv.testingStartDate, gv.testingEndDate, dbObject)
