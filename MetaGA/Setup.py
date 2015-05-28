@@ -36,7 +36,6 @@ if __name__ == "__main__":
 
     dbObject.dbQuery("ALTER TABLE price_series_table"
                      " DROP FOREIGN KEY SecID")
-    '''
 
     dbObject.dbQuery("CREATE TABLE stock_table"
                      " ("
@@ -99,7 +98,7 @@ if __name__ == "__main__":
 
     dbObject.dbQuery("CREATE TABLE portfolio_tradesheet_data_table"
                      " ("
-                     " meta_individual_table int,"
+                     " meta_individual_id int,"
                      " stock_id int,"
                      " individual_id int,"
                      " entry_date date,"
@@ -118,6 +117,9 @@ if __name__ == "__main__":
                      " feeder_individual_id int,"
                      " stock_id int"
                      " )")
+    '''
+
+    dbObject.dbQuery("DROP TABLE portfolio_table")
 
     dbObject.dbQuery("CREATE TABLE portfolio_table"
                      " ("
@@ -127,6 +129,7 @@ if __name__ == "__main__":
                      " feasible_by_performance int DEFAULT NULL,"
                      " performance float DEFAULT NULL"
                      " )")
+    '''
 
     dbObject.dbQuery("CREATE TABLE feeder_individual_table"
                      " ("
@@ -150,6 +153,9 @@ if __name__ == "__main__":
                      " meta_individual_id_2 int,"
                      " generation int"
                      " )")
+
+
+    dbObject.dbQuery("DROP TABLE exposure_table")
 
     dbObject.dbQuery("CREATE TABLE exposure_table"
                      " ("
@@ -176,5 +182,6 @@ if __name__ == "__main__":
                      " FIELDS TERMINATED BY ','"
                      " ENCLOSED BY '\"'"
                      " LINES TERMINATED BY '\\n'")
+    '''
 
     dbObject.dbClose()

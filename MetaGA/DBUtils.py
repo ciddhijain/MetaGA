@@ -151,14 +151,14 @@ class DBUtils:
         global databaseObject
         query = "SELECT meta_individual_id, COUNT(*) FROM mapping_table WHERE meta_individual_id IN " \
                 "(SELECT meta_individual_id FROM portfolio_table WHERE last_generation=" + str(generation)\
-                + " AND feasible_by_performance=1 AND feasible_by_exposure=1) GROUP BY meta_individual_id"
+                + " AND feasible_by_performance=1) GROUP BY meta_individual_id"
         return databaseObject.Execute(query)
 
     # Function to get size of a portfolio in given generation, specified by offset for id
     def getPortfolioSizeByOffset(self, metaPortfolioIdOffset, generation):
         global databaseObject
         queryId = "SELECT meta_individual_id, 1 FROM portfolio_table WHERE last_generation=" + str(generation) + \
-                  " AND feasible_by_performance=1 AND feasible_by_exposure=1 LIMIT 1 OFFSET " + str(metaPortfolioIdOffset)
+                  " AND feasible_by_performance=1 LIMIT 1 OFFSET " + str(metaPortfolioIdOffset)
         resultId = databaseObject.Execute(queryId)
         for metaPortfolioId, dummy in resultId:
             query = "SELECT COUNT(*), meta_individual_id FROM mapping_table WHERE meta_individual_id=" + str(metaPortfolioId)
@@ -302,7 +302,7 @@ class DBUtils:
     def getOrderedPortfolios(self, generation):
         global databaseObject
         query = "SELECT meta_individual_id, performance FROM portfolio_table WHERE last_generation=" + str(generation) + \
-                " AND feasible_by_performance=1 AND feasible_by_exposure=1 ORDER BY performance DESC"
+                " AND feasible_by_performance=1 ORDER BY performance DESC"
         return databaseObject.Execute(query)
 
     # Function to get top elite portfolios in a given generation, ordered by performance
@@ -310,21 +310,20 @@ class DBUtils:
         global databaseObject
         query = "SELECT meta_individual_id, performance FROM portfolio_table WHERE last_generation>=" + \
                 str(generation) + " AND first_generation<=" + str(generation) + \
-                " AND feasible_by_performance=1 AND feasible_by_exposure=1" \
-                " ORDER BY performance DESC LIMIT " + str(gv.numElites)
+                " AND feasible_by_performance=1 ORDER BY performance DESC LIMIT " + str(gv.numElites)
         return databaseObject.Execute(query)
 
     # Function to get top feasible portfolios in a given generation, ordered by performance
     def getOrderedFeasiblePortfolios(self, generation):
         global databaseObject
         query = "SELECT meta_individual_id, performance FROM portfolio_table WHERE last_generation=" + str(generation) + \
-                " AND feasible_by_performance=1 AND feasible_by_exposure=1 ORDER BY performance DESC LIMIT " + str(gv.maxNumPortfolios)
+                " AND feasible_by_performance=1 ORDER BY performance DESC LIMIT " + str(gv.maxNumPortfolios)
         return databaseObject.Execute(query)
 
     def getOrderedFeasiblePortfoliosPerformanceRange(self, generation, minPerformance, maxPerformance):
         global databaseObject
         query = "SELECT meta_individual_id, performance FROM portfolio_table WHERE last_generation=" + str(generation) + \
-                " AND feasible_by_performance=1 AND feasible_by_exposure=1 AND performance<" + str(maxPerformance) + \
+                " AND feasible_by_performance=1 AND performance<" + str(maxPerformance) + \
                 " AND performance>=" + str(minPerformance) + " ORDER BY performance DESC"
         return databaseObject.Execute(query)
 
@@ -332,7 +331,7 @@ class DBUtils:
     def getOrderedFeasiblePortfolioCount(self, generation):
         global databaseObject
         query = "SELECT COUNT(*), 1 FROM portfolio_table WHERE last_generation=" + str(generation) + " AND feasible_by_performance=1 " \
-                "AND feasible_by_exposure=1 ORDER BY performance DESC"
+                "ORDER BY performance DESC"
         return databaseObject.Execute(query)
 
     # Function to insert selected portfolios for next generation and update in current generation
@@ -367,7 +366,7 @@ class DBUtils:
     def getTotalPerformance(self, generation):
         global databaseObject
         query = "SELECT SUM(performance), 1 FROM portfolio_table WHERE last_generation=" + str(generation) + \
-                " AND feasible_by_performance=1 AND feasible_by_exposure=1"
+                " AND feasible_by_performance=1"
         return databaseObject.Execute(query)
 
     # Function to check if a pair has already been involved in crossover in a generation
@@ -500,12 +499,6 @@ class DBUtils:
         global databaseObject
         query = "SELECT SUM(exposure), 1 FROM exposure_table WHERE individual_id IN (SELECT feeder_individual_id FROM mapping_table " \
                 "WHERE meta_individual_id=" + str(portfolioId) + ") GROUP BY date, time"
-        return databaseObject.Execute(query)
-
-    # Function to update exposure feasibility in portfolio_table
-    def updateExposureFeasibility(self, portfolioId, feasibility):
-        global databaseObject
-        query = "UPDATE portfolio_table SET feasible_by_exposure=" + str(feasibility) + " WHERE meta_individual_id=" + str(portfolioId)
         return databaseObject.Execute(query)
 
     # Function to get all individuals from individual_table
@@ -857,12 +850,12 @@ class DBUtils:
                     shortQty = None
                     price = None
                     queryLongQty = "SELECT SUM(entry_qty), 1 FROM portfolio_tradesheet_data_table WHERE meta_individual_id=" + str(portfolioId) + \
-                                   " AND feeder_individual_id=" + str(feederId) + " AND stock_id=" + str(stock) + " AND entry_date='" + str(date) + \
+                                   " AND individual_id=" + str(feederId) + " AND stock_id=" + str(stock) + " AND entry_date='" + str(date) + \
                                    "' AND entry_time<='" + str(time) + "' AND exit_time>'" + str(time) + "' AND trade_type=0"
                     queryShortQty = "SELECT SUM(entry_qty), 1 FROM portfolio_tradesheet_data_table WHERE meta_individual_id=" + str(portfolioId) + \
-                                   " AND feeder_individual_id=" + str(feederId) + " AND stock_id=" + str(stock) + " AND entry_date='" + str(date) + \
+                                   " AND individual_id=" + str(feederId) + " AND stock_id=" + str(stock) + " AND entry_date='" + str(date) + \
                                    "' AND entry_time<='" + str(time) + "' AND exit_time>'" + str(time) + "' AND trade_type=1"
-                    queryPrice = "SELECT close, 1 FROM price_series_table WHERE stock_id=" + str(stock) + " AND date='" + str(date) + "' AND time='" + str(time) + "'"
+                    queryPrice = "SELECT open, 1 FROM price_series_table WHERE stock_id=" + str(stock) + " AND date='" + str(date) + "' AND time='" + str(time) + "'"
                     resultLongQty = databaseObject.Execute(queryLongQty)
                     resultShortQty = databaseObject.Execute(queryShortQty)
                     resultPrice = databaseObject.Execute(queryPrice)
@@ -874,9 +867,9 @@ class DBUtils:
                         price = p
                     if (longQty or shortQty) and price:
                         if longQty:
-                            exposure += longQty * price
+                            exposure += float(longQty) * price
                         if shortQty:
-                            exposure += shortQty * price * (-1)
+                            exposure += float(shortQty) * price * (-1)
                     queryInsert = "INSERT INTO exposure_table" \
                                   " ( meta_individual_id, feeder_individual_id, stock_id, date, time, exposure )" \
                                   " VALUES" \
@@ -912,5 +905,5 @@ class DBUtils:
                 " (meta_individual_id, stock_id, individual_id, entry_date, entry_time, entry_price, exit_date, exit_time, exit_price, entry_qty, trade_type)" \
                 " VALUES" \
                 " (" + str(portfolioId) + ", " + str(stockId) + ", " + str(feederIndividualId) + ", '" + str(entryDate) + "', '" + str(entryTime) + \
-                "', "+ str(entryPrice) + ", '" + str(exitDate) + "', '" + str(exitTime) + "', " + str(exitPrice) + ")"
+                "', "+ str(entryPrice) + ", '" + str(exitDate) + "', '" + str(exitTime) + "', " + str(exitPrice) + ", " + str(entryQty) + ", " + str(tradeType) + ")"
         return databaseObject.Execute(query)

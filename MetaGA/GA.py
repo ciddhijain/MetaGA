@@ -8,7 +8,7 @@ from Convergence import *
 from DBUtils import *
 from Feasibility import *
 from Performance import *
-from Exposure import *
+from TradesheetGeneration import *
 import logging
 from datetime import datetime
 import GlobalVariables as gv
@@ -25,26 +25,25 @@ if __name__ == "__main__":
     convergenceObj = Convergence()
     performanceObj = Performance()
     feasibilityObj = Feasibility()
-    exposureObj = Exposure()
+    tradesheetObj = TradesheetGeneration()
     dbObject = DBUtils()
     dbObject.dbConnect()
 
     dbObject.dbQuery("DELETE FROM mapping_table")
     dbObject.dbQuery("DELETE FROM portfolio_table")
     dbObject.dbQuery("DELETE FROM crossover_pairs_table")
-    #dbObject.dbQuery("UPDATE portfolio_table SET last_generation=1")
+    dbObject.dbQuery("DELETE FROM exposure_table")
+    dbObject.dbQuery("DELETE FROM portfolio_tradesheet_data_table")
     logging.info("Deleted previous data")
 
-    #exposureObj.calculateExposureIndividuals(dbObject)
-
-    combinationObj.combine(performanceObj, feasibilityObj, dbObject)
+    combinationObj.combine(performanceObj, feasibilityObj, tradesheetObj, dbObject)
     generation = 1
 
     while (True):
         logging.info("Starting generation " + str(generation))
         print("Starting generation " + str(generation) + " at " + str(datetime.now()))
-        crossoverObj.performCrossoverRouletteWheelBiased(generation, performanceObj, feasibilityObj, dbObject)
-        mutationObj.performMutation(generation, performanceObj, feasibilityObj, dbObject)
+        crossoverObj.performCrossoverRouletteWheelBiased(generation, performanceObj, feasibilityObj, tradesheetObj, dbObject)
+        mutationObj.performMutation(generation, performanceObj, feasibilityObj, tradesheetObj, dbObject)
         selectionObj.select(generation, dbObject)
         if (convergenceObj.checkConvergence(generation, dbObject)):
             logging.info("The GA has converged in " + str(generation) + " generations")
@@ -60,16 +59,16 @@ if __name__ == "__main__":
     for portfolioId, performance in resultElites:
         elites = elites + (portfolioId, )
     performanceElites = performanceObj.calculatePerformancePortfolioList(gv.testingStartDate, gv.testingEndDate, elites, dbObject)
-    performanceTradesheet = performanceObj.calculatePerformanceTradesheet(gv.testingStartDate, gv.testingEndDate, dbObject)
-    #logging.info("Performance of elites in testing period : " + str(performanceElites[0][1]))
+    performanceTradesheet = performanceObj.calculateReferencePerformanceTradesheet(gv.testingStartDate, gv.testingEndDate, dbObject)
+    logging.info("Performance of elites in testing period : " + str(performanceElites[0][1]))
     logging.info("Performance of original tradesheet in testing period : " + str(performanceTradesheet[0][1]))
     print(performanceTradesheet[0][1])
     with open(gv.testingPerformanceOutfileName, 'w') as fp:
         w = csv.writer(fp)
-        #w.writerow(["performance elites", "performance original tradesheet"])
-        #w.writerow([performanceElites[0][1], performanceTradesheet[0][1]])
-        w.writerow(["performance original tradesheet"])
-        w.writerow([performanceTradesheet[0][1]])
+        w.writerow(["performance elites", "performance original tradesheet"])
+        w.writerow([performanceElites[0][1], performanceTradesheet[0][1]])
+        #w.writerow(["performance original tradesheet"])
+        #w.writerow([performanceTradesheet[0][1]])
 
     generation = 1
     done = True

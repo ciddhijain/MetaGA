@@ -6,7 +6,7 @@ import logging
 
 class CombinationToLists:
 
-    def combine(self, performanceObject, feasibilityObject, dbObject):
+    def combine(self, performanceObject, feasibilityObject, tradesheetObject, dbObject):
         numBitsEliteProbabilty = str(gv.feederEliteSelectionProbability)[::-1].find('.')
         numBitsNonEliteProbability = str(gv.feederNonEliteSelectionProbability)[::-1].find('.')
         numBits = max(numBitsEliteProbabilty, numBitsNonEliteProbability)
@@ -64,12 +64,12 @@ class CombinationToLists:
             dbObject.insertPortfolio(countPortfolios+1, 1, 1)
 
             # TODO - generate tradesheet for the portfolio
+            tradesheetObject.generateTradesheet(countPortfolios+1, gv.startDate, gv.endDate, dbObject)
             performance = performanceObject.calculatePerformancePortfolio(gv.startDate, gv.endDate, countPortfolios+1, dbObject)
             dbObject.insertPerformance(countPortfolios+1, performance[0][1])
 
-            feasibleExposure = feasibilityObject.updateFeasibilityByExposurePortfolio(countPortfolios+1, dbObject)
             feasiblePerformance = feasibilityObject.updateFeasibilityByPerformancePortfolio(countPortfolios+1, dbObject)
-            if feasibleExposure==1 and feasiblePerformance==1:
+            if feasiblePerformance==1:
                 countFeasiblePortfolios += 1
             countPortfolios += 1
 
