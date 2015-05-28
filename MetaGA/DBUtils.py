@@ -840,23 +840,77 @@ class DBUtils:
         query = query + ") ORDER BY entry_time"
         return databaseObject.Execute(query)
 
-    # Function to update current exposure for all feeder individuals in a portfolio
-    def updateCurrentExposure(self, portfolioId, date, time):
+    # Function to update current exposure for all feeder individuals in a portfolio and return total exposure and stock exposure
+    def updateAndGetCurrentExposure(self, portfolioId, stockId, date, time):
         global databaseObject
         queryIndividuals = "SELECT feeder_individual_id, stock_id FROM mapping_table WHERE meta_individual_id=" + str(portfolioId)
         resultIndividuals = databaseObject.Execute(queryIndividuals)
-        exposure = 0
-        for feederId, stockId in resultIndividuals:
-            queryQty = "SELECT SUM(entry_qty), 1 FROM portfolio_tradesheet_data_table WHERE meta_individual_id=" + str(portfolioId) + \
-                       " AND feeder_individual_id=" + str(feederId) + " AND stock_id=" + str(stockId) + " AND entry_date='" + str(date) + \
-                       "' AND entry_time<='" + str(time) + "' AND exit_time>'" + str(time) + "'"
-            queryPrice = "SELECT close, 1 FROM price_series_table WHERE stock_id=" + str(stockId) + " AND date='" + str(date) + "' AND time='" + str(time) + "'"
-            resultQty = databaseObject.Execute(queryQty)
-            resultPrice = databaseObject.Execute(queryPrice)
-            for qty, dummy1 in resultQty:
-                for price, dummy2 in resultPrice:
-                    exposure = qty * price
+        queryCheck = "SELECT EXISTS ( SELECT 1 FROM exposure_table WHERE meta_individual_id=" + str(portfolioId) + " AND date='" + str(date) + "' AND time='" + str(time) + "' ) , 1"
+        resultCheck = databaseObject.Execute(queryCheck)
+        totalExposure = 0
+        stockExposure = 0
+        for check, dummy in resultCheck:
+            if check==0:
+                for feederId, stock in resultIndividuals:
+                    exposure = 0
+                    longQty = None
+                    shortQty = None
+                    price = None
+                    queryLongQty = "SELECT SUM(entry_qty), 1 FROM portfolio_tradesheet_data_table WHERE meta_individual_id=" + str(portfolioId) + \
+                                   " AND feeder_individual_id=" + str(feederId) + " AND stock_id=" + str(stock) + " AND entry_date='" + str(date) + \
+                                   "' AND entry_time<='" + str(time) + "' AND exit_time>'" + str(time) + "' AND trade_type=0"
+                    queryShortQty = "SELECT SUM(entry_qty), 1 FROM portfolio_tradesheet_data_table WHERE meta_individual_id=" + str(portfolioId) + \
+                                   " AND feeder_individual_id=" + str(feederId) + " AND stock_id=" + str(stock) + " AND entry_date='" + str(date) + \
+                                   "' AND entry_time<='" + str(time) + "' AND exit_time>'" + str(time) + "' AND trade_type=1"
+                    queryPrice = "SELECT close, 1 FROM price_series_table WHERE stock_id=" + str(stock) + " AND date='" + str(date) + "' AND time='" + str(time) + "'"
+                    resultLongQty = databaseObject.Execute(queryLongQty)
+                    resultShortQty = databaseObject.Execute(queryShortQty)
+                    resultPrice = databaseObject.Execute(queryPrice)
+                    for qty, dummy1 in resultLongQty:
+                        longQty = qty
+                    for qty, dummy1 in resultShortQty:
+                        shortQty = qty
+                    for p, dummy in resultPrice:
+                        price = p
+                    if (longQty or shortQty) and price:
+                        if longQty:
+                            exposure += longQty * price
+                        if shortQty:
+                            exposure += shortQty * price * (-1)
+                    queryInsert = "INSERT INTO exposure_table" \
+                                  " ( meta_individual_id, feeder_individual_id, stock_id, date, time, exposure )" \
+                                  " VALUES" \
+                                  " ( " + str(portfolioId) + ", " + str(feederId) + ", " + str(stock) + ", '" + str(date) + "', '" + str(time) + "', " + str(exposure) + " )"
+                    databaseObject.Execute(queryInsert)
+                    totalExposure += exposure
+                    if stock == stockId:
+                        stockExposure += exposure
+            else:
+                queryTotal = "SELECT SUM(exposure), 1 FROM exposure_table WHERE meta_individual_id=" + str(portfolioId) + " AND date='" + str(date) + \
+                             "' AND time='" + str(time) + "'"
+                queryStock = "SELECT SUM(exposure), 1 FROM exposure_table WHERE meta_individual_id=" + str(portfolioId) + " AND stock_id=" + str(stockId) + \
+                             " AND date='" + str(date) + "' AND time='" + str(time) + "'"
+                resultTotal = databaseObject.Execute(queryTotal)
+                resultStock = databaseObject.Execute(queryStock)
+                for total, dummy in resultTotal:
+                    totalExposure = total
+                for stock, dummy in resultStock:
+                    stockExposure = stock
+        return [totalExposure, stockExposure]
 
+    # Function to update exposure corresponding to new trade taken
+    def updateNewExposure(self, portfolioId, feederIndividualId, stockId, date, time, exposure):
+        global databaseObject
+        query = "UPDATE exposure_table SET exposure=exposure+" + str(exposure) + " WHERE meta_individual_id=" + str(portfolioId) + " AND feeder_individual_id=" + \
+                str(feederIndividualId) + " AND stock_id=" + str(stockId) + " AND date='" + str(date) + "' AND time='" + str(time) + "'"
+        return databaseObject.Execute(query)
 
-    # Function to get current exposure for a given stock in a portfolio
-    #def getCurrentStockExposure(self, portfolioId, stockId, date, time):
+    # Function to insert new trade for a portfolio
+    def insertTrade(self, portfolioId, stockId, feederIndividualId, entryDate, entryTime, entryPrice, exitDate, exitTime, exitPrice, entryQty, tradeType):
+        global databaseObject
+        query = "INSERT INTO portfolio_tradesheet_data_table" \
+                " (meta_individual_id, stock_id, individual_id, entry_date, entry_time, entry_price, exit_date, exit_time, exit_price, entry_qty, trade_type)" \
+                " VALUES" \
+                " (" + str(portfolioId) + ", " + str(stockId) + ", " + str(feederIndividualId) + ", '" + str(entryDate) + "', '" + str(entryTime) + \
+                "', "+ str(entryPrice) + ", '" + str(exitDate) + "', '" + str(exitTime) + "', " + str(exitPrice) + ")"
+        return databaseObject.Execute(query)
