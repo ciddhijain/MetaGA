@@ -46,7 +46,7 @@ class Live:
                                     #print('Individual does not exist in asset table yet. Adding it.')
                                     dbObject.addIndividualAsset(portfolioId, individualId, stockId, usedAsset)
                                     #print('Taking this trade. Asset used = ' + str(usedAsset))
-                                    dbObject.insertNewTrade(stockId, individualId, entryDate, entryTime, entryPrice, exitDate, exitTime, exitPrice, entryQty, tradeType)
+                                    dbObject.insertNewTrade(portfolioId, stockId, individualId, entryDate, entryTime, entryPrice, exitDate, exitTime, exitPrice, entryQty, tradeType)
                                     dbObject.updateIndividualAsset(portfolioId, gv.dummyIndividualId, gv.dummyStockId, usedAsset)
                                     #TODO
                                     dbObject.insertLatestIndividual(portfolioId, individualId, stockId)
@@ -56,7 +56,7 @@ class Live:
                                     for freeAsset, dummy3 in resultFreeAsset:
                                         if freeAsset>=usedAsset:
                                             #print('Individual Asset is available. Taking this trade. Asset used = ' + str(usedAsset))
-                                            dbObject.insertNewTrade(stockId, individualId, entryDate, entryTime, entryPrice, exitDate, exitTime, exitPrice, entryQty, tradeType)
+                                            dbObject.insertNewTrade(portfolioId, stockId, individualId, entryDate, entryTime, entryPrice, exitDate, exitTime, exitPrice, entryQty, tradeType)
                                             dbObject.updateIndividualAsset(portfolioId, gv.dummyIndividualId, gv.dummyStockId, usedAsset)
                                             dbObject.updateIndividualAsset(portfolioId, individualId, stockId, usedAsset)
                                             dbObject.insertLatestIndividual(portfolioId, individualId, stockId)

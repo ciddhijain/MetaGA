@@ -66,7 +66,9 @@ if __name__ == "__main__":
                      " total_asset decimal(15,4)"
                      ")")
 
-    dbObject.dbQuery("CREATE TABLE tradesheet_data_table"
+    # Following table is created in other Setup.py
+    '''
+    dbObject.dbQuery("CREATE TABLE portfolio_tradesheet_data_table"
                      " ("
                      " meta_individual_id int"
                      " stock_id int,"
@@ -80,6 +82,7 @@ if __name__ == "__main__":
                      " entry_qty int,"
                      " trade_type int"
                      " )")
+    '''
 
     dbObject.dbQuery("CREATE TABLE mtm_table"
                      " ("

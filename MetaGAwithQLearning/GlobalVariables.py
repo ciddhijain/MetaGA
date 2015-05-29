@@ -72,3 +72,5 @@ dummyIndividualId = -1
 dummyStockId = -1
 maxTotalAsset = 10000000
 trainingMaxTotalAsset = 20000000
+factor = 5
+maxAsset = maxTotalAsset / factor

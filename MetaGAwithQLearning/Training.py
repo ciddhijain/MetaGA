@@ -46,7 +46,7 @@ class Training:
                                     #print('Individual does not exist in asset table yet. Adding it.')
                                     dbObject.addTrainingIndividualAsset(portfolioId, individualId, stockId, usedAsset)
                                     #print('Taking this trade. Asset used = ' + str(usedAsset))
-                                    dbObject.insertTrainingNewTrade(stockId, individualId, entryDate, entryTime, entryPrice, exitDate, exitTime, exitPrice, entryQty, tradeType)
+                                    dbObject.insertTrainingNewTrade(portfolioId, stockId, individualId, entryDate, entryTime, entryPrice, exitDate, exitTime, exitPrice, entryQty, tradeType)
                                     dbObject.updateTrainingIndividualAsset(portfolioId, gv.dummyIndividualId, gv.dummyStockId, usedAsset)
                                 else:
                                     #print('Individual exists already')
@@ -54,7 +54,7 @@ class Training:
                                     for freeAsset, dummy3 in resultFreeAsset:
                                         if freeAsset>=usedAsset:
                                             #print('Individual Asset is available. Taking this trade. Asset used = ' + str(usedAsset))
-                                            dbObject.insertTrainingNewTrade(stockId, individualId, entryDate, entryTime, entryPrice, exitDate, exitTime, exitPrice, entryQty, tradeType)
+                                            dbObject.insertTrainingNewTrade(portfolioId, stockId, individualId, entryDate, entryTime, entryPrice, exitDate, exitTime, exitPrice, entryQty, tradeType)
                                             dbObject.updateTrainingIndividualAsset(portfolioId, gv.dummyIndividualId, gv.dummyStockId, usedAsset)
                                             dbObject.updateTrainingIndividualAsset(portfolioId, individualId, stockId, usedAsset)
 

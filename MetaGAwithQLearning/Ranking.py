@@ -7,7 +7,7 @@ from DBUtils import *
 class Ranking:
 
     def updateRankings(self, portfolioId, startDate, endDate, performanceObject, dbObject):
-        resultIndividuals = dbObject.getRefIndividuals(portfolioId)
+        resultIndividuals = dbObject.getPortfolioIndividuals(portfolioId)
         individualperformanceList = []
 
         # fetching performance for all individuals
