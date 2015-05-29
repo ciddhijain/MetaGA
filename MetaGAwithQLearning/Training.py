@@ -64,7 +64,7 @@ class Training:
                     print('Calculating mtm')
                     mtmObject.calculateTrainingMTM(portfolioId, individualId, stockId, gv.aggregationUnit, date, startTime, date, endTime, dbObject)
                     print('Calculating reward matrix')
-                    rewardMatrix = rewardMatrixObject.computeTrainingRM(individualId, date, startTime, date, endTime, dbObject)
+                    rewardMatrix = rewardMatrixObject.computeTrainingRM(portfolioId, individualId, stockId, date, startTime, date, endTime, dbObject)
                     print('Calculating q matrix')
                     qMatrixObject.calculateQMatrix(rewardMatrix, individualId, dbObject)
                 if endTime<dayEndTime:

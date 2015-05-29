@@ -33,7 +33,7 @@ class MTM:
                 for time, p in resultEndPrice:
                     endPrice = p
             # mtm calculation
-            if tradeType==0:
+            if tradeType==1:
                 if price and endPrice:
                     mtm = (endPrice-price) * entryQty
                     dbObject.addOrUpdateMTM(portfolioId, individualId, stockId, tradeType, entryDate, endTime, mtm)
@@ -70,7 +70,7 @@ class MTM:
                 for time, p in resultEndPrice:
                     endPrice = p
             # mtm calculation
-            if tradeType==0:
+            if tradeType==1:
                 if price and endPrice:
                     mtm = (endPrice-price) * entryQty
                     dbObject.addOrUpdateTrainingMTM(portfolioId, individualId, stockId, tradeType, entryDate, endTime, mtm)

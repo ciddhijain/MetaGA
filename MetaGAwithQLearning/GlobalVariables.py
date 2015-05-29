@@ -74,3 +74,5 @@ maxTotalAsset = 10000000
 trainingMaxTotalAsset = 20000000
 factor = 5
 maxAsset = maxTotalAsset / factor
+
+alpha = 0.6

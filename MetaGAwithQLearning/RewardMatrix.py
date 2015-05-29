@@ -7,13 +7,13 @@ from datetime import timedelta
 
 class RewardMatrix:
 
-    def computeRM (self, individualId, startDate, startTime, endDate, endTime, dbObject):
+    def computeRM (self, portfolioId, individualId, stockId, startDate, startTime, endDate, endTime, dbObject):
 
         # get net mtm and quantity for long and short trades
-        resultPosMtm = dbObject.getTotalPosMTM(individualId, startDate, startTime, endDate, endTime)
-        resultPosQty = dbObject.getTotalPosQty(individualId, startDate, startTime, endDate, endTime)
-        resultNegMtm = dbObject.getTotalNegMTM(individualId, startDate, startTime, endDate, endTime)
-        resultNegQty = dbObject.getTotalNegQty(individualId, startDate, startTime, endDate, endTime)
+        resultPosMtm = dbObject.getTotalPosMTM(portfolioId, individualId, stockId, startDate, startTime, endDate, endTime)
+        resultPosQty = dbObject.getTotalPosQty(portfolioId, individualId, stockId, startDate, startTime, endDate, endTime)
+        resultNegMtm = dbObject.getTotalNegMTM(portfolioId, individualId, stockId, startDate, startTime, endDate, endTime)
+        resultNegQty = dbObject.getTotalNegQty(portfolioId, individualId, stockId, startDate, startTime, endDate, endTime)
         posMtm = 0
         posQty = 0
         negMtm = 0
@@ -45,13 +45,13 @@ class RewardMatrix:
 
         return rm
 
-    def computeTrainingRM (self, individualId, startDate, startTime, endDate, endTime, dbObject):
+    def computeTrainingRM (self, portfolioId, individualId, stockId, startDate, startTime, endDate, endTime, dbObject):
 
         # get net mtm and quantity for long and short trades
-        resultPosMtm = dbObject.getTrainingTotalPosMTM(individualId, startDate, startTime, endDate, endTime)
-        resultPosQty = dbObject.getTrainingTotalPosQty(individualId, startDate, startTime, endDate, endTime)
-        resultNegMtm = dbObject.getTrainingTotalNegMTM(individualId, startDate, startTime, endDate, endTime)
-        resultNegQty = dbObject.getTrainingTotalNegQty(individualId, startDate, startTime, endDate, endTime)
+        resultPosMtm = dbObject.getTrainingTotalPosMTM(portfolioId, individualId, stockId, startDate, startTime, endDate, endTime)
+        resultPosQty = dbObject.getTrainingTotalPosQty(portfolioId, individualId, stockId, startDate, startTime, endDate, endTime)
+        resultNegMtm = dbObject.getTrainingTotalNegMTM(portfolioId, individualId, stockId, startDate, startTime, endDate, endTime)
+        resultNegQty = dbObject.getTrainingTotalNegQty(portfolioId, individualId, stockId, startDate, startTime, endDate, endTime)
         posMtm = 0
         posQty = 0
         negMtm = 0

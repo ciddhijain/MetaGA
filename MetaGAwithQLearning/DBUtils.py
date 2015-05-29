@@ -1269,3 +1269,75 @@ class DBUtils:
                                  " AND feeder_individual_id=" + str(feederIndividualId) + " AND stock_id=" + str(stockId) + \
                                  " AND trade_type=" + str(tradeType) + " AND date='" + str(entryDate) + "' AND time='" + str(mtmTime)
                 return databaseObject.Execute(queryUpdateMTM)
+
+    # Function to get net MTM for all long trades
+    def getTotalPosMTM (self, portfolioId, feederIndividualId, stockId, startDate, startTime, endDate, endTime):
+        global databaseObject
+        queryMTM = "SELECT SUM(mtm), 1 FROM mtm_table WHERE meta_individual_id=" + str(portfolioId) + " AND feeder_individual_id=" + \
+                   str(feederIndividualId) + " AND stock_id=" + str(stockId) + " AND time>'" + str(startTime) + "' AND date>='" + str(startDate) + \
+                   "' AND date<='" + str(endDate) + "' AND time<='" + str(endTime) + "' AND trade_type=1"
+        #print(queryMTM)
+        return databaseObject.Execute(queryMTM)
+
+    # function to get total quantity for all long trades
+    def getTotalPosQty (self, portfolioId, feederIndividualId, stockId, startDate, startTime, endDate, endTime):
+        global databaseObject
+        queryQty = "SELECT SUM(entry_qty), 1 FROM portfolio_tradesheet_data_table WHERE meta_individual_id=" + str(portfolioId) + \
+                   " AND feeder_individual_id=" + str(feederIndividualId) + " AND stock_id=" + str(stockId) + " AND entry_time<'" + \
+                   str(endTime) + "' AND exit_time>'" + str(startTime) + "' AND entry_date='" + str(startDate) + "' AND trade_type=1"
+        #print(queryQty)
+        return databaseObject.Execute(queryQty)
+
+    # Function to get net MTM for all short trades
+    def getTotalNegMTM (self, portfolioId, feederIndividualId, stockId, startDate, startTime, endDate, endTime):
+        global databaseObject
+        queryMTM = "SELECT SUM(mtm), 1 FROM mtm_table WHERE meta_individual_id=" + str(portfolioId) + " AND feeder_individual_id=" + \
+                   str(feederIndividualId) + " AND stock_id=" + str(stockId) + " AND time>'" + str(startTime) + "' AND date>='" + str(startDate) + \
+                   "' AND date<='" + str(endDate) + "' AND time<='" + str(endTime) + "' AND trade_type=0"
+        #print(queryMTM)
+        return databaseObject.Execute(queryMTM)
+
+    # Function to get total quantity for all short trades
+    def getTotalNegQty (self,  portfolioId, feederIndividualId, stockId, startDate, startTime, endDate, endTime):
+        global databaseObject
+        queryQty = "SELECT SUM(entry_qty), 1 FROM portfolio_tradesheet_data_table WHERE meta_individual_id=" + str(portfolioId) + \
+                   " AND feeder_individual_id=" + str(feederIndividualId) + " AND stock_id=" + str(stockId) + " AND entry_time<'" + \
+                   str(endTime) + "' AND exit_time>'" + str(startTime) + "' AND entry_date='" + str(startDate) + "' AND trade_type=0"
+        #print(queryQty)
+        return databaseObject.Execute(queryQty)
+
+    # Function to get net MTM for all long trades during training
+    def getTrainingTotalPosMTM (self, portfolioId, feederIndividualId, stockId, startDate, startTime, endDate, endTime):
+        global databaseObject
+        queryMTM = "SELECT SUM(mtm), 1 FROM training_mtm_table WHERE meta_individual_id=" + str(portfolioId) + " AND feeder_individual_id=" + \
+                   str(feederIndividualId) + " AND stock_id=" + str(stockId) + " AND time>'" + str(startTime) + "' AND date>='" + str(startDate) + \
+                   "' AND date<='" + str(endDate) + "' AND time<='" + str(endTime) + "' AND trade_type=1"
+        #print(queryMTM)
+        return databaseObject.Execute(queryMTM)
+
+    # function to get total quantity for all long trades during training
+    def getTrainingTotalPosQty (self, portfolioId, feederIndividualId, stockId, startDate, startTime, endDate, endTime):
+        global databaseObject
+        queryQty = "SELECT SUM(entry_qty), 1 FROM training_tradesheet_data_table WHERE meta_individual_id=" + str(portfolioId) + \
+                   " AND feeder_individual_id=" + str(feederIndividualId) + " AND stock_id=" + str(stockId) + " AND entry_time<'" + \
+                   str(endTime) + "' AND exit_time>'" + str(startTime) + "' AND entry_date='" + str(startDate) + "' AND trade_type=1"
+        #print(queryQty)
+        return databaseObject.Execute(queryQty)
+
+    # Function to get net MTM for all short trades during training
+    def getTrainingTotalNegMTM (self, portfolioId, feederIndividualId, stockId, startDate, startTime, endDate, endTime):
+        global databaseObject
+        queryMTM = "SELECT SUM(mtm), 1 FROM training_mtm_table WHERE meta_individual_id=" + str(portfolioId) + " AND feeder_individual_id=" + \
+                   str(feederIndividualId) + " AND stock_id=" + str(stockId) + " AND time>'" + str(startTime) + "' AND date>='" + str(startDate) + \
+                   "' AND date<='" + str(endDate) + "' AND time<='" + str(endTime) + "' AND trade_type=0"
+        #print(queryMTM)
+        return databaseObject.Execute(queryMTM)
+
+    # Function to get total quantity for all short trades during training
+    def getTrainingTotalNegQty (self, portfolioId, feederIndividualId, stockId, startDate, startTime, endDate, endTime):
+        global databaseObject
+        queryQty = "SELECT SUM(entry_qty), 1 FROM training_tradesheet_data_table WHERE meta_individual_id=" + str(portfolioId) + \
+                   " AND feeder_individual_id=" + str(feederIndividualId) + " AND stock_id=" + str(stockId) + " AND entry_time<'" + \
+                   str(endTime) + "' AND exit_time>'" + str(startTime) + "' AND entry_date='" + str(startDate) + "' AND trade_type=0"
+        #print(queryQty)
+        return databaseObject.Execute(queryQty)
