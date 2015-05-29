@@ -18,18 +18,21 @@ class TradesheetGeneration:
 
         while (not done):
             resultTrades = dbObject.getDayTrades(portfolioId, date)
-            dbObject.setInitialExposure(portfolioId, date, startTime)
+            #dbObject.setInitialExposure(portfolioId, date, startTime)
             for stockId, individualId, entryDate, entryTime, entryPrice, exitDate, exitTime, exitPrice, entryQty, tradeType in resultTrades:
                 if stockId:
-                    [totalExposure, stockExposure] = dbObject.updateAndGetCurrentExposure(portfolioId, stockId, date, entryTime)
+                    #[totalExposure, stockExposure] = dbObject.updateAndGetCurrentExposure(portfolioId, stockId, date, entryTime)
+                    [totalExposure, stockExposure] = dbObject.getCurrentExposure(portfolioId, stockId, date, entryTime)
                     if totalExposure<gv.thresholdMaxPortfolioExposure and stockExposure<gv.thresholdMaxStockExposure and totalExposure>gv.thresholdMinPortfolioExposure and stockExposure>gv.thresholdMinStockExposure:
                         dbObject.insertTrade(portfolioId, stockId, individualId, entryDate, entryTime, entryPrice, exitDate, exitTime, exitPrice, entryQty, tradeType)
+                        '''
                         newExposure = 0
                         if tradeType==1:
                             newExposure = float(entryQty) * entryPrice
                         else:
                             newExposure = float(entryQty) * entryPrice * (-1)
                         dbObject.updateNewExposure(portfolioId, individualId, stockId, date, entryTime, newExposure)
+                        '''
             date = date + timedelta(days=1)
             if(date>periodEndDate):
                 done = True

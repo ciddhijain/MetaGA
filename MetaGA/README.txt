@@ -1,5 +1,5 @@
 Database Structure :
-- tblindividualcategoryinfo corresponds to feeder_individual_table
+- tblindividualcategoryinfo corresponds to individual_category_table
 - tblindividuallist corresponds to individual_table
 - tblindividualtradesheet corresponds to old_tradesheet_data_table
 - tblstockidlist corresponds to stock_table

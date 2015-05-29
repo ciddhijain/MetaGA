@@ -102,12 +102,12 @@ if __name__ == "__main__":
                      " performance float DEFAULT NULL"
                      " )")
 
-    dbObject.dbQuery("CREATE TABLE feeder_individual_table"
+    dbObject.dbQuery("CREATE TABLE individual_category_table"
                      " ("
                      " walk_forward int,"
                      " stock_id int,"
                      " individual_id int,"
-                     " category int"
+                     " category int DEFAULT NULL"
                      " )")
     '''
 
@@ -135,6 +135,14 @@ if __name__ == "__main__":
                      " date date,"
                      " time time,"
                      " exposure float"
+                     " )")
+
+    dbObject.dbQuery("CREATE TABLE feeder_performance_table"
+                     " ("
+                     " feeder_individual_id int,"
+                     " stock_id int,"
+                     " performance float,"
+                     " walk_forward int"
                      " )")
 
     dbObject.dbQuery("CREATE TABLE individual_table"

@@ -23,12 +23,13 @@ class Mutation:
                         oldIndividualId = id
                         oldStockId = stock
                 countNonFeasible = 0
-                resultCount = dbObject.getNonFeasibleCount(gv.walkforward)
+                # TODO
+                resultCount = dbObject.getFeasibleCount(gv.walkforward)
                 for count, dummy in resultCount:
                     if count:
                         countNonFeasible = count
                 # TODO
-                resultNewIndividual = dbObject.getRandomNonFeasibleIndividual(randint(0, countNonFeasible-1), gv.walkforward)
+                resultNewIndividual = dbObject.getRandomFeasibleIndividual(randint(0, countNonFeasible-1), gv.walkforward)
                 for id, stock in resultNewIndividual:
                     if id:
                         newIndividualId = id
