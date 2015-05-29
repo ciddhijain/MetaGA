@@ -7,7 +7,11 @@ import math
 
 class Crossover:
 
-    def performCrossoverRouletteWheelBiased(self, generation, performanceObject, feasibilityObject, dbObject):
+    # Bias type 1 - long long
+    # Bias type 3 - short short
+    # Bias type 21 - long short
+    # Bias type 22 - short long
+    def performCrossoverRouletteWheelBiased(self, generation, performanceObject, tradesheetObject, dbObject):
         numBits = str(gv.longLongProbability)[::-1].find('.')
         rangeLongLong = 10**numBits
         numBits = str(gv.longShortProbability)[::-1].find('.')
@@ -65,8 +69,9 @@ class Crossover:
                         if cont:
                             id2 = id
 
-                            # BiasType 1 corresponds to long-long, 2 corresponds to long-short, 3 corresponds to short-short
+                            # BiasType 1 corresponds to long-long, 21 corresponds to long-short, 22 corresponds to short-long, 3 corresponds to short-short
                             for size1, dummy in resultSize1:
+
                                 resultLong1 = dbObject.getLongIndividualsPortfolio(id1)
                                 resultLong2 = dbObject.getLongIndividualsPortfolio(id2)
                                 long1 = None
@@ -142,6 +147,7 @@ class Crossover:
                                     else:
                                         biasType = 3
 
+
                                 if biasType==1:
                                     while(True):
                                         cut1 = randint(1, long1)
@@ -153,16 +159,11 @@ class Crossover:
                                             for newId in newIds:
                                                 newIdList.append(newId)
                                             break
-                                elif biasType==2:
+
+                                elif biasType==21:
                                     while(True):
-                                        if randint(1,100)<=50:
-                                            cut1 = randint(1, long1)
-                                            cut2 = randint(1, short2)
-                                            biasType =  21
-                                        else:
-                                            cut1 = randint(1, short1)
-                                            cut2 = randint(1, long2)
-                                            biasType = 22
+                                        cut1 = randint(1, long1)
+                                        cut2 = randint(1, short2)
                                         newSize1 = size1 - cut1 + cut2
                                         newSize2 = size2 - cut2 + cut1
                                         if (newSize1<=gv.maxPortfolioSize and newSize1>=gv.minPortfolioSize and newSize2<=gv.maxPortfolioSize and newSize2>=gv.minPortfolioSize):
@@ -170,6 +171,20 @@ class Crossover:
                                             for newId in newIds:
                                                 newIdList.append(newId)
                                             break
+
+                                elif biasType==22:
+                                    while(True):
+                                        cut1 = randint(1, short1)
+                                        cut2 = randint(1, long2)
+                                        biasType = 22
+                                        newSize1 = size1 - cut1 + cut2
+                                        newSize2 = size2 - cut2 + cut1
+                                        if (newSize1<=gv.maxPortfolioSize and newSize1>=gv.minPortfolioSize and newSize2<=gv.maxPortfolioSize and newSize2>=gv.minPortfolioSize):
+                                            newIds = dbObject.insertBiasedCrossoverPortfolio(id1, id2, cut1, cut2, long1, size1, long2, size2, biasType, generation)
+                                            for newId in newIds:
+                                                newIdList.append(newId)
+                                            break
+
                                 else:
                                     while(True):
                                         cut1 = randint(1, short1)
@@ -185,11 +200,11 @@ class Crossover:
                 if id2:
                     break
             for newId in newIdList:
+                tradesheetObject.generateTradesheet(newId, gv.startDate, gv.endDate, dbObject)
                 performance = performanceObject.calculatePerformancePortfolio(gv.startDate, gv.endDate, newId, dbObject)
                 dbObject.insertPerformance(newId, performance[0][1])
-                feasibleExposure = feasibilityObject.updateFeasibilityByExposurePortfolio(newId, dbObject)
-                feasiblePerformance = feasibilityObject.updateFeasibilityByPerformancePortfolio(newId, dbObject)
-                if feasibleExposure and feasiblePerformance:
+                feasiblePerformance = dbObject.updatePerformanceFeasibilityPortfolio(newId)
+                if feasiblePerformance:
                     countFeasiblePortfolios += 1
         return None
 

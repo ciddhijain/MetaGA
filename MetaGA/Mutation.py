@@ -5,7 +5,7 @@ from random import randint, sample
 
 class Mutation:
 
-    def performMutation(self, generation, performanceObject, feasibilityObject, tradesheetObject, dbObject):
+    def performMutation(self, generation, performanceObject, tradesheetObject, dbObject):
         numBits = str(gv.mutationProbability)[::-1].find('.')
         range = 10**numBits
 
@@ -37,4 +37,4 @@ class Mutation:
                     tradesheetObject.generateTradesheet(newId, gv.startDate, gv.endDate, dbObject)
                     performance = performanceObject.calculatePerformancePortfolio(gv.startDate, gv.endDate, newId, dbObject)
                     dbObject.insertPerformance(newId, performance[0][1])
-                    feasibilityObject.updateFeasibilityByPerformancePortfolio(newId, dbObject)
+                    dbObject.updatePerformanceFeasibilityPortfolio(newId)

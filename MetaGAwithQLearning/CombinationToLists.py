@@ -6,7 +6,7 @@ import logging
 
 class CombinationToLists:
 
-    def combine(self, performanceObject, feasibilityObject, dbObject):
+    def combine(self, performanceObject, tradesheetObject, dbObject):
         numBitsEliteProbabilty = str(gv.feederEliteSelectionProbability)[::-1].find('.')
         numBitsNonEliteProbability = str(gv.feederNonEliteSelectionProbability)[::-1].find('.')
         numBits = max(numBitsEliteProbabilty, numBitsNonEliteProbability)
@@ -38,7 +38,7 @@ class CombinationToLists:
         print("Generating initial combinations")
 
         # Terminate when required number of combinations have been generated
-        while countFeasiblePortfolios<=gv.numPortfolios:
+        while countFeasiblePortfolios<gv.numPortfolios:
 
             # We generate a list of following size
             sizePortfolio = randint(gv.minPortfolioSize, gv.maxPortfolioSize)
@@ -62,12 +62,13 @@ class CombinationToLists:
                     dbObject.insertPortfolioMapping(countPortfolios+1, individualId, stockId)
 
             dbObject.insertPortfolio(countPortfolios+1, 1, 1)
+
+            tradesheetObject.generateTradesheet(countPortfolios+1, gv.startDate, gv.endDate, dbObject)
             performance = performanceObject.calculatePerformancePortfolio(gv.startDate, gv.endDate, countPortfolios+1, dbObject)
             dbObject.insertPerformance(countPortfolios+1, performance[0][1])
 
-            feasibleExposure = feasibilityObject.updateFeasibilityByExposurePortfolio(countPortfolios+1, dbObject)
-            feasiblePerformance = feasibilityObject.updateFeasibilityByPerformancePortfolio(countPortfolios+1, dbObject)
-            if feasibleExposure==1 and feasiblePerformance==1:
+            feasiblePerformance = dbObject.updatePerformanceFeasibilityPortfolio(countPortfolios+1)
+            if feasiblePerformance==1:
                 countFeasiblePortfolios += 1
             countPortfolios += 1
 

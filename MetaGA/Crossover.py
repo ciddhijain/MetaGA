@@ -11,7 +11,7 @@ class Crossover:
     # Bias type 3 - short short
     # Bias type 21 - long short
     # Bias type 22 - short long
-    def performCrossoverRouletteWheelBiased(self, generation, performanceObject, feasibilityObject, tradesheetObject, dbObject):
+    def performCrossoverRouletteWheelBiased(self, generation, performanceObject, tradesheetObject, dbObject):
         numBits = str(gv.longLongProbability)[::-1].find('.')
         rangeLongLong = 10**numBits
         numBits = str(gv.longShortProbability)[::-1].find('.')
@@ -203,7 +203,7 @@ class Crossover:
                 tradesheetObject.generateTradesheet(newId, gv.startDate, gv.endDate, dbObject)
                 performance = performanceObject.calculatePerformancePortfolio(gv.startDate, gv.endDate, newId, dbObject)
                 dbObject.insertPerformance(newId, performance[0][1])
-                feasiblePerformance = feasibilityObject.updateFeasibilityByPerformancePortfolio(newId, dbObject)
+                feasiblePerformance = dbObject.updatePerformanceFeasibilityPortfolio(newId)
                 if feasiblePerformance:
                     countFeasiblePortfolios += 1
         return None

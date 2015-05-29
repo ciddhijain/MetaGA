@@ -6,7 +6,6 @@ from Crossover import *
 from Mutation import *
 from Convergence import *
 from DBUtils import *
-from Feasibility import *
 from Performance import *
 from TradesheetGeneration import *
 import logging
@@ -24,7 +23,6 @@ if __name__ == "__main__":
     mutationObj = Mutation()
     convergenceObj = Convergence()
     performanceObj = Performance()
-    feasibilityObj = Feasibility()
     tradesheetObj = TradesheetGeneration()
     dbObject = DBUtils()
     dbObject.dbConnect()
@@ -36,14 +34,14 @@ if __name__ == "__main__":
     dbObject.dbQuery("DELETE FROM portfolio_tradesheet_data_table")
     logging.info("Deleted previous data")
 
-    combinationObj.combine(performanceObj, feasibilityObj, tradesheetObj, dbObject)
+    combinationObj.combine(performanceObj, tradesheetObj, dbObject)
     generation = 1
 
     while (True):
         logging.info("Starting generation " + str(generation))
         print("Starting generation " + str(generation) + " at " + str(datetime.now()))
-        crossoverObj.performCrossoverRouletteWheelBiased(generation, performanceObj, feasibilityObj, tradesheetObj, dbObject)
-        mutationObj.performMutation(generation, performanceObj, feasibilityObj, tradesheetObj, dbObject)
+        crossoverObj.performCrossoverRouletteWheelBiased(generation, performanceObj, tradesheetObj, dbObject)
+        mutationObj.performMutation(generation, performanceObj, tradesheetObj, dbObject)
         selectionObj.select(generation, dbObject)
         if (convergenceObj.checkConvergence(generation, dbObject)):
             logging.info("The GA has converged in " + str(generation) + " generations")
