@@ -937,21 +937,6 @@ class DBUtils:
                 " (" + str(feederIndividualId) + ", " + str(stockId) + ", " + str(performance) + ", " + str(walkforward) + ")"
         return databaseObject.Execute(query)
 
-    # Function to update category of a feeder_individual depending upon pre-set thresholds
-    def updateFeederIndividualCategory(self, feederIndividualId, stockId, performance, walkforward):
-        global databaseObject
-        if performance>gv.thresholdElitePerformance:
-            category = 1
-        elif performance>gv.thresholdFeasiblePerformance:
-            category = 2
-        else:
-            category = 3
-        query = "INSERT INTO individual_category_table" \
-                " (walk_forward, stock_id, individual_id, category)" \
-                " VALUES" \
-                " (" + str(walkforward) + ", " + str(stockId) + ", " + str(feederIndividualId) + ", " + str(category) + ")"
-        return databaseObject.Execute(query)
-
     # Function to update category of feeder_individuals depending upon top percentage
     def updateCategory(self, walkforward):
         global databaseObject

@@ -61,6 +61,4 @@ admissiblePerformanceGap = 0.005                 # This takes all portfolios wit
 dummyPerformance = -50000
 
 newWalkforward = 4
-thresholdElitePerformance = 10
-thresholdFeasiblePerformance = 0
 fractionElites = 0.05
