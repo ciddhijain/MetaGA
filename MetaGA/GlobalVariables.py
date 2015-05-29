@@ -9,11 +9,11 @@ dbHost = '127.0.0.1'                            # This is host address for datab
 dbPort = '3306'                                 # This is port for database connection
 dbConnector = 'mysqlconnector'                  # This is the connector string to be used, depending upon python package
 
-logFileName = 'MetaGA101.log'                      # This is the name of log file. It will append if file already exists
-mappingOutfileName = 'mapping101.csv'
-portfolioOutfileName = 'portfolio101.csv'
-testingPerformanceOutfileName = 'testingPerformance101.csv'
-bestPerformanceOutfileName = 'bestPerformance101.csv'
+logFileName = 'MetaGA100.log'                      # This is the name of log file. It will append if file already exists
+mappingOutfileName = 'mapping100.csv'
+portfolioOutfileName = 'portfolio100.csv'
+testingPerformanceOutfileName = 'testingPerformance100.csv'
+bestPerformanceOutfileName = 'bestPerformance100.csv'
 
 tradesheetLocation = "TradesheetTable.csv"
 priceSeriesLocation = "PriceSeriesTable.csv"
@@ -24,7 +24,7 @@ individualTableLocation = "IndividualTable.csv"
 minGenerations = 10                             # This is the minimum number of generations that GA will perform
 maxGenerations = 100                            # This is the maximum number of generations that GA will perform
 
-walkforward = 2                                 # This is walkforward from which individuals and trades will be picked
+walkforward = 4                                 # This is walkforward from which individual category is taken
 #crossoverList = [(1, 2), (2, 2)]               # This list specifies types of crossovers and number of children
 # crossoverList = [(1, 2), (2, 2)]
 
@@ -34,9 +34,9 @@ minPortfolioSize = 25                            # This is the minimum size of p
 feederEliteSelectionProbability = 0.6           # This is the probability of putting elite individuals from feeder in a portfolio
 feederNonEliteSelectionProbability = 0.4        # This is the probability of putting non-elite fit individuals from feeder in a portfolio
 mutationProbability = 0.025                      # This is the mutation probability
-longShortProbability = 0.6
-longLongProbability = 0.2
-shortShortProbability = 0.2
+longShortProbability = 0.5
+longLongProbability = 0.25
+shortShortProbability = 0.25
 
 numPortfolios = 100                             # This is the number of portfolios in one generation
 maxNumPortfolios = numPortfolios
@@ -45,7 +45,7 @@ numCrossoverPortfolios = 0.8 * numPortfolios    # This is the proportion which i
 numElites = 5                                   # This is the number of top portfolios in a generation which are considered as elite
 
 startDate = datetime(2012, 1, 2).date()          # This is the start of trading period
-endDate = datetime(2012, 2, 28).date()           # This is the end of trading period
+endDate = datetime(2012, 2, 29).date()           # This is the end of trading period
 testingStartDate = endDate + timedelta(days=1)
 testingEndDate = datetime(2012, 3, 31).date()
 
