@@ -5,10 +5,10 @@ from datetime import timedelta
 
 class MTM:
 
-    def calculateMTM (self, portfolioId, individualId, stockId, aggregationUnit, startDate, startTime, endDate, endTime, dbObject):
+    def calculateMTM (self, portfolioId, individualId, stockId, startDate, startTime, endDate, endTime, dbObject):
         # Query to get live trades for the individual
         resultTrades = dbObject.getTradesIndividual(portfolioId, individualId, stockId, startDate, startTime, endDate, endTime)
-        for stockId, individualId, entryDate, entryTime, entryPrice, exitDate, exitTime, exitPrice, entryQty, tradeType in resultTrades:
+        for metaId, stockId, individualId, entryDate, entryTime, entryPrice, exitDate, exitTime, exitPrice, entryQty, tradeType in resultTrades:
             resultPriceSeries = None
             price = None
             endPrice = None
@@ -42,10 +42,10 @@ class MTM:
                     mtm = (price-endPrice) * entryQty
                     dbObject.addOrUpdateMTM(portfolioId, individualId, stockId, tradeType, entryDate, endTime, mtm)
 
-    def calculateTrainingMTM (self, portfolioId, individualId, stockId, aggregationUnit, startDate, startTime, endDate, endTime, dbObject):
+    def calculateTrainingMTM (self, portfolioId, individualId, stockId, startDate, startTime, endDate, endTime, dbObject):
         # Query to get live trades for the individual
         resultTrades = dbObject.getTrainingTradesIndividual(portfolioId, individualId, stockId, startDate, startTime, endDate, endTime)
-        for stockId, individualId, entryDate, entryTime, entryPrice, exitDate, exitTime, exitPrice, entryQty, tradeType in resultTrades:
+        for metaId, stockId, individualId, entryDate, entryTime, entryPrice, exitDate, exitTime, exitPrice, entryQty, tradeType in resultTrades:
             resultPriceSeries = None
             price = None
             endPrice = None

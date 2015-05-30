@@ -28,7 +28,7 @@ class Live:
                     for id, stock, type, qty, entry_price, exit_price in resultTradesExit:
                         #print('Exiting Trades')
                         freedAsset = 0
-                        if type==0:
+                        if type==1:
                             freedAsset = qty*exit_price*(-1)
                         else:
                             freedAsset = qty*(2*entry_price - exit_price)*(-1)
@@ -48,7 +48,6 @@ class Live:
                                     #print('Taking this trade. Asset used = ' + str(usedAsset))
                                     dbObject.insertNewTrade(portfolioId, stockId, individualId, entryDate, entryTime, entryPrice, exitDate, exitTime, exitPrice, entryQty, tradeType)
                                     dbObject.updateIndividualAsset(portfolioId, gv.dummyIndividualId, gv.dummyStockId, usedAsset)
-                                    #TODO
                                     dbObject.insertLatestIndividual(portfolioId, individualId, stockId)
                                 else:
                                     #print('Individual exists already')
@@ -61,16 +60,16 @@ class Live:
                                             dbObject.updateIndividualAsset(portfolioId, individualId, stockId, usedAsset)
                                             dbObject.insertLatestIndividual(portfolioId, individualId, stockId)
             if isTradingDay:
-                resultIndividuals = dbObject.getIndividuals(date, startTime, date, endTime)
-                for individualId, dummy in resultIndividuals:
+                resultIndividuals = dbObject.getIndividuals(portfolioId, date, startTime, date, endTime)
+                for individualId, stockId in resultIndividuals:
                     print('Calculating mtm')
-                    mtmObject.calculateMTM(individualId, gv.aggregationUnit, date, startTime, date, endTime, dbObject)
+                    mtmObject.calculateMTM(portfolioId, individualId, stockId, date, startTime, date, endTime, dbObject)
                     print('Calculating reward matrix')
-                    rewardMatrix = rewardMatrixObject.computeRM(individualId, date, startTime, date, endTime, dbObject)
+                    rewardMatrix = rewardMatrixObject.computeRM(portfolioId, individualId, stockId, date, startTime, date, endTime, dbObject)
                     print('Calculating q matrix')
-                    qMatrixObject.calculateQMatrix(rewardMatrix, individualId, dbObject)
+                    qMatrixObject.calculateQMatrix(rewardMatrix, portfolioId, individualId, stockId, dbObject)
                 print('Reallocating asset for  individuals')
-                reallocationObject.reallocate(date, startTime, date, endTime, dbObject)
+                reallocationObject.reallocate(portfolioId, date, startTime, date, endTime, dbObject)
 
                 if endTime<dayEndTime:
                     startTime = endTime
@@ -80,16 +79,16 @@ class Live:
                     print('New end time : ' + str(endTime))
                 else:
                     print('Fetching trades that are to exit by the day end')
-                    resultTradesExit = dbObject.getTradesExitEnd(date, lastCheckedTime, endTime)
-                    for id, type, qty, entry_price, exit_price in resultTradesExit:
+                    resultTradesExit = dbObject.getTradesExitEnd(portfolioId, date, lastCheckedTime)
+                    for id, stock, type, qty, entry_price, exit_price in resultTradesExit:
                         freedAsset = 0
-                        if type==0:
+                        if type==1:
                             freedAsset = qty*exit_price*(-1)            # Long Trade
                         else:
                             freedAsset = qty*(2*entry_price - exit_price)*(-1)          # Short Trade
-                        dbObject.updateIndividualAsset(gv.dummyIndividualId, freedAsset)
-                        dbObject.updateIndividualAsset(id, freedAsset)
-                    dbObject.insertDailyAsset(date, endTime)
+                        dbObject.updateIndividualAsset(portfolioId, gv.dummyIndividualId, gv.dummyStockId, freedAsset)
+                        dbObject.updateIndividualAsset(portfolioId, id, stock, freedAsset)
+                    dbObject.insertDailyAsset(portfolioId, date, endTime)
                     print('Checking if we have reached the end of testing period')
                     if(date>=periodEndDate):
                         done = True

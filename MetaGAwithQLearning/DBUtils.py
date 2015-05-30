@@ -1222,7 +1222,7 @@ class DBUtils:
     # Function to get price from price series for a given date and time
     def getPrice(self, stockId, startDate, startTime):
         global databaseObject
-        queryPrice = "SELECT time, close FROM price_series_table WHERE date='" + str(startDate) + "' AND time='" + str(startTime) +\
+        queryPrice = "SELECT time, open FROM price_series_table WHERE date='" + str(startDate) + "' AND time='" + str(startTime) +\
                      "' AND stock_id=" + str(stockId)
         return databaseObject.Execute(queryPrice)
 
@@ -1341,3 +1341,187 @@ class DBUtils:
                    str(endTime) + "' AND exit_time>'" + str(startTime) + "' AND entry_date='" + str(startDate) + "' AND trade_type=0"
         #print(queryQty)
         return databaseObject.Execute(queryQty)
+
+    # Function to get Q Matrix of an individual
+    def getQMatrix (self, portfolioId, feederIndividualId, stockId):
+        global databaseObject
+        queryQM = "SELECT row_num, column_num, q_value FROM q_matrix_table WHERE meta_individual_id=" + str(portfolioId) + \
+                   " AND feeder_individual_id=" + str(feederIndividualId) + " AND stock_id=" + str(stockId)
+        return databaseObject.Execute(queryQM)
+
+    # Function to insert / update Q matrix of an individual
+    def updateQMatrix(self, portfolioId, feederIndividualId, stockId, qm):
+        global databaseObject
+        queryCheck = "SELECT EXISTS (SELECT 1 FROM q_matrix_table WHERE meta_individual_id=" + str(portfolioId) + \
+                   " AND feeder_individual_id=" + str(feederIndividualId) + " AND stock_id=" + str(stockId) + "), 1"
+        resultCheck = databaseObject.Execute(queryCheck)
+        for check, dummy in resultCheck:
+            if check==1:
+                for i in range(0,3,1):
+                    for j in range(0,3,1):
+                        queryUpdate = "UPDATE q_matrix_table SET q_value=" + str(round(qm[i,j], 10)) + " WHERE meta_individual_id=" + \
+                                      str(portfolioId) + " AND feeder_individual_id=" + str(feederIndividualId) + " AND stock_id=" + \
+                                      str(stockId) + " AND row_num=" + str(i) + " AND column_num=" + str(j)
+                        databaseObject.Execute(queryUpdate)
+            else:
+                for i in range(0,3,1):
+                    for j in range(0,3,1):
+                        queryInsert = "INSERT INTO q_matrix_table " \
+                                     "(meta_individual_id, feeder_individual_id, stock_id, row_num, column_num, q_value)" \
+                                     " VALUES " \
+                                     "(" + str(portfolioId) + ", " + str(feederIndividualId) + ", " + str(stockId) + ", " + \
+                                      str(i) + ", " + str(j) + ", " + str(round(qm[i,j], 10)) + ")"
+                        databaseObject.Execute(queryInsert)
+
+    # Function to add individual's entry in reallocation table
+    def addNewState(self, portfolioId, feederIndividualId, stockId, date, time, state):
+        global databaseObject
+        queryNewState = "INSERT INTO reallocation_table" \
+                        " (meta_individual_id, feeder_individual_id, stock_id, last_reallocation_date, last_reallocation_time, last_state)" \
+                        " VALUES" \
+                        " (" + str(portfolioId) + ", " + str(feederIndividualId) + ", " + str(stockId) + ", '" + str(date) + "', '" + \
+                        str(time) + "', " + str(state) + ")"
+        return databaseObject.Execute(queryNewState)
+
+    # Function to get last state for an individual
+    def getLastState (self, portfolioId, feederIndividualId, stockId):
+        global databaseObject
+        queryLastState = "SELECT last_state, 1 FROM reallocation_table WHERE meta_individual_id=" + str(portfolioId) + \
+                         " AND feeder_individual_id=" + str(feederIndividualId) + " AND stock_id=" + str(stockId) + \
+                         " AND last_reallocation_date=(SELECT MAX(last_reallocation_date) FROM reallocation_table WHERE " \
+                         "meta_individual_id=" + str(portfolioId) + " AND feeder_individual_id=" + str(feederIndividualId) + \
+                         " AND stock_id=" + str(stockId) + ") AND last_reallocation_time=(SELECT MAX(last_reallocation_time) " \
+                         "FROM reallocation_table WHERE meta_individual_id=" + str(portfolioId) + " AND feeder_individual_id=" + \
+                         str(feederIndividualId) + " AND stock_id=" + str(stockId) + " AND last_reallocation_date=" \
+                         "(SELECT MAX(last_reallocation_date) FROM reallocation_table WHERE meta_individual_id=" + str(portfolioId) + \
+                         " AND feeder_individual_id=" + str(feederIndividualId) + " AND stock_id=" + str(stockId) + "))"
+        return databaseObject.Execute(queryLastState)
+
+    # Function to get next state for an individual
+    def getNextState (self, portfolioId, feederIndividualId, stockId, currentState):
+        global databaseObject
+
+        queryMaxQValue = "SELECT MAX(q_value), 1 FROM q_matrix_table WHERE meta_individual_id=" + str(portfolioId) + " AND feeder_individual_id=" + \
+                         str(feederIndividualId) + " AND stock_id=" + str(stockId) + " AND row_num=" + str(currentState)
+        resultMaxQValue = databaseObject.Execute(queryMaxQValue)
+        queryCurrentQValue = "SELECT q_value, 1 FROM q_matrix_table WHERE meta_individual_id=" + str(portfolioId) + " AND feeder_individual_id=" + \
+                             str(feederIndividualId) + " AND stock_id=" + str(stockId) + " AND row_num=" + str(currentState) + " AND column_num=1"
+        resultCurrentQValue = databaseObject.Execute(queryCurrentQValue)
+        for maxQValue, dummy1 in resultMaxQValue:
+            for currentQValue, dummy2 in resultCurrentQValue:
+                # Checking with help of percentage difference between the maximum and current Q value
+                if currentQValue!=0:
+                    diff = float(abs(maxQValue-currentQValue)/currentQValue*100)
+                    if diff>gv.zeroRange:
+                        queryNextState = "SELECT column_num, 1 FROM q_matrix_table WHERE meta_individual_id=" + str(portfolioId) + \
+                                         " AND feeder_individual_id=" + str(feederIndividualId) + " AND stock_id=" + str(stockId) + " AND row_num=" + \
+                                         str(currentState) + " AND q_value=(SELECT MAX(q_value) FROM q_matrix_table WHERE meta_individual_id=" + \
+                                         str(portfolioId) + " AND feeder_individual_id=" + str(feederIndividualId) + " AND stock_id=" + str(stockId) + \
+                                         " AND row_num=" + str(currentState) + ")"
+                        return databaseObject.Execute(queryNextState)
+                    else:
+                        queryNextState = "SELECT column_num, 1 FROM q_matrix_table WHERE meta_individual_id=" + str(portfolioId) + \
+                                         " AND feeder_individual_id=" + str(feederIndividualId) + " AND stock_id=" + str(stockId) + " AND row_num=" + \
+                                         str(currentState) + " AND q_value=(SELECT q_value FROM q_matrix_table WHERE meta_individual_id=" + str(portfolioId) + \
+                                         " AND feeder_individual_id=" + str(feederIndividualId) + " AND stock_id=" + str(stockId) + \
+                                         " AND row_num=" + str(currentState) + " AND column_num=1)"
+                        return databaseObject.Execute(queryNextState)
+                else:
+                    queryNextState = "SELECT column_num, 1 FROM q_matrix_table WHERE meta_individual_id=" + str(portfolioId) + \
+                                     " AND feeder_individual_id=" + str(feederIndividualId) + " AND stock_id=" + str(stockId) + " AND row_num=" + \
+                                     str(currentState) + " AND column_num=1"
+                    return databaseObject.Execute(queryNextState)
+
+    # Function to reduce free asset for an individual
+    def reduceFreeAsset(self, portfolioId, feederIndividualId, stockId, unitQty):
+        global databaseObject
+        resultCurrentFreeAsset = databaseObject.Execute("SELECT free_asset, total_asset FROM asset_allocation_table "
+                                                        "WHERE meta_individual_id=" + str(portfolioId) + " AND feeder_individual_id=" +
+                                                        str(feederIndividualId) + " AND stock_id=" + str(stockId))
+        for freeAsset, totalAsset in resultCurrentFreeAsset:
+            if (float(freeAsset)>=unitQty):
+                newFreeAsset = float(freeAsset) - unitQty
+                newTotalAsset = float(totalAsset) - unitQty
+                queryUpdate = "UPDATE asset_allocation_table SET free_asset=" + str(round(newFreeAsset,4)) + ", total_asset=" + \
+                              str(round(newTotalAsset,4)) + " WHERE meta_individual_id=" + str(portfolioId) + " AND feeder_individual_id=" + \
+                              str(feederIndividualId) + " AND stock_id=" + str(stockId)
+                return databaseObject.Execute(queryUpdate)
+            else:
+                newTotalAsset = float(totalAsset - freeAsset)
+                queryUpdate = "UPDATE asset_allocation_table SET free_asset=0, total_asset=" + str(round(newTotalAsset,4)) + \
+                              " WHERE meta_individual_id=" + str(portfolioId) + " AND feeder_individual_id=" + \
+                              str(feederIndividualId) + " AND stock_id=" + str(stockId)
+                return databaseObject.Execute(queryUpdate)
+
+    # Function to increase free asset for an individual
+    def increaseFreeAsset(self, portfolioId, feederIndividualId, stockId, unitQty):
+        global databaseObject
+        resultCurrentTotalAsset = databaseObject.Execute("SELECT total_asset, free_asset FROM asset_allocation_table"
+                                                        " WHERE meta_individual_id=" + str(portfolioId) + " AND feeder_individual_id=" +
+                                                        str(feederIndividualId) + " AND stock_id=" + str(stockId))
+        for totalAsset, freeAsset in resultCurrentTotalAsset:
+            newTotalAsset = float(totalAsset) + unitQty
+            newFreeAsset = float(freeAsset) + unitQty
+            if newTotalAsset<=gv.maxAsset:
+                queryUpdate = "UPDATE asset_allocation_table SET free_asset=" + str(round(newFreeAsset,4)) + ", total_asset=" + \
+                              str(round(newTotalAsset,4)) + " WHERE meta_individual_id=" + str(portfolioId) + " AND feeder_individual_id=" + \
+                              str(feederIndividualId) + " AND stock_id=" + str(stockId)
+                return databaseObject.Execute(queryUpdate)
+            else:
+                newTotalAsset = gv.maxAsset
+                newFreeAsset = float(freeAsset) + gv.maxAsset - float(totalAsset)
+                queryUpdate = "UPDATE asset_allocation_table SET free_asset=" + str(round(newFreeAsset,4)) + ", total_asset=" + \
+                              str(round(newTotalAsset,4)) + " WHERE meta_individual_id=" + str(portfolioId) + " AND feeder_individual_id=" + \
+                              str(feederIndividualId) + " AND stock_id=" + str(stockId)
+                return databaseObject.Execute(queryUpdate)
+
+    # Function to insert free asset at day end into asset_daily_allocation_table
+    def insertDailyAsset(self, portfolioId, date, time):
+        global databaseObject
+        resultAsset = databaseObject.Execute("SELECT free_asset, 1 from asset_allocation_table where meta_individual_id=" + str(portfolioId) +
+                                             " AND feeder_individual_id=" + str(gv.dummyIndividualId) + " AND stock_id=" + str(gv.dummyStockId))
+        for totalAsset, dummy in resultAsset:
+            databaseObject.Execute("INSERT INTO asset_daily_allocation_table"
+                                   " (meta_individual_id, date, time, total_asset)"
+                                   " VALUES"
+                                   " ('" + str(portfolioId) + str(date) + "', '" + str(time) + "', " + str(totalAsset) + ")")
+
+    # Function to delete all non-recent entries from q_matrix_table every walk-forward
+    def updateQMatrixTableWalkForward(self, portfolioId):
+        global databaseObject
+        queryLatest = "SELECT * FROM latest_individual_table WHERE meta_individual_id=" + str(portfolioId)
+        resultLatest = databaseObject.Execute(queryLatest)
+        queryUpdate = "DELETE FROM q_matrix_table WHERE NOT ( "
+        count = 0
+        for metaId, feederId, stockId in resultLatest:
+            if count==0:
+                queryUpdate += "( meta_individual_id=" + str(metaId) + " AND feeder_individual_id=" + str(feederId) + " AND stock_id=" + str(stockId) + " ) "
+                count += 1
+            else:
+                queryUpdate += "OR ( meta_individual_id=" + str(metaId) + " AND feeder_individual_id=" + str(feederId) + " AND stock_id=" + str(stockId) + " ) "
+        queryUpdate += ")"
+        return databaseObject.Execute(queryUpdate)
+
+    # Function to reset asset_allocation_table every walk-forward
+    def updateAssetWalkForward(self, portfolioId):
+        global databaseObject
+        queryLatest = "SELECT * FROM latest_individual_table WHERE meta_individual_id=" + str(portfolioId)
+        resultLatest = databaseObject.Execute(queryLatest)
+        queryUpdate = "DELETE FROM asset_allocation_table WHERE NOT ( "
+        count = 0
+        for metaId, feederId, stockId in resultLatest:
+            if count==0:
+                queryUpdate += "( meta_individual_id=" + str(metaId) + " AND feeder_individual_id=" + str(feederId) + " AND stock_id=" + str(stockId) + " ) "
+                count += 1
+            else:
+                queryUpdate += "OR ( meta_individual_id=" + str(metaId) + " AND feeder_individual_id=" + str(feederId) + " AND stock_id=" + str(stockId) + " ) "
+        queryUpdate += ")"
+        return databaseObject.Execute(queryUpdate)
+
+    def resetRanks(self, portfolioId):
+        global databaseObject
+        queryCount = "SELECT COUNT(*), 1 FROM mapping_table WHERE meta_individual_id=" + str(portfolioId)
+        resultCount = databaseObject.Execute(queryCount)
+        for count, dummy in resultCount:
+            queryUpdate = "UPDATE ranking_table SET ranking=" + str(count) + " WHERE meta_individual_id=" + str(portfolioId)
+            databaseObject.Execute(queryUpdate)

@@ -5,38 +5,38 @@ import GlobalVariables as gv
 
 class Reallocation:
 
-    def reallocate(self, startDate, startTime, endDate, endTime, dbObject):
+    def reallocate(self, portfolioId, startDate, startTime, endDate, endTime, dbObject):
 
         # get all individuals which are active in last window
-        resultIndividuals = dbObject.getIndividuals(startDate, startTime, endDate, endTime)
+        resultIndividuals = dbObject.getIndividuals(portfolioId, startDate, startTime, endDate, endTime)
         posDeltaIndividuals = []
         negDeltaIndividuals = []
         noDeltaIndividuals = []
 
-        for individualId, dummy1 in resultIndividuals:
+        for individualId, stockId in resultIndividuals:
             # get last state for the individual
-            resultLastState = dbObject.getLastState(individualId)
-            for lastState, individual in resultLastState:
-                resultNextState = dbObject.getNextState(individualId, lastState)
+            resultLastState = dbObject.getLastState(portfolioId, individualId, stockId)
+            for lastState, dummy1 in resultLastState:
+                resultNextState = dbObject.getNextState(portfolioId, individualId, stockId, lastState)
                 for nextState, dummy2 in resultNextState:
                     # Depending upon suggested next state, segregate individual_id
                     if nextState==0:
-                        negDeltaIndividuals.append(individualId)
+                        negDeltaIndividuals.append((portfolioId, individualId, stockId))
                     else:
                         if nextState==1:
-                            noDeltaIndividuals.append(individualId)
+                            noDeltaIndividuals.append((portfolioId, individualId, stockId))
                         else:
-                            posDeltaIndividuals.append(individualId)
+                            posDeltaIndividuals.append((portfolioId, individualId, stockId))
 
         # update asset and state for all individuals accordingly
         for i in range(0, len(negDeltaIndividuals), 1):
-            dbObject.reduceFreeAsset(negDeltaIndividuals[i], gv.unitQty)
-            dbObject.addNewState(negDeltaIndividuals[i], endDate, endTime, 0)
+            dbObject.reduceFreeAsset(portfolioId, negDeltaIndividuals[i][1], negDeltaIndividuals[i][2], gv.unitQty)
+            dbObject.addNewState(portfolioId, negDeltaIndividuals[i][1], negDeltaIndividuals[i][2], endDate, endTime, 0)
         for i in range(0, len(posDeltaIndividuals), 1):
-            dbObject.increaseFreeAsset(posDeltaIndividuals[i], gv.unitQty)
-            dbObject.addNewState(posDeltaIndividuals[i], endDate, endTime, 2)
+            dbObject.increaseFreeAsset(portfolioId, posDeltaIndividuals[i][1], posDeltaIndividuals[i][2], gv.unitQty)
+            dbObject.addNewState(portfolioId, posDeltaIndividuals[i][1], posDeltaIndividuals[i][2], endDate, endTime, 2)
         for i in range(0, len(noDeltaIndividuals), 1):
-            dbObject.addNewState(noDeltaIndividuals[i], endDate, endTime, 1)
+            dbObject.addNewState(portfolioId, noDeltaIndividuals[i][1], noDeltaIndividuals[i][2], endDate, endTime, 1)
 
 
 # To test

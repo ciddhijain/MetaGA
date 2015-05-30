@@ -28,7 +28,7 @@ class Training:
                     for id, stock, type, qty, entry_price, exit_price in resultTradesExit:
                         #print('Exiting Trades')
                         freedAsset = 0
-                        if type==0:
+                        if type==1:
                             freedAsset = qty*exit_price*(-1)
                         else:
                             freedAsset = qty*(2*entry_price - exit_price)*(-1)
@@ -62,11 +62,11 @@ class Training:
                 resultIndividuals = dbObject.getTrainingIndividuals(portfolioId, date, startTime, date, endTime)
                 for individualId, stockId in resultIndividuals:
                     print('Calculating mtm')
-                    mtmObject.calculateTrainingMTM(portfolioId, individualId, stockId, gv.aggregationUnit, date, startTime, date, endTime, dbObject)
+                    mtmObject.calculateTrainingMTM(portfolioId, individualId, stockId, date, startTime, date, endTime, dbObject)
                     print('Calculating reward matrix')
                     rewardMatrix = rewardMatrixObject.computeTrainingRM(portfolioId, individualId, stockId, date, startTime, date, endTime, dbObject)
                     print('Calculating q matrix')
-                    qMatrixObject.calculateQMatrix(rewardMatrix, individualId, dbObject)
+                    qMatrixObject.calculateQMatrix(rewardMatrix, portfolioId, individualId, stockId, dbObject)
                 if endTime<dayEndTime:
                     startTime = endTime
                     endTime = endTime + timedelta(hours=gv.hourWindow)
@@ -75,15 +75,15 @@ class Training:
                     print('New end time : ' + str(endTime))
                 else:
                     print('Fetching trades that are to exit by the day end')
-                    resultTradesExit = dbObject.getTrainingTradesExitEnd(date, lastCheckedTime, endTime)
-                    for id, type, qty, entry_price, exit_price in resultTradesExit:
+                    resultTradesExit = dbObject.getTrainingTradesExitEnd(portfolioId, date, lastCheckedTime)
+                    for id, stock, type, qty, entry_price, exit_price in resultTradesExit:
                         freedAsset = 0
-                        if type==0:
+                        if type==1:
                             freedAsset = qty*exit_price*(-1)            # Long Trade
                         else:
                             freedAsset = qty*(2*entry_price - exit_price)*(-1)          # Short Trade
-                        dbObject.updateTrainingIndividualAsset(gv.dummyIndividualId, freedAsset)
-                        dbObject.updateTrainingIndividualAsset(id, freedAsset)
+                        dbObject.updateTrainingIndividualAsset(portfolioId, gv.dummyIndividualId, gv.dummyStockId, freedAsset)
+                        dbObject.updateTrainingIndividualAsset(portfolioId, id, stock, freedAsset)
                     print('Checking if we have reached the end of testing period')
                     if(date>=periodEndDate):
                         done = True

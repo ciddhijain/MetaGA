@@ -70,9 +70,16 @@ fractionElites = 0.05
 
 dummyIndividualId = -1
 dummyStockId = -1
+
 maxTotalAsset = 10000000
 trainingMaxTotalAsset = 20000000
 factor = 5
 maxAsset = maxTotalAsset / factor
+unitQty = 100000
 
 alpha = 0.6
+gamma = 0.8
+maxGreedyLevel = 5
+zeroRange = 0.001
+
+hourWindow = 1

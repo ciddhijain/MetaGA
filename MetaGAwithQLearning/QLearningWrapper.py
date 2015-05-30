@@ -54,14 +54,14 @@ class QLearningWrapper:
             dbObject.resetLatestIndividualsWalkForward(portfolioId)
             dbObject.resetAssetTraining(portfolioId)
             rankingObject.updateRankings(portfolioId, walkforwardStartDate, walkforwardEndDate, performanceObject, dbObject)
-            trainingObject.train(trainingStartDate, trainingEndDate, dbObject, mtmObject, rewardMatrixObject, qMatrixObject)
-            liveObject.live(liveStartDate, liveEndDate, dbObject, mtmObject, rewardMatrixObject, qMatrixObject, reallocationObject)
+            trainingObject.train(portfolioId, trainingStartDate, trainingEndDate, dbObject, mtmObject, rewardMatrixObject, qMatrixObject)
+            liveObject.live(portfolioId, liveStartDate, liveEndDate, dbObject, mtmObject, rewardMatrixObject, qMatrixObject, reallocationObject)
             if liveEndDate>=periodEndDate:
                 done = True
             else:
-                dbObject.updateQMatrixTableWalkForward()
-                dbObject.updateAssetWalkForward()
-                dbObject.resetRanks()
+                dbObject.updateQMatrixTableWalkForward(portfolioId)
+                dbObject.updateAssetWalkForward(portfolioId)
+                dbObject.resetRanks(portfolioId)
                 walkforwardStartDate = trainingStartDate
                 walkforwardEndDate = trainingEndDate
                 trainingStartDate = liveStartDate
