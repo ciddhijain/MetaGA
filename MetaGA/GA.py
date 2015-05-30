@@ -8,6 +8,7 @@ from Convergence import *
 from DBUtils import *
 from Performance import *
 from TradesheetGeneration import *
+from Categorization import *
 import logging
 from datetime import datetime
 import GlobalVariables as gv
@@ -24,6 +25,7 @@ if __name__ == "__main__":
     convergenceObj = Convergence()
     performanceObj = Performance()
     tradesheetObj = TradesheetGeneration()
+    categoryObject = Categorization()
     dbObject = DBUtils()
     dbObject.dbConnect()
 
@@ -32,7 +34,10 @@ if __name__ == "__main__":
     dbObject.dbQuery("DELETE FROM crossover_pairs_table")
     dbObject.dbQuery("DELETE FROM exposure_table")
     dbObject.dbQuery("DELETE FROM portfolio_tradesheet_data_table")
+    dbObject.dbQuery("DELETE FROM individual_category_table WHERE walk_forward=" + str(gv.newWalkforward))
     logging.info("Deleted previous data")
+
+    categoryObject.categorizeFeederIndividualsByThresholds(gv.startDate, gv.endDate, performanceObj, dbObject)
 
     combinationObj.combine(performanceObj, tradesheetObj, dbObject)
     generation = 1

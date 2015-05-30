@@ -5,6 +5,7 @@ from Performance import *
 
 class Categorization:
 
+    # This function updates category by considering top x% of the population as elites
     def categorizeFeederIndividualsByPercentage(self, startDate, endDate, performanceObject, dbObject):
         walkforward = gv.newWalkforward
         resultIndividuals = dbObject.getFeederIndividuals()
@@ -14,6 +15,7 @@ class Categorization:
             #dbObject.updateFeederIndividualCategory(feederIndividualId, stockId, performance[0][1], walkforward)
         dbObject.updateCategory(walkforward)
 
+    # This function updates category by using predefined thresholds
     def categorizeFeederIndividualsByThresholds(self, startDate, endDate, performanceObject, dbObject):
         walkforward = gv.newWalkforward
         resultIndividuals = dbObject.getFeederIndividuals()
