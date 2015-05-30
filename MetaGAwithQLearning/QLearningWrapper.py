@@ -1,31 +1,13 @@
 __author__ = 'Ciddhi'
 
 from datetime import timedelta, datetime
-from Reallocation import *
-from RewardMatrix import *
-from Training import *
-from Live import *
-from MTM import *
-from Ranking import *
-from QMatrix import *
-from Performance import *
+import GlobalVariables as gv
+
 import calendar
 
 class QLearningWrapper:
 
-    def wrapper(self, portfolioId):
-
-        dbObject = DBUtils()
-        rankingObject = Ranking()
-        mtmObject = MTM()
-        rewardMatrixObject = RewardMatrix()
-        qMatrixObject = QMatrix()
-        trainingObject = Training()
-        liveObject = Live()
-        reallocationObject = Reallocation()
-        performanceObject = Performance()
-
-        dbObject.dbConnect()
+    def feedback(self, portfolioId, performanceObject, rankingObject, mtmObject, rewardMatrixObject, qMatrixObject, trainingObject, liveObject, reallocationObject, dbObject):
 
         walkforwardStartDate = gv.startDate
         walkforwardEndDate = datetime(walkforwardStartDate.year, walkforwardStartDate.month, calendar.monthrange(walkforwardStartDate.year, walkforwardStartDate.month)[1]).date()

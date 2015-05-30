@@ -6,7 +6,7 @@ import logging
 
 class CombinationToLists:
 
-    def combine(self, performanceObject, tradesheetObject, dbObject):
+    def combine(self, qLearningObject, performanceObject, rankingObject, mtmObject, rewardMatrixObject, qMatrixObject, trainingObject, liveObject, reallocationObject, dbObject):
         numBitsEliteProbabilty = str(gv.feederEliteSelectionProbability)[::-1].find('.')
         numBitsNonEliteProbability = str(gv.feederNonEliteSelectionProbability)[::-1].find('.')
         numBits = max(numBitsEliteProbabilty, numBitsNonEliteProbability)
@@ -63,7 +63,7 @@ class CombinationToLists:
 
             dbObject.insertPortfolio(countPortfolios+1, 1, 1)
 
-            tradesheetObject.generateTradesheet(countPortfolios+1, gv.startDate, gv.endDate, dbObject)
+            qLearningObject.feedback(countPortfolios+1, performanceObject, rankingObject, mtmObject, rewardMatrixObject, qMatrixObject, trainingObject, liveObject, reallocationObject, dbObject)
             performance = performanceObject.calculatePerformancePortfolio(gv.startDate, gv.endDate, countPortfolios+1, dbObject)
             dbObject.insertPerformance(countPortfolios+1, performance[0][1])
 

@@ -968,7 +968,15 @@ class DBUtils:
             databaseObject.Execute(queryElite)
 
         queryFeasible = "UPDATE individual_category_table SET category=2 WHERE walk_forward=" + str(walkforward) + " AND category IS NULL"
-        databaseObject.Execute(queryFeasible)
+        return databaseObject.Execute(queryFeasible)
+
+    def updateFeederIndividualCategory(self, feederIndividualId, stockId, category, walkforward):
+        global databaseObject
+        query = "INSERT INTO individual_category_table " \
+                "(individual_id, stock_id, walk_forward, category)" \
+                " VALUES" \
+                " (" + str(feederIndividualId) + ", " + str(stockId) + ", " + str(walkforward)+ ", " + str(category) + ")"
+        return databaseObject.Execute(query)
 
     ########################################################################################################################
     # Q Learning Functions follow:
