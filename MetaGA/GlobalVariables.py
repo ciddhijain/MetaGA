@@ -62,3 +62,5 @@ dummyPerformance = -50000
 
 newWalkforward = 4
 fractionElites = 0.05
+numTrainingDays = 41
+
