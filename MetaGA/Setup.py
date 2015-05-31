@@ -65,7 +65,7 @@ if __name__ == "__main__":
     print("Loading tradesheet -----------")
 
     dbObject.dbQuery("LOAD DATA INFILE '" + gv.tradesheetLocation + "'"
-                     " INTO TABLE tradesheet_data_table"
+                     " INTO TABLE old_tradesheet_data_table"
                      " FIELDS TERMINATED BY ','"
                      " ENCLOSED BY '\"'"
                      " LINES TERMINATED BY '\\n'")
@@ -111,10 +111,10 @@ if __name__ == "__main__":
                      " )")
     '''
 
-    print("Loading feeder_individual_table -----------")
+    print("Loading individual_category_table -----------")
 
-    dbObject.dbQuery("LOAD DATA INFILE '" + gv.feederIndividualLocation + "'"
-                     " INTO TABLE feeder_individual_table"
+    dbObject.dbQuery("LOAD DATA INFILE '" + gv.individualCategoryLocation + "'"
+                     " INTO TABLE individual_category_table"
                      " FIELDS TERMINATED BY ','"
                      " ENCLOSED BY '\"'"
                      " LINES TERMINATED BY '\\n'")
