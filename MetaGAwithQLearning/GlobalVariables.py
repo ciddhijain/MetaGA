@@ -28,8 +28,8 @@ walkforward = 4                                 # This is walkforward from which
 #crossoverList = [(1, 2), (2, 2)]               # This list specifies types of crossovers and number of children
 # crossoverList = [(1, 2), (2, 2)]
 
-maxPortfolioSize = 5                           # This is the maximum size of portfolio
-minPortfolioSize = 2                            # This is the minimum size of portfolio
+maxPortfolioSize = 100                           # This is the maximum size of portfolio
+minPortfolioSize = 25                            # This is the minimum size of portfolio
 
 feederEliteSelectionProbability = 0.6           # This is the probability of putting elite individuals from feeder in a portfolio
 feederNonEliteSelectionProbability = 0.4        # This is the probability of putting non-elite fit individuals from feeder in a portfolio
@@ -38,16 +38,16 @@ longShortProbability = 0.5
 longLongProbability = 0.25
 shortShortProbability = 0.25
 
-numPortfolios = 4                             # This is the number of portfolios in one generation
+numPortfolios = 100                             # This is the number of portfolios in one generation
 maxNumPortfolios = numPortfolios
 minNumPortfolios = numPortfolios/2
-numCrossoverPortfolios = 1 * numPortfolios    # This is the proportion which is generated via crossover
-numElites = 2                                   # This is the number of top portfolios in a generation which are considered as elite
+numCrossoverPortfolios = 0.8 * numPortfolios    # This is the proportion which is generated via crossover
+numElites = 5                                   # This is the number of top portfolios in a generation which are considered as elite
 
 startDate = datetime(2012, 1, 2).date()          # This is the start of trading period
-endDate = datetime(2012, 1, 10).date()           # This is the end of trading period
+endDate = datetime(2012, 6, 30).date()           # This is the end of trading period
 testingStartDate = endDate + timedelta(days=1)
-testingEndDate = datetime(2012, 3, 31).date()
+testingEndDate = datetime(2012, 12, 31).date()
 
 thresholdPerformance = 0
 
@@ -68,11 +68,11 @@ numTrainingDays = 41
 dummyIndividualId = -1
 dummyStockId = -1
 
-maxTotalAsset = 2000000
+maxTotalAsset = 10000000
 trainingMaxTotalAsset = 2 * maxTotalAsset
 factor = 5
 maxAsset = maxTotalAsset / factor
-unitQty = 100000
+unitQty = 250000
 
 alpha = 0.6
 gamma = 0.8

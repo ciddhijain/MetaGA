@@ -60,6 +60,7 @@ if __name__ == "__main__":
     dbObject.dbQuery("DELETE FROM training_mtm_table")
     dbObject.dbQuery("DELETE FROM training_tradesheet_data_table")
     dbObject.dbQuery("DELETE FROM ranking_table")
+    dbObject.dbQuery("DELETE FROM latest_individual_table")
     logging.info("Deleted previous data")
 
     #categoryObj.categorizeFeederIndividualsByThresholds(gv.startDate, gv.endDate, performanceObj, dbObject)

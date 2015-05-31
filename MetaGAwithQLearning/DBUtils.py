@@ -1241,7 +1241,7 @@ class DBUtils:
             else:
                 queryUpdateMTM = "UPDATE mtm_table SET mtm=mtm+" + str(mtm) + " WHERE meta_individual_id=" + str(portfolioId) + \
                                  " AND feeder_individual_id=" + str(feederIndividualId) + " AND stock_id=" + str(stockId) + \
-                                 " AND trade_type=" + str(tradeType) + " AND date='" + str(entryDate) + "' AND time='" + str(mtmTime)
+                                 " AND trade_type=" + str(tradeType) + " AND date='" + str(entryDate) + "' AND time='" + str(mtmTime) + "'"
                 return databaseObject.Execute(queryUpdateMTM)
 
     # Function to insert MTM value in db during training
@@ -1480,21 +1480,21 @@ class DBUtils:
             databaseObject.Execute("INSERT INTO asset_daily_allocation_table"
                                    " (meta_individual_id, date, time, total_asset)"
                                    " VALUES"
-                                   " ('" + str(portfolioId) + str(date) + "', '" + str(time) + "', " + str(totalAsset) + ")")
+                                   " (" + str(portfolioId) + ", '" + str(date) + "', '" + str(time) + "', " + str(totalAsset) + ")")
 
     # Function to delete all non-recent entries from q_matrix_table every walk-forward
     def updateQMatrixTableWalkForward(self, portfolioId):
         global databaseObject
         queryLatest = "SELECT * FROM latest_individual_table WHERE meta_individual_id=" + str(portfolioId)
         resultLatest = databaseObject.Execute(queryLatest)
-        queryUpdate = "DELETE FROM q_matrix_table WHERE NOT ( "
+        queryUpdate = "DELETE FROM q_matrix_table WHERE meta_individual_id=" + str(portfolioId) + " AND NOT ( "
         count = 0
         for metaId, feederId, stockId in resultLatest:
             if count==0:
-                queryUpdate += "( meta_individual_id=" + str(metaId) + " AND feeder_individual_id=" + str(feederId) + " AND stock_id=" + str(stockId) + " ) "
+                queryUpdate += "( feeder_individual_id=" + str(feederId) + " AND stock_id=" + str(stockId) + " ) "
                 count += 1
             else:
-                queryUpdate += "OR ( meta_individual_id=" + str(metaId) + " AND feeder_individual_id=" + str(feederId) + " AND stock_id=" + str(stockId) + " ) "
+                queryUpdate += "OR ( feeder_individual_id=" + str(feederId) + " AND stock_id=" + str(stockId) + " ) "
         queryUpdate += ")"
         return databaseObject.Execute(queryUpdate)
 
@@ -1503,14 +1503,10 @@ class DBUtils:
         global databaseObject
         queryLatest = "SELECT * FROM latest_individual_table WHERE meta_individual_id=" + str(portfolioId)
         resultLatest = databaseObject.Execute(queryLatest)
-        queryUpdate = "DELETE FROM asset_allocation_table WHERE NOT ( "
-        count = 0
+        queryUpdate = "DELETE FROM asset_allocation_table WHERE meta_individual_id=" + str(portfolioId) + " AND NOT ( ( feeder_individual_id=" + \
+                      str(gv.dummyIndividualId) + " AND stock_id=" + str(gv.dummyStockId) + " ) "
         for metaId, feederId, stockId in resultLatest:
-            if count==0:
-                queryUpdate += "( meta_individual_id=" + str(metaId) + " AND feeder_individual_id=" + str(feederId) + " AND stock_id=" + str(stockId) + " ) "
-                count += 1
-            else:
-                queryUpdate += "OR ( meta_individual_id=" + str(metaId) + " AND feeder_individual_id=" + str(feederId) + " AND stock_id=" + str(stockId) + " ) "
+            queryUpdate += "OR ( feeder_individual_id=" + str(feederId) + " AND stock_id=" + str(stockId) + " ) "
         queryUpdate += ")"
         return databaseObject.Execute(queryUpdate)
 
@@ -1521,3 +1517,14 @@ class DBUtils:
         for count, dummy in resultCount:
             queryUpdate = "UPDATE ranking_table SET ranking=" + str(count) + " WHERE meta_individual_id=" + str(portfolioId)
             databaseObject.Execute(queryUpdate)
+
+    # Function to check if given day is a trading day
+    def checkTradingDay(self, date):
+        global databaseObject
+        queryCheck = "SELECT EXISTS (SELECT 1 FROM old_tradesheet_data_table WHERE entry_date='" + str(date) + "'), 1"
+        return databaseObject.Execute(queryCheck)
+
+    def checkQMatrix(self, individualId):
+        global databaseObject
+        query = "SELECT EXISTS( SELECT 1 FROM latest_individual_table WHERE individual_id=" + str(individualId) + " ), 1"
+        return databaseObject.Execute(query)
