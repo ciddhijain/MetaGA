@@ -137,14 +137,6 @@ if __name__ == "__main__":
                      " exposure float"
                      " )")
 
-    dbObject.dbQuery("CREATE TABLE feeder_performance_table"
-                     " ("
-                     " feeder_individual_id int,"
-                     " stock_id int,"
-                     " performance float,"
-                     " walk_forward int"
-                     " )")
-
     dbObject.dbQuery("CREATE TABLE individual_table"
                      " ("
                      " individual_id int,"
