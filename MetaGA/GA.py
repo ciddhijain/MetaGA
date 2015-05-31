@@ -34,10 +34,10 @@ if __name__ == "__main__":
     dbObject.dbQuery("DELETE FROM crossover_pairs_table")
     dbObject.dbQuery("DELETE FROM exposure_table")
     dbObject.dbQuery("DELETE FROM portfolio_tradesheet_data_table")
-    dbObject.dbQuery("DELETE FROM individual_category_table WHERE walk_forward=" + str(gv.newWalkforward))
+    #dbObject.dbQuery("DELETE FROM individual_category_table WHERE walk_forward=" + str(gv.newWalkforward))
     logging.info("Deleted previous data")
 
-    categoryObject.categorizeFeederIndividualsByThresholds(gv.startDate, gv.endDate, performanceObj, dbObject)
+    #categoryObject.categorizeFeederIndividualsByThresholds(gv.startDate, gv.endDate, performanceObj, dbObject)
 
     combinationObj.combine(performanceObj, tradesheetObj, dbObject)
     generation = 1
