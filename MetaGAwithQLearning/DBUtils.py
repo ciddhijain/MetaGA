@@ -832,10 +832,10 @@ class DBUtils:
                     shortQty = None
                     price = None
                     queryLongQty = "SELECT SUM(entry_qty), 1 FROM portfolio_tradesheet_data_table WHERE meta_individual_id=" + str(portfolioId) + \
-                                   " AND individual_id=" + str(feederId) + " AND stock_id=" + str(stock) + " AND entry_date='" + str(date) + \
+                                   " AND feeder_individual_id=" + str(feederId) + " AND stock_id=" + str(stock) + " AND entry_date='" + str(date) + \
                                    "' AND entry_time<='" + str(time) + "' AND exit_time>'" + str(time) + "' AND trade_type=1"
                     queryShortQty = "SELECT SUM(entry_qty), 1 FROM portfolio_tradesheet_data_table WHERE meta_individual_id=" + str(portfolioId) + \
-                                   " AND individual_id=" + str(feederId) + " AND stock_id=" + str(stock) + " AND entry_date='" + str(date) + \
+                                   " AND feeder_individual_id=" + str(feederId) + " AND stock_id=" + str(stock) + " AND entry_date='" + str(date) + \
                                    "' AND entry_time<='" + str(time) + "' AND exit_time>'" + str(time) + "' AND trade_type=0"
                     queryPrice = "SELECT open, 1 FROM price_series_table WHERE stock_id=" + str(stock) + " AND date='" + str(date) + "' AND time='" + str(time) + "'"
                     resultLongQty = databaseObject.Execute(queryLongQty)
@@ -886,10 +886,10 @@ class DBUtils:
             shortQty = None
             price = None
             queryLongQty = "SELECT SUM(entry_qty), 1 FROM portfolio_tradesheet_data_table WHERE meta_individual_id=" + str(portfolioId) + \
-                           " AND individual_id=" + str(feederId) + " AND stock_id=" + str(stock) + " AND entry_date='" + str(date) + \
+                           " AND feeder_individual_id=" + str(feederId) + " AND stock_id=" + str(stock) + " AND entry_date='" + str(date) + \
                            "' AND entry_time<='" + str(time) + "' AND exit_time>'" + str(time) + "' AND trade_type=1"
             queryShortQty = "SELECT SUM(entry_qty), 1 FROM portfolio_tradesheet_data_table WHERE meta_individual_id=" + str(portfolioId) + \
-                           " AND individual_id=" + str(feederId) + " AND stock_id=" + str(stock) + " AND entry_date='" + str(date) + \
+                           " AND feeder_individual_id=" + str(feederId) + " AND stock_id=" + str(stock) + " AND entry_date='" + str(date) + \
                            "' AND entry_time<='" + str(time) + "' AND exit_time>'" + str(time) + "' AND trade_type=0"
             queryPrice = "SELECT open, 1 FROM price_series_table WHERE stock_id=" + str(stock) + " AND date='" + str(date) + "' AND time='" + str(time) + "'"
             resultLongQty = databaseObject.Execute(queryLongQty)
@@ -922,7 +922,7 @@ class DBUtils:
     def insertTrade(self, portfolioId, stockId, feederIndividualId, entryDate, entryTime, entryPrice, exitDate, exitTime, exitPrice, entryQty, tradeType):
         global databaseObject
         query = "INSERT INTO portfolio_tradesheet_data_table" \
-                " (meta_individual_id, stock_id, individual_id, entry_date, entry_time, entry_price, exit_date, exit_time, exit_price, entry_qty, trade_type)" \
+                " (meta_individual_id, stock_id, feeder_individual_id, entry_date, entry_time, entry_price, exit_date, exit_time, exit_price, entry_qty, trade_type)" \
                 " VALUES" \
                 " (" + str(portfolioId) + ", " + str(stockId) + ", " + str(feederIndividualId) + ", '" + str(entryDate) + "', '" + str(entryTime) + \
                 "', "+ str(entryPrice) + ", '" + str(exitDate) + "', '" + str(exitTime) + "', " + str(exitPrice) + ", " + str(entryQty) + ", " + str(tradeType) + ")"
@@ -1038,55 +1038,43 @@ class DBUtils:
     # Function to update rank of an individual in a portfolio
     def updateRank(self, portfolioId, feederIndividualId, stockId, rank):
         global databaseObject
-        queryUpdate = "UPDATE ranking_table SET ranking=" + str(rank) + " WHERE meta__individual_id=" + str(portfolioId) + \
+        queryUpdate = "UPDATE ranking_table SET ranking=" + str(rank) + " WHERE meta_individual_id=" + str(portfolioId) + \
                       " AND feeder_individual_id=" + str(feederIndividualId) + " AND stock_id=" + str(stockId)
         return databaseObject.Execute(queryUpdate)
 
-    # TODO - Test the query and result
     # Function to get new trades from original tradesheet based on ranking of
     def getRankedTradesOrdered (self, portfolioId, date, startTime, endTime):
         global databaseObject
-        queryIndividuals = "SELECT feeder_individual_id, stock_id FROM mapping_table WHERE meta_individual_id=" + str(portfolioId)
-        resultIndividuals = databaseObject.Execute(queryIndividuals)
-
-        queryTrades = "SELECT t.* FROM old_tradesheet_data_table t, ranking_table r WHERE t.individual_id=r.individual_id AND t.stock_id=r.stock_id" \
+        queryTrades = "SELECT t.* FROM old_tradesheet_data_table t, ranking_table r WHERE t.individual_id=r.feeder_individual_id AND t.stock_id=r.stock_id" \
                       " AND t.entry_date='" + str(date) + "' AND t.entry_time<'" + str(endTime) + "' AND t.entry_time>='" + str(startTime) + \
-                      "' AND r.meta_individual_id=" + str(portfolioId) + "("
-        individualCount = 0
-        for feederId, stockId in resultIndividuals:
-            if individualCount==0:
-                queryTrades += " ( t.individual_id=" + str(feederId) + " AND t.stock_id=" + str(stockId) + " ) "
-            else:
-                queryTrades += " OR ( t.individual_id=" + str(feederId) + " AND t.stock_id=" + str(stockId) + " ) "
-            individualCount += 1
-        queryTrades +=  ") ORDER BY t.entry_time, r.ranking"
+                      "' AND r.meta_individual_id=" + str(portfolioId) + " ORDER BY t.entry_time, r.ranking"
         return databaseObject.Execute(queryTrades)
 
     # Function to get trades that are to exit in a given interval
     def getTradesExit(self, portfolioId, date, startTime, endTime):
         global databaseObject
-        queryTrades = "SELECT individual_id, stock_id, trade_type, entry_qty, entry_price, exit_price FROM portfolio_tradesheet_data_table WHERE exit_date='" + str(date) + \
+        queryTrades = "SELECT feeder_individual_id, stock_id, trade_type, entry_qty, entry_price, exit_price FROM portfolio_tradesheet_data_table WHERE exit_date='" + str(date) + \
                       "' AND exit_time>='" + str(startTime) + "' AND exit_time<'" + str(endTime) + "' AND meta_individual_id=" + str(portfolioId)
         return databaseObject.Execute(queryTrades)
 
     # Function to get trades that are to exit at day end
     def getTradesExitEnd(self, portfolioId, date, startTime):
         global databaseObject
-        queryTrades = "SELECT individual_id, stock_id, trade_type, entry_qty, entry_price, exit_price FROM portfolio_tradesheet_data_table WHERE exit_date='" + str(date) + \
+        queryTrades = "SELECT feeder_individual_id, stock_id, trade_type, entry_qty, entry_price, exit_price FROM portfolio_tradesheet_data_table WHERE exit_date='" + str(date) + \
                       "' AND exit_time>='" + str(startTime) + "' AND meta_individual_id=" + str(portfolioId)
         return databaseObject.Execute(queryTrades)
 
     # Function to get trades that are to exit in a given interval during training
     def getTrainingTradesExit(self, portfolioId, date, startTime, endTime):
         global databaseObject
-        queryTrades = "SELECT individual_id, stock_id, trade_type, entry_qty, entry_price, exit_price FROM training_tradesheet_data_table WHERE exit_date='" + str(date) + \
+        queryTrades = "SELECT feeder_individual_id, stock_id, trade_type, entry_qty, entry_price, exit_price FROM training_tradesheet_data_table WHERE exit_date='" + str(date) + \
                       "' AND exit_time>='" + str(startTime) + "' AND exit_time<'" + str(endTime) + "' AND meta_individual_id=" + str(portfolioId)
         return databaseObject.Execute(queryTrades)
 
     # Function to get trades that are to exit at day end during training
     def getTrainingTradesExitEnd(self, portfolioId, date, startTime):
         global databaseObject
-        queryTrades = "SELECT individual_id, stock_id, trade_type, entry_qty, entry_price, exit_price FROM training_tradesheet_data_table WHERE exit_date='" + str(date) + \
+        queryTrades = "SELECT feeder_individual_id, stock_id, trade_type, entry_qty, entry_price, exit_price FROM training_tradesheet_data_table WHERE exit_date='" + str(date) + \
                       "' AND exit_time>='" + str(startTime) + "' AND meta_individual_id=" + str(portfolioId)
         return databaseObject.Execute(queryTrades)
 
@@ -1166,7 +1154,7 @@ class DBUtils:
     def insertNewTrade(self, portfolioId, stockId, individualId, entryDate, entryTime, entryPrice, exitDate, exitTime, exitPrice, entryQty, tradeType):
         global databaseObject
         queryInsertTrade = "INSERT INTO portfolio_tradesheet_data_table" \
-                           " (meta_individual_id, stock_id, individual_id, entry_date, entry_time, entry_price, exit_date, exit_time, exit_price, entry_qty, trade_type)" \
+                           " (meta_individual_id, stock_id, feeder_individual_id, entry_date, entry_time, entry_price, exit_date, exit_time, exit_price, entry_qty, trade_type)" \
                            " VALUES" \
                            " (" + str(portfolioId) + ", " + str(stockId) + ", " + str(individualId) + ", '" + str(entryDate) + "', '" + str(entryTime) + "', " + str(entryPrice) + \
                            ", '" + str(exitDate) + "', '" + str(exitTime) + "', " + str(exitPrice) + ", " + str(entryQty) + ", " + str(tradeType) + ")"
@@ -1176,7 +1164,7 @@ class DBUtils:
     def insertTrainingNewTrade(self, portfolioId, stockId, individualId, entryDate, entryTime, entryPrice, exitDate, exitTime, exitPrice, entryQty, tradeType):
         global databaseObject
         queryInsertTrade = "INSERT INTO training_tradesheet_data_table" \
-                           " (meta_individual_id, stock_id, individual_id, entry_date, entry_time, entry_price, exit_date, exit_time, exit_price, entry_qty, trade_type)" \
+                           " (meta_individual_id, stock_id, feeder_individual_id, entry_date, entry_time, entry_price, exit_date, exit_time, exit_price, entry_qty, trade_type)" \
                            " VALUES" \
                            " (" + str(portfolioId) + ", " + str(stockId) + ", " + str(individualId) + ", '" + str(entryDate) + "', '" + str(entryTime) + "', " + str(entryPrice) + \
                            ", '" + str(exitDate) + "', '" + str(exitTime) + "', " + str(exitPrice) + ", " + str(entryQty) + ", " + str(tradeType) + ")"
@@ -1200,14 +1188,14 @@ class DBUtils:
     # Function to get individuals which have active trades in a given interval of time on a given day
     def getIndividuals (self, portfolioId, startDate, startTime, endDate, endTime):
         global databaseObject
-        queryIndividuals = "SELECT DISTINCT individual_id, stock_id FROM portfolio_tradesheet_data_table WHERE entry_time<'" + str(endTime) + \
+        queryIndividuals = "SELECT DISTINCT feeder_individual_id, stock_id FROM portfolio_tradesheet_data_table WHERE entry_time<'" + str(endTime) + \
                            "' AND exit_time>'" + str(startTime) + "' AND entry_date='" + str(startDate) + "' AND meta_individual_id=" + str(portfolioId)
         return databaseObject.Execute(queryIndividuals)
 
     # Function to get individuals which have active trades in a given interval of time on a given day during training
     def getTrainingIndividuals (self, portfolioId, startDate, startTime, endDate, endTime):
         global databaseObject
-        queryIndividuals = "SELECT DISTINCT individual_id, stock_id FROM training_tradesheet_data_table WHERE entry_time<'" + str(endTime) + \
+        queryIndividuals = "SELECT DISTINCT feeder_individual_id, stock_id FROM training_tradesheet_data_table WHERE entry_time<'" + str(endTime) + \
                            "' AND exit_time>'" + str(startTime) + "' AND entry_date='" + str(startDate) + "' AND meta_individual_id=" + str(portfolioId)
         return databaseObject.Execute(queryIndividuals)
 
@@ -1235,7 +1223,7 @@ class DBUtils:
         return databaseObject.Execute(queryPrice)
 
     # Function to insert MTM value in db
-    def addOrUpdatetMTM(self, portfolioId, feederIndividualId, stockId, tradeType, entryDate, mtmTime, mtm):
+    def addOrUpdateMTM(self, portfolioId, feederIndividualId, stockId, tradeType, entryDate, mtmTime, mtm):
         global databaseObject
         queryCheckRecord = "SELECT EXISTS (SELECT 1 FROM mtm_table WHERE meta_individual_id=" + str(portfolioId) + \
                            " AND feeder_individual_id=" + str(feederIndividualId) + " AND stock_id=" + str(stockId) + \
@@ -1275,7 +1263,7 @@ class DBUtils:
             else:
                 queryUpdateMTM = "UPDATE training_mtm_table SET mtm=mtm+" + str(mtm) + " WHERE meta_individual_id=" + str(portfolioId) + \
                                  " AND feeder_individual_id=" + str(feederIndividualId) + " AND stock_id=" + str(stockId) + \
-                                 " AND trade_type=" + str(tradeType) + " AND date='" + str(entryDate) + "' AND time='" + str(mtmTime)
+                                 " AND trade_type=" + str(tradeType) + " AND date='" + str(entryDate) + "' AND time='" + str(mtmTime) + "'"
                 return databaseObject.Execute(queryUpdateMTM)
 
     # Function to get net MTM for all long trades

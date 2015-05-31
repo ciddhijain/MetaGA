@@ -8,7 +8,7 @@ import calendar
 class QLearningWrapper:
 
     def feedback(self, portfolioId, performanceObject, rankingObject, mtmObject, rewardMatrixObject, qMatrixObject, trainingObject, liveObject, reallocationObject, dbObject):
-
+        '''
         walkforwardStartDate = gv.startDate
         walkforwardEndDate = datetime(walkforwardStartDate.year, walkforwardStartDate.month, calendar.monthrange(walkforwardStartDate.year, walkforwardStartDate.month)[1]).date()
         trainingStartDate = walkforwardEndDate + timedelta(days=1)
@@ -26,7 +26,7 @@ class QLearningWrapper:
         liveEndDate = liveStartDate + timedelta(days=1)
         periodEndDate = walkforwardStartDate + timedelta(days=12)
         startTime = timedelta(hours=9, minutes=15)
-        '''
+
         dbObject.initializeRanks(portfolioId)
         dbObject.resetAssetAllocation(portfolioId, liveStartDate, startTime)
         done = False
@@ -36,7 +36,7 @@ class QLearningWrapper:
             dbObject.resetLatestIndividualsWalkForward(portfolioId)
             dbObject.resetAssetTraining(portfolioId)
             rankingObject.updateRankings(portfolioId, walkforwardStartDate, walkforwardEndDate, performanceObject, dbObject)
-            trainingObject.train(portfolioId, trainingStartDate, trainingEndDate, dbObject, mtmObject, rewardMatrixObject, qMatrixObject)
+            trainingObject.train(portfolioId, trainingStartDate, trainingEndDate, mtmObject, rewardMatrixObject, qMatrixObject, dbObject)
             liveObject.live(portfolioId, liveStartDate, liveEndDate, dbObject, mtmObject, rewardMatrixObject, qMatrixObject, reallocationObject)
             if liveEndDate>=periodEndDate:
                 done = True

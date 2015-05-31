@@ -2,7 +2,7 @@ __author__ = 'Ciddhi'
 
 from datetime import timedelta, datetime
 
-databaseName = 'METAGA'                         # This is database name to which connection is made
+databaseName = 'QLGA1'                         # This is database name to which connection is made
 userName = 'root'                               # This is the user name for database connection
 password = 'controljp'                          # This is the password for database connection
 dbHost = '127.0.0.1'                            # This is host address for database connection
@@ -18,7 +18,7 @@ bestPerformanceOutfileName = 'bestPerformance100.csv'
 tradesheetLocation = "TradesheetTable.csv"
 priceSeriesLocation = "PriceSeriesTable.csv"
 stockTableLocation = "StockTable.csv"
-feederIndividualLocation = "FeederIndividualTable.csv"
+individualCategoryLocation = "categories.csv"
 individualTableLocation = "IndividualTable.csv"
 
 minGenerations = 10                             # This is the minimum number of generations that GA will perform
@@ -28,8 +28,8 @@ walkforward = 4                                 # This is walkforward from which
 #crossoverList = [(1, 2), (2, 2)]               # This list specifies types of crossovers and number of children
 # crossoverList = [(1, 2), (2, 2)]
 
-maxPortfolioSize = 100                           # This is the maximum size of portfolio
-minPortfolioSize = 25                            # This is the minimum size of portfolio
+maxPortfolioSize = 5                           # This is the maximum size of portfolio
+minPortfolioSize = 2                            # This is the minimum size of portfolio
 
 feederEliteSelectionProbability = 0.6           # This is the probability of putting elite individuals from feeder in a portfolio
 feederNonEliteSelectionProbability = 0.4        # This is the probability of putting non-elite fit individuals from feeder in a portfolio
@@ -38,23 +38,18 @@ longShortProbability = 0.5
 longLongProbability = 0.25
 shortShortProbability = 0.25
 
-numPortfolios = 100                             # This is the number of portfolios in one generation
+numPortfolios = 4                             # This is the number of portfolios in one generation
 maxNumPortfolios = numPortfolios
 minNumPortfolios = numPortfolios/2
-numCrossoverPortfolios = 0.8 * numPortfolios    # This is the proportion which is generated via crossover
-numElites = 5                                   # This is the number of top portfolios in a generation which are considered as elite
+numCrossoverPortfolios = 1 * numPortfolios    # This is the proportion which is generated via crossover
+numElites = 2                                   # This is the number of top portfolios in a generation which are considered as elite
 
 startDate = datetime(2012, 1, 2).date()          # This is the start of trading period
-endDate = datetime(2012, 2, 29).date()           # This is the end of trading period
+endDate = datetime(2012, 1, 10).date()           # This is the end of trading period
 testingStartDate = endDate + timedelta(days=1)
 testingEndDate = datetime(2012, 3, 31).date()
 
 thresholdPerformance = 0
-thresholdMaxPortfolioExposure = 10000000                                       # This is the maximum cap for portfolio exposure
-thresholdMinPortfolioExposure = -10000000
-factor = 5
-thresholdMaxStockExposure = thresholdMaxPortfolioExposure/factor                  # This is the maximum cap for stock exposure in a portfolio
-thresholdMinStockExposure = thresholdMinPortfolioExposure/factor
 
 admissiblePerformanceGap = 0.005                 # This takes all portfolios within this range to next generation
 
@@ -73,8 +68,8 @@ numTrainingDays = 41
 dummyIndividualId = -1
 dummyStockId = -1
 
-maxTotalAsset = 10000000
-trainingMaxTotalAsset = 20000000
+maxTotalAsset = 2000000
+trainingMaxTotalAsset = 2 * maxTotalAsset
 factor = 5
 maxAsset = maxTotalAsset / factor
 unitQty = 100000

@@ -7,7 +7,6 @@ from Mutation import *
 from Convergence import *
 from DBUtils import *
 from Performance import *
-from TradesheetGeneration import *
 from Categorization import *
 from QLearningWrapper import *
 from Reallocation import *
@@ -55,7 +54,6 @@ if __name__ == "__main__":
     dbObject.dbQuery("DELETE FROM asset_allocation_table")
     dbObject.dbQuery("DELETE FROM asset_daily_allocation_table")
     dbObject.dbQuery("DELETE FROM mtm_table")
-    dbObject.dbQuery("DELETE FROM tradesheet_data_table")
     dbObject.dbQuery("DELETE FROM reallocation_table")
     dbObject.dbQuery("DELETE FROM q_matrix_table")
     dbObject.dbQuery("DELETE FROM training_asset_allocation_table")
@@ -64,7 +62,7 @@ if __name__ == "__main__":
     dbObject.dbQuery("DELETE FROM ranking_table")
     logging.info("Deleted previous data")
 
-    categoryObj.categorizeFeederIndividualsByThresholds(gv.startDate, gv.endDate, performanceObj, dbObject)
+    #categoryObj.categorizeFeederIndividualsByThresholds(gv.startDate, gv.endDate, performanceObj, dbObject)
 
     combinationObj.combine(qLearningObj, performanceObj, rankingObj, mtmObj, rewardMatrixObj, qMatrixObj, trainingObj, liveObj, reallocationObj, dbObject)
     generation = 1

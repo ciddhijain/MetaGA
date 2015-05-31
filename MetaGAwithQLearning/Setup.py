@@ -14,8 +14,6 @@ if __name__ == "__main__":
                      " lot_size int"
                      " )")
 
-    '''
-
     print("Loading stock table ------ ")
 
     dbObject.dbQuery("LOAD DATA INFILE '" + gv.stockTableLocation + "'"
@@ -23,7 +21,6 @@ if __name__ == "__main__":
                      " FIELDS TERMINATED BY ','"
                      " ENCLOSED BY '\"'"
                      " LINES TERMINATED BY '\\n'")
-    '''
 
     dbObject.dbQuery(" CREATE TABLE price_series_table"
                      " ("
@@ -36,7 +33,6 @@ if __name__ == "__main__":
                      " close float,"
                      " volume int"
                      " )")
-    '''
 
     print("Loading price series table ------ ")
 
@@ -45,7 +41,6 @@ if __name__ == "__main__":
                      " FIELDS TERMINATED BY ','"
                      " ENCLOSED BY '\"'"
                      " LINES TERMINATED BY '\\n'")
-    '''
 
     dbObject.dbQuery("CREATE TABLE old_tradesheet_data_table"
                      " ("
@@ -60,22 +55,20 @@ if __name__ == "__main__":
                      " entry_qty int,"
                      " trade_type int"
                      " )")
-    '''
 
     print("Loading tradesheet -----------")
 
     dbObject.dbQuery("LOAD DATA INFILE '" + gv.tradesheetLocation + "'"
-                     " INTO TABLE tradesheet_data_table"
+                     " INTO TABLE old_tradesheet_data_table"
                      " FIELDS TERMINATED BY ','"
                      " ENCLOSED BY '\"'"
                      " LINES TERMINATED BY '\\n'")
-    '''
 
     dbObject.dbQuery("CREATE TABLE portfolio_tradesheet_data_table"
                      " ("
                      " meta_individual_id int,"
                      " stock_id int,"
-                     " individual_id int,"
+                     " feeder_individual_id int,"
                      " entry_date date,"
                      " entry_time time,"
                      " entry_price float,"
@@ -109,16 +102,14 @@ if __name__ == "__main__":
                      " individual_id int,"
                      " category int DEFAULT NULL"
                      " )")
-    '''
 
-    print("Loading feeder_individual_table -----------")
+    print("Loading individual_category_table -----------")
 
-    dbObject.dbQuery("LOAD DATA INFILE '" + gv.feederIndividualLocation + "'"
-                     " INTO TABLE feeder_individual_table"
+    dbObject.dbQuery("LOAD DATA INFILE '" + gv.individualCategoryLocation + "'"
+                     " INTO TABLE individual_category_table"
                      " FIELDS TERMINATED BY ','"
                      " ENCLOSED BY '\"'"
                      " LINES TERMINATED BY '\\n'")
-    '''
 
     dbObject.dbQuery("CREATE TABLE crossover_pairs_table"
                      " ("
@@ -152,7 +143,6 @@ if __name__ == "__main__":
                      " individual_signature varchar(100),"
                      " individual_type int"
                      " )")
-    '''
 
     print("Loading individual_table -----------")
 
@@ -161,6 +151,6 @@ if __name__ == "__main__":
                      " FIELDS TERMINATED BY ','"
                      " ENCLOSED BY '\"'"
                      " LINES TERMINATED BY '\\n'")
-    '''
+
 
     dbObject.dbClose()

@@ -21,7 +21,7 @@ class Live:
         while (not done):
             isTradingDay = False
             resultTrades = dbObject.getRankedTradesOrdered(portfolioId, date, startTime, endTime)
-            for stockId, individualId, tradeType, entryDate, entryTime, entryPrice, entryQty, exitDate, exitTime, exitPrice in resultTrades:
+            for stockId, individualId, entryDate, entryTime, entryPrice, exitDate, exitTime, exitPrice, entryQty, tradeType in resultTrades:
                 if stockId:
                     isTradingDay = True
                     resultTradesExit = dbObject.getTradesExit(portfolioId, date, lastCheckedTime, entryTime)
@@ -49,6 +49,7 @@ class Live:
                                     dbObject.insertNewTrade(portfolioId, stockId, individualId, entryDate, entryTime, entryPrice, exitDate, exitTime, exitPrice, entryQty, tradeType)
                                     dbObject.updateIndividualAsset(portfolioId, gv.dummyIndividualId, gv.dummyStockId, usedAsset)
                                     dbObject.insertLatestIndividual(portfolioId, individualId, stockId)
+                                    dbObject.addNewState(portfolioId, individualId, stockId, entryDate, entryTime, 1)
                                 else:
                                     #print('Individual exists already')
                                     resultFreeAsset = dbObject.getFreeAsset(portfolioId, individualId, stockId)
