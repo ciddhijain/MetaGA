@@ -61,7 +61,7 @@ class Training:
 
                     resultIndividuals = dbObject.getTrainingIndividuals(portfolioId, date, startTime, date, endTime)
                     for individualId, stockId in resultIndividuals:
-                        resultCheck = dbObject.checkQMatrix(individualId)
+                        resultCheck = dbObject.checkQMatrix(portfolioId, individualId, stockId)
                         for check, dummy4 in resultCheck:
                             if check==0:
                                 print('Calculating mtm')

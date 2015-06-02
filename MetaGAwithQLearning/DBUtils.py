@@ -1524,7 +1524,8 @@ class DBUtils:
         queryCheck = "SELECT EXISTS (SELECT 1 FROM old_tradesheet_data_table WHERE entry_date='" + str(date) + "'), 1"
         return databaseObject.Execute(queryCheck)
 
-    def checkQMatrix(self, individualId):
+    def checkQMatrix(self, portfolioId, feederIndividualId, stockId):
         global databaseObject
-        query = "SELECT EXISTS( SELECT 1 FROM latest_individual_table WHERE individual_id=" + str(individualId) + " ), 1"
+        query = "SELECT EXISTS( SELECT 1 FROM latest_individual_table WHERE meta_individual_id=" + str(portfolioId) + " AND feeder_individual_id=" + \
+                str(feederIndividualId) + " AND stock_id=" + str(stockId) + " ), 1"
         return databaseObject.Execute(query)
