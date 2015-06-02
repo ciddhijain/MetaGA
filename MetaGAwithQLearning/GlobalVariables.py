@@ -9,11 +9,11 @@ dbHost = '127.0.0.1'                            # This is host address for datab
 dbPort = '3306'                                 # This is port for database connection
 dbConnector = 'mysqlconnector'                  # This is the connector string to be used, depending upon python package
 
-logFileName = 'MetaGA100.log'                      # This is the name of log file. It will append if file already exists
-mappingOutfileName = 'mapping100.csv'
-portfolioOutfileName = 'portfolio100.csv'
-testingPerformanceOutfileName = 'testingPerformance100.csv'
-bestPerformanceOutfileName = 'bestPerformance100.csv'
+logFileName = 'MetaGAFeedback200.log'                      # This is the name of log file. It will append if file already exists
+mappingOutfileName = 'mapping200.csv'
+portfolioOutfileName = 'portfolio200.csv'
+testingPerformanceOutfileName = 'testingPerformance200.csv'
+bestPerformanceOutfileName = 'bestPerformance200.csv'
 
 tradesheetLocation = "TradesheetTable.csv"
 priceSeriesLocation = "PriceSeriesTable.csv"
@@ -28,7 +28,7 @@ walkforward = 4                                 # This is walkforward from which
 #crossoverList = [(1, 2), (2, 2)]               # This list specifies types of crossovers and number of children
 # crossoverList = [(1, 2), (2, 2)]
 
-maxPortfolioSize = 100                           # This is the maximum size of portfolio
+maxPortfolioSize = 50                           # This is the maximum size of portfolio
 minPortfolioSize = 25                            # This is the minimum size of portfolio
 
 feederEliteSelectionProbability = 0.6           # This is the probability of putting elite individuals from feeder in a portfolio
@@ -38,16 +38,16 @@ longShortProbability = 0.5
 longLongProbability = 0.25
 shortShortProbability = 0.25
 
-numPortfolios = 100                             # This is the number of portfolios in one generation
+numPortfolios = 50                             # This is the number of portfolios in one generation
 maxNumPortfolios = numPortfolios
 minNumPortfolios = numPortfolios/2
 numCrossoverPortfolios = 0.8 * numPortfolios    # This is the proportion which is generated via crossover
 numElites = 5                                   # This is the number of top portfolios in a generation which are considered as elite
 
 startDate = datetime(2012, 1, 2).date()          # This is the start of trading period
-endDate = datetime(2012, 6, 30).date()           # This is the end of trading period
+endDate = datetime(2012, 3, 31).date()           # This is the end of trading period
 testingStartDate = endDate + timedelta(days=1)
-testingEndDate = datetime(2012, 12, 31).date()
+testingEndDate = datetime(2012, 6, 30).date()
 
 thresholdPerformance = 0
 
@@ -58,7 +58,7 @@ dummyPerformance = -50000
 newWalkforward = 4
 fractionElites = 0.05
 
-numTrainingDays = 41
+numTrainingDays = 62
 
 
 #######################################################################################################################################
@@ -68,7 +68,7 @@ numTrainingDays = 41
 dummyIndividualId = -1
 dummyStockId = -1
 
-maxTotalAsset = 10000000
+maxTotalAsset = 5000000
 trainingMaxTotalAsset = 2 * maxTotalAsset
 factor = 5
 maxAsset = maxTotalAsset / factor

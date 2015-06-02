@@ -6,7 +6,7 @@ if __name__ == "__main__":
     dbObject = DBUtils()
     dbObject.dbConnect()
 
-    dbObject.dbQuery("CREATE TABLE stock_table"
+    dbObject.dbQuery("CREATE TABLE IF NOT EXISTS tblStockIDList"
                      " ("
                      " stock_id int,"
                      " stock_symbol varchar(20),"
@@ -14,15 +14,15 @@ if __name__ == "__main__":
                      " lot_size int"
                      " )")
 
-    print("Loading stock table ------ ")
+    print("Loading tblStockIDList ------ ")
 
     dbObject.dbQuery("LOAD DATA INFILE '" + gv.stockTableLocation + "'"
-                     " INTO TABLE stock_table"
+                     " INTO TABLE tblStockIDList"
                      " FIELDS TERMINATED BY ','"
                      " ENCLOSED BY '\"'"
                      " LINES TERMINATED BY '\\n'")
 
-    dbObject.dbQuery(" CREATE TABLE price_series_table"
+    dbObject.dbQuery(" CREATE TABLE IF NOT EXISTS tblStockPriceData"
                      " ("
                      " stock_id int,"
                      " date date,"
@@ -34,15 +34,15 @@ if __name__ == "__main__":
                      " volume int"
                      " )")
 
-    print("Loading price series table ------ ")
+    print("Loading tblStockPriceData ------ ")
 
     dbObject.dbQuery("LOAD DATA INFILE '" + gv.priceSeriesLocation + "'"
-                     " INTO TABLE price_series_table"
+                     " INTO TABLE tblStockPriceData"
                      " FIELDS TERMINATED BY ','"
                      " ENCLOSED BY '\"'"
                      " LINES TERMINATED BY '\\n'")
 
-    dbObject.dbQuery("CREATE TABLE old_tradesheet_data_table"
+    dbObject.dbQuery("CREATE TABLE IF NOT EXISTS  tblIndividualTradesheet "
                      " ("
                      " stock_id int,"
                      " individual_id int,"
@@ -59,12 +59,12 @@ if __name__ == "__main__":
     print("Loading tradesheet -----------")
 
     dbObject.dbQuery("LOAD DATA INFILE '" + gv.tradesheetLocation + "'"
-                     " INTO TABLE old_tradesheet_data_table"
+                     " INTO TABLE  tblIndividualTradesheet "
                      " FIELDS TERMINATED BY ','"
                      " ENCLOSED BY '\"'"
                      " LINES TERMINATED BY '\\n'")
 
-    dbObject.dbQuery("CREATE TABLE portfolio_tradesheet_data_table"
+    dbObject.dbQuery("CREATE TABLE IF NOT EXISTS portfolio_tradesheet_data_table"
                      " ("
                      " meta_individual_id int,"
                      " stock_id int,"
@@ -79,14 +79,14 @@ if __name__ == "__main__":
                      " trade_type int"
                      " )")
 
-    dbObject.dbQuery("CREATE TABLE mapping_table"
+    dbObject.dbQuery("CREATE TABLE IF NOT EXISTS mapping_table"
                      " ("
                      " meta_individual_id int,"
                      " feeder_individual_id int,"
                      " stock_id int"
                      " )")
 
-    dbObject.dbQuery("CREATE TABLE portfolio_table"
+    dbObject.dbQuery("CREATE TABLE IF NOT EXISTS portfolio_table"
                      " ("
                      " meta_individual_id int,"
                      " first_generation int,"
@@ -95,7 +95,7 @@ if __name__ == "__main__":
                      " performance float DEFAULT NULL"
                      " )")
 
-    dbObject.dbQuery("CREATE TABLE individual_category_table"
+    dbObject.dbQuery("CREATE TABLE IF NOT EXISTS tblIndividualCategoryInfo"
                      " ("
                      " walk_forward int,"
                      " stock_id int,"
@@ -103,22 +103,22 @@ if __name__ == "__main__":
                      " category int DEFAULT NULL"
                      " )")
 
-    print("Loading individual_category_table -----------")
+    print("Loading tblIndividualCategoryInfo -----------")
 
     dbObject.dbQuery("LOAD DATA INFILE '" + gv.individualCategoryLocation + "'"
-                     " INTO TABLE individual_category_table"
+                     " INTO TABLE tblIndividualCategoryInfo"
                      " FIELDS TERMINATED BY ','"
                      " ENCLOSED BY '\"'"
                      " LINES TERMINATED BY '\\n'")
 
-    dbObject.dbQuery("CREATE TABLE crossover_pairs_table"
+    dbObject.dbQuery("CREATE TABLE IF NOT EXISTS crossover_pairs_table"
                      " ("
                      " meta_individual_id_1 int,"
                      " meta_individual_id_2 int,"
                      " generation int"
                      " )")
 
-    dbObject.dbQuery("CREATE TABLE exposure_table"
+    dbObject.dbQuery("CREATE TABLE IF NOT EXISTS exposure_table"
                      " ("
                      " meta_individual_id int,"
                      " feeder_individual_id int,"
@@ -128,7 +128,7 @@ if __name__ == "__main__":
                      " exposure float"
                      " )")
 
-    dbObject.dbQuery("CREATE TABLE feeder_performance_table"
+    dbObject.dbQuery("CREATE TABLE IF NOT EXISTS feeder_performance_table"
                      " ("
                      " feeder_individual_id int,"
                      " stock_id int,"
@@ -136,7 +136,7 @@ if __name__ == "__main__":
                      " walk_forward int"
                      " )")
 
-    dbObject.dbQuery("CREATE TABLE individual_table"
+    dbObject.dbQuery("CREATE TABLE IF NOT EXISTS tblIndividualList"
                      " ("
                      " individual_id int,"
                      " stock_id int,"
@@ -144,10 +144,10 @@ if __name__ == "__main__":
                      " individual_type int"
                      " )")
 
-    print("Loading individual_table -----------")
+    print("Loading tblIndividualList -----------")
 
     dbObject.dbQuery("LOAD DATA INFILE '" + gv.individualTableLocation + "'"
-                     " INTO TABLE individual_table"
+                     " INTO TABLE tblIndividualList"
                      " FIELDS TERMINATED BY ','"
                      " ENCLOSED BY '\"'"
                      " LINES TERMINATED BY '\\n'")

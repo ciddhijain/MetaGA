@@ -8,7 +8,7 @@ from DBUtils import *
 class Performance:
 
     def calculatePerformancePortfolio(self, startDate, endDate, portfolioId, dbObject):
-        resultDates = dbObject.dbQuery("SELECT DISTINCT(date), 1 FROM price_series_table WHERE date >= '" + str(startDate)+
+        resultDates = dbObject.dbQuery("SELECT DISTINCT(date), 1 FROM tblStockPriceData WHERE date >= '" + str(startDate)+
                                        "' AND date <= '"+str(endDate)+"'")
         DictOfDates={}
         date_count_range=0
@@ -177,14 +177,14 @@ class Performance:
         return Performance_Measures
 
     def calculateReferencePerformanceIndividual(self, individualId, stockId,  startDate, endDate, dbObject):
-        resultDates = dbObject.dbQuery("SELECT DISTINCT(date), 1 FROM price_series_table WHERE date >= '" + str(startDate)+
+        resultDates = dbObject.dbQuery("SELECT DISTINCT(date), 1 FROM tblStockPriceData WHERE date >= '" + str(startDate)+
                                        "' AND date <= '"+str(endDate)+"'")
         DictOfDates={}
         date_count_range=0
         for date,dummy in resultDates:
             DictOfDates[date]=date_count_range
             date_count_range=date_count_range+1
-        query = "SELECT * FROM old_tradesheet_data_table WHERE entry_date >= '" + str(startDate) + "' AND entry_date <= '" \
+        query = "SELECT * FROM tblIndividualTradesheet WHERE entry_date >= '" + str(startDate) + "' AND entry_date <= '" \
                + str(endDate) + "' AND individual_id=" + str(individualId) + " AND stock_id=" + str(stockId)
         resultTrades = dbObject.dbQuery(query)
         c=0
@@ -343,7 +343,7 @@ class Performance:
         return Performance_Measures
 
     def calculatePerformancePortfolioList(self, startDate, endDate, portfolioList, dbObject):
-        resultDates = dbObject.dbQuery("SELECT DISTINCT(date), 1 FROM price_series_table WHERE date >= '" + str(startDate)+
+        resultDates = dbObject.dbQuery("SELECT DISTINCT(date), 1 FROM tblStockPriceData WHERE date >= '" + str(startDate)+
                                        "' AND date <= '"+str(endDate)+"'")
         DictOfDates={}
         date_count_range=0
@@ -510,14 +510,16 @@ class Performance:
         return Performance_Measures
 
     def calculateReferencePerformanceTradesheet(self, startDate, endDate, dbObject):
-        resultDates = dbObject.dbQuery("SELECT DISTINCT(date), 1 FROM price_series_table WHERE date >= '" + str(startDate)+
+        resultDates = dbObject.dbQuery("SELECT DISTINCT(date), 1 FROM tblStockPriceData WHERE date >= '" + str(startDate)+
                                        "' AND date <= '"+str(endDate)+"'")
         DictOfDates={}
         date_count_range=0
         for date,dummy in resultDates:
             DictOfDates[date]=date_count_range
             date_count_range=date_count_range+1
-        query = "SELECT * FROM old_tradesheet_data_table WHERE entry_date >= '" + str(startDate) + "' AND entry_date <= '" + str(endDate) + "'"
+        # TODO
+        query = "SELECT * FROM tblIndividualTradesheet WHERE entry_date >= '" + str(startDate) + "' AND entry_date <= '" + str(endDate) + \
+                "' AND individual_id IN (SELECT * FROM tblIndividualCategoryInfo WHERE walk_forward=" + str(gv.walkforward) + " AND category=1)"
         resultTrades = dbObject.dbQuery(query)
         c=0
         #Parameters for each individual

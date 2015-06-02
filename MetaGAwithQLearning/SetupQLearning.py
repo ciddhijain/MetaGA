@@ -7,14 +7,14 @@ if __name__ == "__main__":
     dbObject = DBUtils()
     dbObject.dbConnect()
 
-    dbObject.dbQuery("CREATE TABLE latest_individual_table"
+    dbObject.dbQuery("CREATE TABLE IF NOT EXISTS latest_individual_table"
                      " ("
                      " meta_individual_id int,"
                      " feeder_individual_id int,"
                      " stock_id int"
                      " )")
 
-    dbObject.dbQuery("CREATE TABLE training_mtm_table"
+    dbObject.dbQuery("CREATE TABLE IF NOT EXISTS training_mtm_table"
                      " ("
                      " meta_individual_id int,"
                      " feeder_individual_id int,"
@@ -25,7 +25,7 @@ if __name__ == "__main__":
                      " mtm float"
                      " )")
 
-    dbObject.dbQuery("CREATE TABLE training_tradesheet_data_table"
+    dbObject.dbQuery("CREATE TABLE IF NOT EXISTS training_tradesheet_data_table"
                      " ("
                      " meta_individual_id int,"
                      " stock_id int,"
@@ -40,7 +40,7 @@ if __name__ == "__main__":
                      " trade_type int"
                      " )")
 
-    dbObject.dbQuery("CREATE TABLE training_asset_allocation_table"
+    dbObject.dbQuery("CREATE TABLE IF NOT EXISTS training_asset_allocation_table"
                      " ("
                      " meta_individual_id int,"
                      " feeder_individual_id int,"
@@ -50,7 +50,7 @@ if __name__ == "__main__":
                      " free_asset decimal(15,4)"
                      " )")
 
-    dbObject.dbQuery("CREATE TABLE ranking_table"
+    dbObject.dbQuery("CREATE TABLE IF NOT EXISTS ranking_table"
                      " ("
                      " meta_individual_id int,"
                      " feeder_individual_id int,"
@@ -58,7 +58,7 @@ if __name__ == "__main__":
                      " ranking int"
                      " )")
 
-    dbObject.dbQuery("CREATE TABLE asset_daily_allocation_table"
+    dbObject.dbQuery("CREATE TABLE IF NOT EXISTS asset_daily_allocation_table"
                      "("
                      " meta_individual_id int,"
                      " date date,"
@@ -68,7 +68,7 @@ if __name__ == "__main__":
 
     # Following table is created in other Setup.py
     '''
-    dbObject.dbQuery("CREATE TABLE portfolio_tradesheet_data_table"
+    dbObject.dbQuery("CREATE TABLE IF NOT EXISTS portfolio_tradesheet_data_table"
                      " ("
                      " meta_individual_id int,"
                      " stock_id int,"
@@ -84,7 +84,7 @@ if __name__ == "__main__":
                      " )")
     '''
 
-    dbObject.dbQuery("CREATE TABLE mtm_table"
+    dbObject.dbQuery("CREATE TABLE IF NOT EXISTS mtm_table"
                      " ("
                      " meta_individual_id int,"
                      " feeder_individual_id int,"
@@ -95,7 +95,7 @@ if __name__ == "__main__":
                      " mtm float"
                      " )")
 
-    dbObject.dbQuery("CREATE TABLE asset_allocation_table"
+    dbObject.dbQuery("CREATE TABLE IF NOT EXISTS asset_allocation_table"
                      " ("
                      " meta_individual_id int,"
                      " feeder_individual_id int,"
@@ -105,7 +105,7 @@ if __name__ == "__main__":
                      " free_asset decimal(15,4)"
                      " )")
 
-    dbObject.dbQuery("CREATE TABLE q_matrix_table"
+    dbObject.dbQuery("CREATE TABLE IF NOT EXISTS q_matrix_table"
                      " ("
                      " meta_individual_id int,"
                      " feeder_individual_id int,"
@@ -115,7 +115,7 @@ if __name__ == "__main__":
                      " q_value decimal(20,10)"
                      " )")
 
-    dbObject.dbQuery("CREATE TABLE reallocation_table"
+    dbObject.dbQuery("CREATE TABLE IF NOT EXISTS reallocation_table"
                      " ("
                      " meta_individual_id int,"
                      " feeder_individual_id int,"

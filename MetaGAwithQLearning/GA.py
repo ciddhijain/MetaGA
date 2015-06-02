@@ -63,7 +63,7 @@ if __name__ == "__main__":
     dbObject.dbQuery("DELETE FROM latest_individual_table")
     logging.info("Deleted previous data")
 
-    #categoryObj.categorizeFeederIndividualsByThresholds(gv.startDate, gv.endDate, performanceObj, dbObject)
+    categoryObj.categorizeFeederIndividualsByThresholds(gv.startDate, gv.endDate, performanceObj, dbObject)
 
     combinationObj.combine(qLearningObj, performanceObj, rankingObj, mtmObj, rewardMatrixObj, qMatrixObj, trainingObj, liveObj, reallocationObj, dbObject)
     generation = 1
@@ -92,7 +92,6 @@ if __name__ == "__main__":
     performanceTradesheet = performanceObj.calculateReferencePerformanceTradesheet(gv.testingStartDate, gv.testingEndDate, dbObject)
     logging.info("Performance of elites in testing period : " + str(performanceElites[0][1]))
     logging.info("Performance of original tradesheet in testing period : " + str(performanceTradesheet[0][1]))
-    print(performanceTradesheet[0][1])
     with open(gv.testingPerformanceOutfileName, 'w') as fp:
         w = csv.writer(fp)
         w.writerow(["performance elites", "performance original tradesheet"])
