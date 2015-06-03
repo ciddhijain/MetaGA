@@ -25,8 +25,11 @@ minGenerations = 10                             # This is the minimum number of 
 maxGenerations = 100                            # This is the maximum number of generations that GA will perform
 
 walkforward = 4                                 # This is walkforward from which individual category is taken
-#crossoverList = [(1, 2), (2, 2)]               # This list specifies types of crossovers and number of children
-# crossoverList = [(1, 2), (2, 2)]
+startDate = datetime(2012, 1, 2).date()          # This is the start of trading period
+endDate = datetime(2012, 3, 31).date()           # This is the end of trading period
+testingStartDate = endDate + timedelta(days=1)
+testingEndDate = datetime(2012, 6, 30).date()
+numTrainingDays = 62
 
 maxPortfolioSize = 50                           # This is the maximum size of portfolio
 minPortfolioSize = 25                            # This is the minimum size of portfolio
@@ -42,12 +45,7 @@ numPortfolios = 50                             # This is the number of portfolio
 maxNumPortfolios = numPortfolios
 minNumPortfolios = numPortfolios/2
 numCrossoverPortfolios = 0.8 * numPortfolios    # This is the proportion which is generated via crossover
-numElites = 5                                   # This is the number of top portfolios in a generation which are considered as elite
-
-startDate = datetime(2012, 1, 2).date()          # This is the start of trading period
-endDate = datetime(2012, 3, 31).date()           # This is the end of trading period
-testingStartDate = endDate + timedelta(days=1)
-testingEndDate = datetime(2012, 6, 30).date()
+numElites = 5                                 # This is the number of top portfolios in a generation which are considered as elite
 
 thresholdPerformance = 0
 
@@ -55,11 +53,7 @@ admissiblePerformanceGap = 0.005                 # This takes all portfolios wit
 
 dummyPerformance = -50000
 
-newWalkforward = 4
 fractionElites = 0.05
-
-numTrainingDays = 62
-
 
 #######################################################################################################################################
 #Q Learning Varaibles

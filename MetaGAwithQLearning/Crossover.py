@@ -19,7 +19,6 @@ class Crossover:
         numBits = str(gv.shortShortProbability)[::-1].find('.')
         rangeShortShort = 10**numBits
         rangeBias = max(rangeLongLong, rangeLongShort, rangeShortShort)
-        numBits = str(gv.crossoverProbability)[::-1].find('.')
         range = 10**numBits
         numPortfolios = math.ceil(gv.numCrossoverPortfolios)
         countFeasiblePortfolios = 0
