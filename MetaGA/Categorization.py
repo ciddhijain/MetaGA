@@ -17,7 +17,12 @@ class Categorization:
 
     # This function updates category by using predefined thresholds
     def categorizeFeederIndividualsByThresholds(self, startDate, endDate, performanceObject, dbObject):
-        walkforward = gv.newWalkforward
+        resultWalkForward = dbObject.getNewWalkforward()
+        walkforward = 0
+        for wf, dummy in resultWalkForward:
+            walkforward = wf
+        walkforward += 1
+        dbObject.insertWalkForward(walkforward, startDate, endDate)
         resultIndividuals = dbObject.getFeederIndividuals()
         for feederIndividualId, stockId in resultIndividuals:
             performance = performanceObject.calculateReferencePerformanceIndividual(feederIndividualId, stockId, startDate, endDate, dbObject)

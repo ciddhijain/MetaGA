@@ -901,6 +901,19 @@ class DBUtils:
                 " (" + str(feederIndividualId) + ", " + str(stockId) + ", " + str(walkforward)+ ", " + str(category) + ")"
         return databaseObject.Execute(query)
 
+    def getNewWalkforward(self):
+        global databaseObject
+        query = "SELECT max(WalkForwardID), 1 FROM tblWalkForwardList"
+        return databaseObject.Execute(query)
+
+    def insertWalkForward(self, walkforward, startDate, endDate):
+        global databaseObject
+        query = "INSERT INTO tblWalkForwardList" \
+                " (WalkForwardID, TrainingBeginDate, TrainingEndDate)" \
+                " VALUES" \
+                " (" + str(walkforward) + ", '" + str(startDate) + "', '" + str(endDate) + "')"
+        return databaseObject.Execute(query)
+
     ########################################################################################################################
     # Q Learning Functions follow:
     ########################################################################################################################
