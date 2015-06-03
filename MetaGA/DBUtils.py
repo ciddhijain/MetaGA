@@ -33,65 +33,65 @@ class DBUtils:
     # Function to return the count of Elite individuals in table tblIndividualCategoryInfo
     def getEliteCount(self, walkforward):
         global databaseObject
-        query = "SELECT COUNT(*),1 FROM tblIndividualCategoryInfo WHERE category=1 AND " \
-                "walk_forward=" + str(walkforward)
+        query = "SELECT COUNT(*),1 FROM tblIndividualCategoryInfo WHERE Category=1 AND " \
+                "WalkForwardID=" + str(walkforward)
         return databaseObject.Execute(query)
 
     # Function to return the count of Feasible individuals in table tblIndividualCategoryInfo
     def getFeasibleCount(self, walkforward):
         global databaseObject
-        query = "SELECT COUNT(*),1 FROM tblIndividualCategoryInfo WHERE category=2 AND " \
-                "walk_forward=" + str(walkforward)
+        query = "SELECT COUNT(*),1 FROM tblIndividualCategoryInfo WHERE Category=2 AND " \
+                "WalkForwardID=" + str(walkforward)
         return databaseObject.Execute(query)
 
     # Function to return the count of Non-Feasible individuals in table tblIndividualCategoryInfo
     def getNonFeasibleCount(self, walkforward):
         global databaseObject
-        query = "SELECT COUNT(*),1 FROM tblIndividualCategoryInfo WHERE category=3 AND walk_forward=" + str(walkforward)
+        query = "SELECT COUNT(*),1 FROM tblIndividualCategoryInfo WHERE Category=3 AND WalkForwardID=" + str(walkforward)
         return databaseObject.Execute(query)
 
     # Function to return the count of Non-Feasible individuals in table tblIndividualCategoryInfo
     def getNonFeasibleCountStock(self, walkforward, stockId):
         global databaseObject
-        query = "SELECT COUNT(*),1 FROM tblIndividualCategoryInfo WHERE category=3 AND stock_id=" + str(stockId) + \
-                " AND walk_forward=" + str(walkforward)
+        query = "SELECT COUNT(*),1 FROM tblIndividualCategoryInfo WHERE Category=3 AND SecID=" + str(stockId) + \
+                " AND WalkForwardID=" + str(walkforward)
         return databaseObject.Execute(query)
 
     # Function to return a random elite individual id
     # The provided offset should be within limit depending upon count of elite individuals
     def getRandomEliteIndividual(self, offset, walkforward):
         global databaseObject
-        queryIndividual = "SELECT individual_id, stock_id FROM tblIndividualCategoryInfo WHERE category=1 AND" \
-                          " walk_forward=" + str(walkforward) + " LIMIT 1 OFFSET " + str(offset)
+        queryIndividual = "SELECT IndividualID, SecID FROM tblIndividualCategoryInfo WHERE Category=1 AND" \
+                          " WalkForwardID=" + str(walkforward) + " LIMIT 1 OFFSET " + str(offset)
         return databaseObject.Execute(queryIndividual)
 
     # Function to return a random feasible individual id.
     # The provided offset should be within limit depending upon count of feasible individuals
     def getRandomFeasibleIndividual(self, offset, walkforward):
         global databaseObject
-        queryIndividual = "SELECT individual_id, stock_id FROM tblIndividualCategoryInfo WHERE category=2 AND" \
-                          " walk_forward=" + str(walkforward) + " LIMIT 1 OFFSET " + str(offset)
+        queryIndividual = "SELECT IndividualID, SecID FROM tblIndividualCategoryInfo WHERE Category=2 AND" \
+                          " WalkForwardID=" + str(walkforward) + " LIMIT 1 OFFSET " + str(offset)
         return databaseObject.Execute(queryIndividual)
 
     # Function to return a random non-feasible individual id
     # The provided offset should be within limit depending upon count of non-feasible individuals
     def getRandomNonFeasibleIndividual(self, offset, walkforward):
         global databaseObject
-        queryIndividual = "SELECT individual_id, stock_id FROM tblIndividualCategoryInfo WHERE category=3 AND" \
-                          " walk_forward=" + str(walkforward) + " LIMIT 1 OFFSET " + str(offset)
+        queryIndividual = "SELECT IndividualID, SecID FROM tblIndividualCategoryInfo WHERE Category=3 AND" \
+                          " WalkForwardID=" + str(walkforward) + " LIMIT 1 OFFSET " + str(offset)
         return databaseObject.Execute(queryIndividual)
 
     # Function to return a random non-feasible individual id from a given stock
     # The provided offset should be within limit depending upon count of non-feasible individuals
     def getRandomNonFeasibleIndividualStock(self, offset, walkforward, stockId):
         global databaseObject
-        queryIndividual = "SELECT individual_id, stock_id FROM tblIndividualCategoryInfo WHERE category=3 AND" \
-                          " walk_forward=" + str(walkforward) + " AND stock_id=" + str(stockId) + " LIMIT 1 OFFSET " + str(offset)
+        queryIndividual = "SELECT IndividualID, SecID FROM tblIndividualCategoryInfo WHERE Category=3 AND" \
+                          " WalkForwardID=" + str(walkforward) + " AND SecID=" + str(stockId) + " LIMIT 1 OFFSET " + str(offset)
         return databaseObject.Execute(queryIndividual)
 
     def getRandomPortfolioIndividual(self, metaIndividualId, offset):
         global databaseObject
-        query = "SELECT feeder_individual_id, stock_id FROM mapping_table WHERE meta_individual_id=" + \
+        query = "SELECT IndividualID, SecID FROM mapping_table WHERE MetaIndividualId=" + \
                 str(metaIndividualId) + " LIMIT 1 OFFSET " + str(offset)
         return databaseObject.Execute(query)
 
@@ -99,7 +99,7 @@ class DBUtils:
     def insertPortfolioMapping(self, metaIndividualId, feederIndividualId, stockId):
         global databaseObject
         query = "INSERT INTO mapping_table" \
-                " (meta_individual_id, feeder_individual_id, stock_id)" \
+                " (MetaIndividualId, IndividualID, SecID)" \
                 " VALUES" \
                 " ( " + str(metaIndividualId) + ", " + str(feederIndividualId) + ", " + str(stockId) + " )"
         return databaseObject.Execute(query)
@@ -108,7 +108,7 @@ class DBUtils:
     def insertPortfolio(self, metaIndividualId, firstGeneration, lastGeneration):
         global databaseObject
         query = "INSERT INTO portfolio_table" \
-                " (meta_individual_id, first_generation, last_generation)" \
+                " (MetaIndividualId, first_generation, last_generation)" \
                 " VALUES" \
                 " ( " + str(metaIndividualId) + ", " + str(firstGeneration) + ", " + str(lastGeneration) + " )"
         return databaseObject.Execute(query)
@@ -116,27 +116,27 @@ class DBUtils:
     # Function to insert a new individual in a portfolio with a single change in mapping
     def insertMutationPortfolio(self, metaIndividualId, oldFeederIndividualId, newFeederIndividualId, oldStockId, newStockId, generation):
         global databaseObject
-        queryCurrent = "SELECT feeder_individual_id, stock_id FROM mapping_table WHERE meta_individual_id=" + str(metaIndividualId)
+        queryCurrent = "SELECT IndividualID, SecID FROM mapping_table WHERE MetaIndividualId=" + str(metaIndividualId)
         resultCurrent = databaseObject.Execute(queryCurrent)
-        queryNewMetaId = "SELECT MAX(meta_individual_id), 1 FROM mapping_table"
+        queryNewMetaId = "SELECT MAX(MetaIndividualId), 1 FROM mapping_table"
         resultNewId = databaseObject.Execute(queryNewMetaId)
         for newMetaId, dummy in resultNewId:
             for feederIndividualId, stock in resultCurrent:
                 if feederIndividualId==oldFeederIndividualId and stock==oldStockId:
                     query = "INSERT INTO mapping_table" \
-                            " (meta_individual_id, feeder_individual_id, stock_id)" \
+                            " (MetaIndividualId, IndividualID, SecID)" \
                             " VALUES" \
                             " ( " + str(newMetaId+1) + ", " + str(newFeederIndividualId) + ", " + str(newStockId) + " )"
                     databaseObject.Execute(query)
                 else:
                     query = "INSERT INTO mapping_table" \
-                            " (meta_individual_id, feeder_individual_id, stock_id)" \
+                            " (MetaIndividualId, IndividualID, SecID)" \
                             " VALUES" \
                             " ( " + str(newMetaId+1) + ", " + str(feederIndividualId) + ", " + str(stock) + " )"
                     databaseObject.Execute(query)
             logging.info(str(newMetaId+1) + " generated by mutation of " + str(metaIndividualId))
             query = "INSERT INTO portfolio_table" \
-                    " (meta_individual_id, first_generation, last_generation)" \
+                    " (MetaIndividualId, first_generation, last_generation)" \
                     " VALUES" \
                     " (" + str(newMetaId+1) + ", " + str(generation) + ", " + str(generation) + ")"
             databaseObject.Execute(query)
@@ -144,41 +144,41 @@ class DBUtils:
 
     def getFeederIndividualsWalkforward(self, walkforward):
         global databaseObject
-        query = "SELECT individual_id, 1 FROM tblIndividualCategoryInfo WHERE walk_forward=" + str(walkforward)
+        query = "SELECT IndividualID, 1 FROM tblIndividualCategoryInfo WHERE WalkForwardID=" + str(walkforward)
         return databaseObject.Execute(query)
 
     # Function to get portfolio ids in given generation from mapping_table
     def getPortfolios(self, generation):
         global databaseObject
-        query = "SELECT meta_individual_id, COUNT(*) FROM mapping_table WHERE meta_individual_id IN " \
-                "(SELECT meta_individual_id FROM portfolio_table WHERE last_generation=" + str(generation)\
-                + " AND feasible_by_performance=1) GROUP BY meta_individual_id"
+        query = "SELECT MetaIndividualId, COUNT(*) FROM mapping_table WHERE MetaIndividualId IN " \
+                "(SELECT MetaIndividualId FROM portfolio_table WHERE last_generation=" + str(generation)\
+                + " AND feasible_by_performance=1) GROUP BY MetaIndividualId"
         return databaseObject.Execute(query)
 
     # Function to get size of a portfolio in given generation, specified by offset for id
     def getPortfolioSizeByOffset(self, metaPortfolioIdOffset, generation):
         global databaseObject
-        queryId = "SELECT meta_individual_id, 1 FROM portfolio_table WHERE last_generation=" + str(generation) + \
+        queryId = "SELECT MetaIndividualId, 1 FROM portfolio_table WHERE last_generation=" + str(generation) + \
                   " AND feasible_by_performance=1 LIMIT 1 OFFSET " + str(metaPortfolioIdOffset)
         resultId = databaseObject.Execute(queryId)
         for metaPortfolioId, dummy in resultId:
-            query = "SELECT COUNT(*), meta_individual_id FROM mapping_table WHERE meta_individual_id=" + str(metaPortfolioId)
+            query = "SELECT COUNT(*), MetaIndividualId FROM mapping_table WHERE MetaIndividualId=" + str(metaPortfolioId)
             return databaseObject.Execute(query)
 
     # Function to get size of a given portfolio
     def getPortfolioSize(self, portfolioId):
         global databaseObject
-        query = "SELECT COUNT(*), 1 FROM mapping_table WHERE meta_individual_id=" + str(portfolioId)
+        query = "SELECT COUNT(*), 1 FROM mapping_table WHERE MetaIndividualId=" + str(portfolioId)
         return databaseObject.Execute(query)
 
     # Function to insert children corresponding to crossover
     def insertCrossoverPortfolio(self, crossoverType, numChildren, id1, cut11, cut12, id2, cut21, cut22, generation):
         global databaseObject
-        queryCurrent1 = "SELECT feeder_individual_id, stock_id FROM mapping_table WHERE meta_individual_id=" + str(id1)
+        queryCurrent1 = "SELECT IndividualID, SecID FROM mapping_table WHERE MetaIndividualId=" + str(id1)
         resultCurrent1 = databaseObject.Execute(queryCurrent1)
-        queryCurrent2 = "SELECT feeder_individual_id, stock_id FROM mapping_table WHERE meta_individual_id=" + str(id2)
+        queryCurrent2 = "SELECT IndividualID, SecID FROM mapping_table WHERE MetaIndividualId=" + str(id2)
         resultCurrent2 = databaseObject.Execute(queryCurrent2)
-        queryNewMetaId = "SELECT MAX(meta_individual_id), 1 FROM mapping_table"
+        queryNewMetaId = "SELECT MAX(MetaIndividualId), 1 FROM mapping_table"
         resultNewId = databaseObject.Execute(queryNewMetaId)
 
         list1 = []
@@ -195,18 +195,18 @@ class DBUtils:
         if crossoverType==1:
             for i in range(0, cut11, 1):
                 query = "INSERT INTO mapping_table" \
-                        " (meta_individual_id, feeder_individual_id, stock_id)" \
+                        " (MetaIndividualId, IndividualID, SecID)" \
                         " VALUES" \
                         " ( " + str(newId+1) + ", " + str(list1[i][0]) + ", " + str(list1[i][1]) + " )"
                 databaseObject.Execute(query)
             for i in range(cut21, len(list2), 1):
                 query = "INSERT INTO mapping_table" \
-                        " (meta_individual_id, feeder_individual_id, stock_id)" \
+                        " (MetaIndividualId, IndividualID, SecID)" \
                         " VALUES" \
                         " ( " + str(newId+1) + ", " + str(list2[i][0]) + ", " + str(list2[i][1]) + " )"
                 databaseObject.Execute(query)
             query = "INSERT INTO portfolio_table" \
-                    " (meta_individual_id, first_generation, last_generation)" \
+                    " (MetaIndividualId, first_generation, last_generation)" \
                     " VALUES" \
                     " (" + str(newId+1) + ", " + str(generation) + ", " + str(generation) + ")"
             databaseObject.Execute(query)
@@ -214,20 +214,20 @@ class DBUtils:
             if numChildren==2:
                 for i in range(0, cut21, 1):
                     query = "INSERT INTO mapping_table" \
-                            " (meta_individual_id, feeder_individual_id, stock_id)" \
+                            " (MetaIndividualId, IndividualID, SecID)" \
                             " VALUES" \
                             " ( " + str(newId+2) + ", " + str(list2[i][0]) + ", " + str(list2[i][1]) + " )"
                     databaseObject.Execute(query)
                 for i in range(cut11, len(list1), 1):
                     query = "INSERT INTO mapping_table" \
-                            " (meta_individual_id, feeder_individual_id, stock_id)" \
+                            " (MetaIndividualId, IndividualID, SecID)" \
                             " VALUES" \
                             " ( " + str(newId+2) + ", " + str(list1[i][0]) + ", " + str(list1[i][1]) + " )"
                     databaseObject.Execute(query)
                 logging.info(str(newId+1) + " and " + str(newId+2) + " generated from type " + str(crossoverType) +
                              " crossover of " + str(id1) + " and " + str(id2))
                 query = "INSERT INTO portfolio_table" \
-                        " (meta_individual_id, first_generation, last_generation)" \
+                        " (MetaIndividualId, first_generation, last_generation)" \
                         " VALUES" \
                         " (" + str(newId+2) + ", " + str(generation) + ", " + str(generation) + ")"
                 databaseObject.Execute(query)
@@ -239,24 +239,24 @@ class DBUtils:
         if crossoverType==2:
             for i in range(0, cut11, 1):
                 query = "INSERT INTO mapping_table" \
-                        " (meta_individual_id, feeder_individual_id, stock_id)" \
+                        " (MetaIndividualId, IndividualID, SecID)" \
                         " VALUES" \
                         " ( " + str(newId+1) + ", " + str(list1[i][0]) + ", " + str(list1[i][1]) + " )"
                 databaseObject.Execute(query)
             for i in range(cut21, cut22, 1):
                 query = "INSERT INTO mapping_table" \
-                        " (meta_individual_id, feeder_individual_id, stock_id)" \
+                        " (MetaIndividualId, IndividualID, SecID)" \
                         " VALUES" \
                         " ( " + str(newId+1) + ", " + str(list2[i][0]) + ", " + str(list2[i][1]) + " )"
                 databaseObject.Execute(query)
             for i in range(cut12, len(list1), 1):
                  query = "INSERT INTO mapping_table" \
-                        " (meta_individual_id, feeder_individual_id, stock_id)" \
+                        " (MetaIndividualId, IndividualID, SecID)" \
                         " VALUES" \
                         " ( " + str(newId+1) + ", " + str(list1[i][0]) + ", " + str(list1[i][1]) + " )"
                  databaseObject.Execute(query)
             query = "INSERT INTO portfolio_table" \
-                    " (meta_individual_id, first_generation, last_generation)" \
+                    " (MetaIndividualId, first_generation, last_generation)" \
                     " VALUES" \
                     " (" + str(newId+1) + ", " + str(generation) + ", " + str(generation) + ")"
             databaseObject.Execute(query)
@@ -264,26 +264,26 @@ class DBUtils:
             if numChildren==2:
                 for i in range(0, cut21, 1):
                     query = "INSERT INTO mapping_table" \
-                            " (meta_individual_id, feeder_individual_id, stock_id)" \
+                            " (MetaIndividualId, IndividualID, SecID)" \
                             " VALUES" \
                             " ( " + str(newId+2) + ", " + str(list2[i][0]) + ", " + str(list2[i][1]) + " )"
                     databaseObject.Execute(query)
                 for i in range(cut11, cut12, 1):
                     query = "INSERT INTO mapping_table" \
-                            " (meta_individual_id, feeder_individual_id, stock_id)" \
+                            " (MetaIndividualId, IndividualID, SecID)" \
                             " VALUES" \
                             " ( " + str(newId+2) + ", " + str(list1[i][0]) + ", " + str(list1[i][1]) + " )"
                     databaseObject.Execute(query)
                 for i in range(cut22, len(list2), 1):
                      query = "INSERT INTO mapping_table" \
-                            " (meta_individual_id, feeder_individual_id, stock_id)" \
+                            " (MetaIndividualId, IndividualID, SecID)" \
                             " VALUES" \
                             " ( " + str(newId+2) + ", " + str(list2[i][0]) + ", " + str(list2[i][1]) + " )"
                      databaseObject.Execute(query)
                 logging.info(str(newId+1) + " and " + str(newId+2) + " generated from type " + str(crossoverType) +
                              " crossover of " + str(id1) + " and " + str(id2))
                 query = "INSERT INTO portfolio_table" \
-                        " (meta_individual_id, first_generation, last_generation)" \
+                        " (MetaIndividualId, first_generation, last_generation)" \
                         " VALUES" \
                         " (" + str(newId+2) + ", " + str(generation) + ", " + str(generation) + ")"
                 databaseObject.Execute(query)
@@ -296,20 +296,20 @@ class DBUtils:
     # Function to insert a portfolio's performance in performance_table
     def insertPerformance(self, portfolioId, performance):
         global databaseObject
-        query = "UPDATE portfolio_table SET performance=" + str(performance) + " WHERE meta_individual_id=" + str(portfolioId)
+        query = "UPDATE portfolio_table SET performance=" + str(performance) + " WHERE MetaIndividualId=" + str(portfolioId)
         return databaseObject.Execute(query)
 
     # Function to get portfolios in a given generation ordered by performance
     def getOrderedPortfolios(self, generation):
         global databaseObject
-        query = "SELECT meta_individual_id, performance FROM portfolio_table WHERE last_generation=" + str(generation) + \
+        query = "SELECT MetaIndividualId, performance FROM portfolio_table WHERE last_generation=" + str(generation) + \
                 " AND feasible_by_performance=1 ORDER BY performance DESC"
         return databaseObject.Execute(query)
 
     # Function to get top elite portfolios in a given generation, ordered by performance
     def getOrderedElitePortfolios(self, generation):
         global databaseObject
-        query = "SELECT meta_individual_id, performance FROM portfolio_table WHERE last_generation>=" + \
+        query = "SELECT MetaIndividualId, performance FROM portfolio_table WHERE last_generation>=" + \
                 str(generation) + " AND first_generation<=" + str(generation) + \
                 " AND feasible_by_performance=1 ORDER BY performance DESC LIMIT " + str(gv.numElites)
         return databaseObject.Execute(query)
@@ -317,13 +317,13 @@ class DBUtils:
     # Function to get top feasible portfolios in a given generation, ordered by performance
     def getOrderedFeasiblePortfolios(self, generation):
         global databaseObject
-        query = "SELECT meta_individual_id, performance FROM portfolio_table WHERE last_generation=" + str(generation) + \
+        query = "SELECT MetaIndividualId, performance FROM portfolio_table WHERE last_generation=" + str(generation) + \
                 " AND feasible_by_performance=1 ORDER BY performance DESC LIMIT " + str(gv.maxNumPortfolios)
         return databaseObject.Execute(query)
 
     def getOrderedFeasiblePortfoliosPerformanceRange(self, generation, minPerformance, maxPerformance):
         global databaseObject
-        query = "SELECT meta_individual_id, performance FROM portfolio_table WHERE last_generation=" + str(generation) + \
+        query = "SELECT MetaIndividualId, performance FROM portfolio_table WHERE last_generation=" + str(generation) + \
                 " AND feasible_by_performance=1 AND performance<" + str(maxPerformance) + \
                 " AND performance>=" + str(minPerformance) + " ORDER BY performance DESC"
         return databaseObject.Execute(query)
@@ -338,27 +338,27 @@ class DBUtils:
     # Function to insert selected portfolios for next generation and update in current generation
     def updateSelectedPortfolio(self, portfolioId):
         global databaseObject
-        queryUpdate = "UPDATE portfolio_table SET last_generation=last_generation+1 WHERE meta_individual_id=" + str(portfolioId)
+        queryUpdate = "UPDATE portfolio_table SET last_generation=last_generation+1 WHERE MetaIndividualId=" + str(portfolioId)
         return databaseObject.Execute(queryUpdate)
 
     # Function to check if performance for a portfolio has already been calculated
     def checkPerformance(self, portfolioId):
         global databaseObject
-        query = "SELECT EXISTS (SELECT 1 FROM portfolio_table WHERE meta_individual_id=" + str(portfolioId) + \
+        query = "SELECT EXISTS (SELECT 1 FROM portfolio_table WHERE MetaIndividualId=" + str(portfolioId) + \
                  " AND performance IS NOT NULL), 1"
         return databaseObject.Execute(query)
 
     # Function to get feeder individuals in a portfolio in an ascending order
     def getFeederIndividualsPortfolio(self, portfolioId):
         global databaseObject
-        query = "SELECT stock_id, feeder_individual_id  FROM mapping_table WHERE meta_individual_id=" + str(portfolioId) + \
-                " ORDER BY stock_id, feeder_individual_id"
+        query = "SELECT SecID, IndividualID  FROM mapping_table WHERE MetaIndividualId=" + str(portfolioId) + \
+                " ORDER BY SecID, IndividualID"
         return databaseObject.Execute(query)
 
     # Function to get final elites from the mapping table
     def getFinalElites(self):
         global databaseObject
-        query = "SELECT meta_individual_id, performance FROM portfolio_table WHERE last_generation=" \
+        query = "SELECT MetaIndividualId, performance FROM portfolio_table WHERE last_generation=" \
                 "(SELECT MAX(last_generation) FROM portfolio_table)) " \
                 "ORDER BY performance DESC LIMIT " + str(gv.numElites)
         return databaseObject.Execute(query)
@@ -373,16 +373,16 @@ class DBUtils:
     # Function to check if a pair has already been involved in crossover in a generation
     def checkCrossoverPairs(self, id1, id2, generation):
         global databaseObject
-        query = "SELECT EXISTS (SELECT 1 FROM crossover_pairs_table WHERE ((meta_individual_id_1=" + str(id1) + \
-                " AND meta_individual_id_2=" + str(id2) + ") OR (meta_individual_id_1=" + str(id2) + \
-                " AND meta_individual_id_2=" + str(id1) + ")) AND generation=" + str(generation) + "), 1"
+        query = "SELECT EXISTS (SELECT 1 FROM crossover_pairs_table WHERE ((MetaIndividualId_1=" + str(id1) + \
+                " AND MetaIndividualId_2=" + str(id2) + ") OR (MetaIndividualId_1=" + str(id2) + \
+                " AND MetaIndividualId_2=" + str(id1) + ")) AND generation=" + str(generation) + "), 1"
         return databaseObject.Execute(query)
 
     # Function to insert a new crossover pair in table
     def insertCrossoverPair(self, id1, id2, generation):
         global databaseObject
         query = "INSERT INTO crossover_pairs_table" \
-                " (meta_individual_id_1, meta_individual_id_2, generation)" \
+                " (MetaIndividualId_1, MetaIndividualId_2, generation)" \
                 " VALUES" \
                 " (" + str(id1) + ", " + str(id2) + ", " + str(generation) + ")"
         return databaseObject.Execute(query)
@@ -396,123 +396,46 @@ class DBUtils:
     # Function to update feasibility of an individual based on performance
     def updatePerformanceFeasibilityPortfolio(self, portfolioId):
         global databaseObject
-        queryCheck = "SELECT performance, 1 FROM portfolio_table WHERE meta_individual_id=" + str(portfolioId)
+        queryCheck = "SELECT performance, 1 FROM portfolio_table WHERE MetaIndividualId=" + str(portfolioId)
         resultCheck = databaseObject.Execute(queryCheck)
         for performance, dummy in resultCheck:
             if performance>gv.thresholdPerformance:
-                query = "UPDATE portfolio_table SET feasible_by_performance=1 WHERE meta_individual_id=" + str(portfolioId)
+                query = "UPDATE portfolio_table SET feasible_by_performance=1 WHERE MetaIndividualId=" + str(portfolioId)
                 databaseObject.Execute(query)
                 return 1
             else:
-                query = "UPDATE portfolio_table SET feasible_by_performance=0 WHERE meta_individual_id=" + str(portfolioId)
+                query = "UPDATE portfolio_table SET feasible_by_performance=0 WHERE MetaIndividualId=" + str(portfolioId)
                 databaseObject.Execute(query)
                 return 0
-
-    # Function to get price series for a given stock for a given day and duration in between
-    def getPriceSeriesDayDuration(self, stockId, date, startTime, endTime):
-        global databaseObject
-        query = "SELECT date, time, close FROM tblStockPriceData WHERE stock_id=" + str(stockId) + " AND date='" + \
-                str(date) + "' AND time>='" + str(startTime) + "' AND time<='" + str(endTime) + "'"
-        return databaseObject.Execute(query)
-
-    # Function to get price series for a given stock for a given day from a start time to day end
-    def getPriceSeriesDayEnd(self, stockId, date, startTime):
-        global databaseObject
-        query = "SELECT date, time, close FROM tblStockPriceData WHERE stock_id=" + str(stockId) + " AND date='" + \
-                str(date) + "' AND time>='" + str(startTime) + "'"
-        return databaseObject.Execute(query)
-
-    # Function to get price series for a given stock for a given day from a day start time to a end time
-    def getPriceSeriesDayStart(self, stockId, date, endTime):
-        global databaseObject
-        query = "SELECT date, time, close FROM tblStockPriceData WHERE stock_id=" + str(stockId) + " AND date='" + \
-                str(date) + "' AND time<='" + str(endTime) + "'"
-        return databaseObject.Execute(query)
-
-    # Function to get price series for a given stock for multiple days (excluding start and end dates)
-    def getPriceSeriesDays(self, stockId, startDate, endDate):
-        global databaseObject
-        query = "SELECT date, time, close FROM tblStockPriceData WHERE stock_id=" + str(stockId) + " AND date>'" + \
-                str(startDate) + "' AND date<'" + str(endDate) + "'"
-        return databaseObject.Execute(query)
-
-    # Function to add or update stock wise exposure for a portfolio
-    def addOrUpdateStockExposure(self, portfolioId, stockId, entryPrice, entryQty, tradeType, date, time, price):
-        global databaseObject
-        queryCheck = "SELECT EXISTS (SELECT 1 FROM exposure_table WHERE individual_id=" + str(portfolioId) + \
-                     " AND stock_id=" + str(stockId) + " AND date='" + str(date) + "' AND time='" + str(time) + "'" + "), 1"
-        resultCheck = databaseObject.Execute(queryCheck)
-
-        '''
-        exposure = None
-        if tradeType == 0:
-            exposure = (entryPrice-price) * entryQty
-        else:
-            exposure = (price - entryPrice) * entryQty
-        '''
-        exposure = price * entryQty
-
-        for check, dummy in resultCheck:
-            if check==1:
-                query = "UPDATE exposure_table SET exposure=exposure+" + str(exposure) + " WHERE individual_id=" + str(portfolioId) + \
-                        " AND stock_id=" + str(stockId) + " AND date='" + str(date) + "' AND time='" + str(time) + "'"
-                databaseObject.Execute(query)
-            else:
-                query = "INSERT INTO exposure_table" \
-                        " (individual_id, stock_id, date, time, exposure)" \
-                        " VALUES" \
-                        " (" + str(portfolioId) + ", " + str(stockId) + ", '" + str(date) + "', '" + str(time) + "', " + str(exposure) + ")"
-                databaseObject.Execute(query)
 
     # Function to get various stocks that have individuals in a portfolio
     def getPortfolioStocks(self, portfolioId):
         global databaseObject
-        query = "SELECT DISTINCT(stock_id), 1 FROM mapping_table WHERE meta_individual_id=" + str(portfolioId)
-        return databaseObject.Execute(query)
-
-    # Delete function later
-    # Function to get maximum exposure corresponding to every stock in the portfolio
-    def getMaxExposurePortfolioStock(self, portfolioId):
-        global databaseObject
-        query = "SELECT MAX(exposure), stock_id FROM exposure_table WHERE meta_individual_id=" + str(portfolioId) + " GROUP BY stock_id"
-        return databaseObject.Execute(query)
-
-    # Function to get stock exposure in a portfolio at every time point
-    def getExposurePortfolioStock(self, portfolioId, stockId):
-        global databaseObject
-        query = "SELECT SUM(exposure), 1 FROM exposure_table WHERE individual_id IN (SELECT feeder_individual_id FROM mapping_table " \
-                "WHERE meta_individual_id=" + str(portfolioId) + " AND stock_id=" + str(stockId) + ") GROUP BY date, time"
-        return databaseObject.Execute(query)
-
-    # Function to get portfolio exposure at every time point
-    def getExposurePortfolio(self, portfolioId):
-        global databaseObject
-        query = "SELECT SUM(exposure), 1 FROM exposure_table WHERE individual_id IN (SELECT feeder_individual_id FROM mapping_table " \
-                "WHERE meta_individual_id=" + str(portfolioId) + ") GROUP BY date, time"
+        query = "SELECT DISTINCT(SecID), 1 FROM mapping_table WHERE MetaIndividualId=" + str(portfolioId)
         return databaseObject.Execute(query)
 
     # Function to get all individuals from tblIndividualList
     def getFeederIndividuals(self):
         global databaseObject
-        query = "SELECT individual_id, stock_id FROM tblIndividualList"
+        query = "SELECT IndividualID, SecID FROM tblIndividualList"
         return databaseObject.Execute(query)
 
     # Function to get number of long individuals in a portfolio
     def getLongIndividualsPortfolio(self, portfolioId):
         global databaseObject
-        query = "SELECT COUNT(*),1 FROM mapping_table m, tblIndividualList i WHERE m.meta_individual_id=" + str(portfolioId) + \
-                " AND i.individual_type=1 AND m.feeder_individual_id=i.individual_id AND m.stock_id=i.stock_id"
+        query = "SELECT COUNT(*),1 FROM mapping_table m, tblIndividualList i WHERE m.MetaIndividualId=" + str(portfolioId) + \
+                " AND i.individual_type=1 AND m.IndividualID=i.IndividualID AND m.SecID=i.SecID"
         return databaseObject.Execute(query)
 
     def insertBiasedCrossoverPortfolio(self, id1, id2, cut1, cut2, long1, size1, long2, size2, biasType, generation):
         global databaseObject
-        queryCurrent1 = "SELECT m.feeder_individual_id, m.stock_id, i.individual_type FROM mapping_table m, tblIndividualList i" \
-                        " WHERE m.meta_individual_id=" + str(id1) + " AND m.feeder_individual_id=i.individual_id AND m.stock_id=i.stock_id"
+        queryCurrent1 = "SELECT m.IndividualID, m.SecID, i.individual_type FROM mapping_table m, tblIndividualList i" \
+                        " WHERE m.MetaIndividualId=" + str(id1) + " AND m.IndividualID=i.IndividualID AND m.SecID=i.SecID"
         resultCurrent1 = databaseObject.Execute(queryCurrent1)
-        queryCurrent2 = "SELECT m.feeder_individual_id, m.stock_id, i.individual_type FROM mapping_table m, tblIndividualList i" \
-                        " WHERE m.meta_individual_id=" + str(id2) + " AND m.feeder_individual_id=i.individual_id AND m.stock_id=i.stock_id"
+        queryCurrent2 = "SELECT m.IndividualID, m.SecID, i.individual_type FROM mapping_table m, tblIndividualList i" \
+                        " WHERE m.MetaIndividualId=" + str(id2) + " AND m.IndividualID=i.IndividualID AND m.SecID=i.SecID"
         resultCurrent2 = databaseObject.Execute(queryCurrent2)
-        queryNewMetaId = "SELECT MAX(meta_individual_id), 1 FROM mapping_table"
+        queryNewMetaId = "SELECT MAX(MetaIndividualId), 1 FROM mapping_table"
         resultNewId = databaseObject.Execute(queryNewMetaId)
 
         list1 = []
@@ -536,20 +459,20 @@ class DBUtils:
             for i in range(0, size1, 1):
                 if list1[i][2]==0:                      # Insert if short of its own
                     query = "INSERT INTO mapping_table" \
-                            " (meta_individual_id, feeder_individual_id, stock_id)" \
+                            " (MetaIndividualId, IndividualID, SecID)" \
                             " VALUES" \
                             " ( " + str(newId+1) + ", " + str(list1[i][0]) + ", " + str(list1[i][1]) + " )"
                     databaseObject.Execute(query)
                 else:
                     if count1 not in exchange1:             # insert if long is not to be exchanged
                         query = "INSERT INTO mapping_table" \
-                                " (meta_individual_id, feeder_individual_id, stock_id)" \
+                                " (MetaIndividualId, IndividualID, SecID)" \
                                 " VALUES" \
                                 " ( " + str(newId+1) + ", " + str(list1[i][0]) + ", " + str(list1[i][1]) + " )"
                         databaseObject.Execute(query)
                     else:                                   # insert in other portfolio if long is to be exchanged
                         query = "INSERT INTO mapping_table" \
-                                " (meta_individual_id, feeder_individual_id, stock_id)" \
+                                " (MetaIndividualId, IndividualID, SecID)" \
                                 " VALUES" \
                                 " ( " + str(newId+2) + ", " + str(list1[i][0]) + ", " + str(list1[i][1]) + " )"
                         databaseObject.Execute(query)
@@ -559,32 +482,32 @@ class DBUtils:
             for i in range(0, size2, 1):
                 if list2[i][2]==0:                  # Insert if short of its own
                     query = "INSERT INTO mapping_table" \
-                            " (meta_individual_id, feeder_individual_id, stock_id)" \
+                            " (MetaIndividualId, IndividualID, SecID)" \
                             " VALUES" \
                             " ( " + str(newId+2) + ", " + str(list2[i][0]) + ", " + str(list2[i][1]) + " )"
                     databaseObject.Execute(query)
                 else:
                     if count2 not in exchange2:             # Insert if long is not to be exchanged
                         query = "INSERT INTO mapping_table" \
-                                " (meta_individual_id, feeder_individual_id, stock_id)" \
+                                " (MetaIndividualId, IndividualID, SecID)" \
                                 " VALUES" \
                                 " ( " + str(newId+2) + ", " + str(list2[i][0]) + ", " + str(list2[i][1]) + " )"
                         databaseObject.Execute(query)
                     else:                                   # Insert in other portfolio if long is to be exchanged
                         query = "INSERT INTO mapping_table" \
-                                " (meta_individual_id, feeder_individual_id, stock_id)" \
+                                " (MetaIndividualId, IndividualID, SecID)" \
                                 " VALUES" \
                                 " ( " + str(newId+1) + ", " + str(list2[i][0]) + ", " + str(list2[i][1]) + " )"
                         databaseObject.Execute(query)
                     count2 += 1
 
             query = "INSERT INTO portfolio_table" \
-                    " (meta_individual_id, first_generation, last_generation)" \
+                    " (MetaIndividualId, first_generation, last_generation)" \
                     " VALUES" \
                     " (" + str(newId+1) + ", " + str(generation) + ", " + str(generation) + ")"
             databaseObject.Execute(query)
             query = "INSERT INTO portfolio_table" \
-                    " (meta_individual_id, first_generation, last_generation)" \
+                    " (MetaIndividualId, first_generation, last_generation)" \
                     " VALUES" \
                     " (" + str(newId+2) + ", " + str(generation) + ", " + str(generation) + ")"
             databaseObject.Execute(query)
@@ -602,20 +525,20 @@ class DBUtils:
             for i in range(0, size1, 1):
                 if list1[i][2]==1:                  # Insert if long of its own
                     query = "INSERT INTO mapping_table" \
-                            " (meta_individual_id, feeder_individual_id, stock_id)" \
+                            " (MetaIndividualId, IndividualID, SecID)" \
                             " VALUES" \
                             " ( " + str(newId+1) + ", " + str(list1[i][0]) + ", " + str(list1[i][1]) + " )"
                     databaseObject.Execute(query)
                 else:
                     if count1 not in exchange1:             # Insert if short is not to be exchanged
                         query = "INSERT INTO mapping_table" \
-                                " (meta_individual_id, feeder_individual_id, stock_id)" \
+                                " (MetaIndividualId, IndividualID, SecID)" \
                                 " VALUES" \
                                 " ( " + str(newId+1) + ", " + str(list1[i][0]) + ", " + str(list1[i][1]) + " )"
                         databaseObject.Execute(query)
                     else:                                   # Insert in other portfolio if short is to be exchanged
                         query = "INSERT INTO mapping_table" \
-                                " (meta_individual_id, feeder_individual_id, stock_id)" \
+                                " (MetaIndividualId, IndividualID, SecID)" \
                                 " VALUES" \
                                 " ( " + str(newId+2) + ", " + str(list1[i][0]) + ", " + str(list1[i][1]) + " )"
                         databaseObject.Execute(query)
@@ -625,32 +548,32 @@ class DBUtils:
             for i in range(0, size2, 1):
                 if list2[i][2]==1:                  # Insert if long of its own
                     query = "INSERT INTO mapping_table" \
-                            " (meta_individual_id, feeder_individual_id, stock_id)" \
+                            " (MetaIndividualId, IndividualID, SecID)" \
                             " VALUES" \
                             " ( " + str(newId+2) + ", " + str(list2[i][0]) + ", " + str(list2[i][1]) + " )"
                     databaseObject.Execute(query)
                 else:                               # insert if short is not to be exchanged
                     if count2 not in exchange2:
                         query = "INSERT INTO mapping_table" \
-                                " (meta_individual_id, feeder_individual_id, stock_id)" \
+                                " (MetaIndividualId, IndividualID, SecID)" \
                                 " VALUES" \
                                 " ( " + str(newId+2) + ", " + str(list2[i][0]) + ", " + str(list2[i][1]) + " )"
                         databaseObject.Execute(query)
                     else:                           # Insert in other portfolio if short is to be exchanged
                         query = "INSERT INTO mapping_table" \
-                                " (meta_individual_id, feeder_individual_id, stock_id)" \
+                                " (MetaIndividualId, IndividualID, SecID)" \
                                 " VALUES" \
                                 " ( " + str(newId+1) + ", " + str(list2[i][0]) + ", " + str(list2[i][1]) + " )"
                         databaseObject.Execute(query)
                     count2 += 1
 
             query = "INSERT INTO portfolio_table" \
-                    " (meta_individual_id, first_generation, last_generation)" \
+                    " (MetaIndividualId, first_generation, last_generation)" \
                     " VALUES" \
                     " (" + str(newId+1) + ", " + str(generation) + ", " + str(generation) + ")"
             databaseObject.Execute(query)
             query = "INSERT INTO portfolio_table" \
-                    " (meta_individual_id, first_generation, last_generation)" \
+                    " (MetaIndividualId, first_generation, last_generation)" \
                     " VALUES" \
                     " (" + str(newId+2) + ", " + str(generation) + ", " + str(generation) + ")"
             databaseObject.Execute(query)
@@ -667,20 +590,20 @@ class DBUtils:
             for i in range(0, size1, 1):
                 if list1[i][2]==0:              # Insert if short individual of its own
                     query = "INSERT INTO mapping_table" \
-                            " (meta_individual_id, feeder_individual_id, stock_id)" \
+                            " (MetaIndividualId, IndividualID, SecID)" \
                             " VALUES" \
                             " ( " + str(newId+1) + ", " + str(list1[i][0]) + ", " + str(list1[i][1]) + " )"
                     databaseObject.Execute(query)
                 else:
                     if count1 not in exchange1:         # Insert if long individual is not to be exchanged
                         query = "INSERT INTO mapping_table" \
-                                " (meta_individual_id, feeder_individual_id, stock_id)" \
+                                " (MetaIndividualId, IndividualID, SecID)" \
                                 " VALUES" \
                                 " ( " + str(newId+1) + ", " + str(list1[i][0]) + ", " + str(list1[i][1]) + " )"
                         databaseObject.Execute(query)
                     else:                               # Insert in other portfolio if long individual is to be exchanged
                         query = "INSERT INTO mapping_table" \
-                                " (meta_individual_id, feeder_individual_id, stock_id)" \
+                                " (MetaIndividualId, IndividualID, SecID)" \
                                 " VALUES" \
                                 " ( " + str(newId+2) + ", " + str(list1[i][0]) + ", " + str(list1[i][1]) + " )"
                         databaseObject.Execute(query)
@@ -690,32 +613,32 @@ class DBUtils:
             for i in range(0, size2, 1):
                 if list2[i][2]==1:                  # Insert if long of its own
                     query = "INSERT INTO mapping_table" \
-                            " (meta_individual_id, feeder_individual_id, stock_id)" \
+                            " (MetaIndividualId, IndividualID, SecID)" \
                             " VALUES" \
                             " ( " + str(newId+2) + ", " + str(list2[i][0]) + ", " + str(list2[i][1]) + " )"
                     databaseObject.Execute(query)
                 else:
                     if count2 not in exchange2:             # Insert if short is not to be exchanged
                         query = "INSERT INTO mapping_table" \
-                                " (meta_individual_id, feeder_individual_id, stock_id)" \
+                                " (MetaIndividualId, IndividualID, SecID)" \
                                 " VALUES" \
                                 " ( " + str(newId+2) + ", " + str(list2[i][0]) + ", " + str(list2[i][1]) + " )"
                         databaseObject.Execute(query)
                     else:                                   # Insert in other portfolio if short is to exchanged
                         query = "INSERT INTO mapping_table" \
-                                " (meta_individual_id, feeder_individual_id, stock_id)" \
+                                " (MetaIndividualId, IndividualID, SecID)" \
                                 " VALUES" \
                                 " ( " + str(newId+1) + ", " + str(list2[i][0]) + ", " + str(list2[i][1]) + " )"
                         databaseObject.Execute(query)
                     count2 += 1
 
             query = "INSERT INTO portfolio_table" \
-                    " (meta_individual_id, first_generation, last_generation)" \
+                    " (MetaIndividualId, first_generation, last_generation)" \
                     " VALUES" \
                     " (" + str(newId+1) + ", " + str(generation) + ", " + str(generation) + ")"
             databaseObject.Execute(query)
             query = "INSERT INTO portfolio_table" \
-                    " (meta_individual_id, first_generation, last_generation)" \
+                    " (MetaIndividualId, first_generation, last_generation)" \
                     " VALUES" \
                     " (" + str(newId+2) + ", " + str(generation) + ", " + str(generation) + ")"
             databaseObject.Execute(query)
@@ -732,20 +655,20 @@ class DBUtils:
             for i in range(0, size1, 1):
                 if list1[i][2]==1:              # Insert if long individual of its own
                     query = "INSERT INTO mapping_table" \
-                            " (meta_individual_id, feeder_individual_id, stock_id)" \
+                            " (MetaIndividualId, IndividualID, SecID)" \
                             " VALUES" \
                             " ( " + str(newId+1) + ", " + str(list1[i][0]) + ", " + str(list1[i][1]) + " )"
                     databaseObject.Execute(query)
                 else:
                     if count1 not in exchange1:         # Insert if short individual is not to be exchanged
                         query = "INSERT INTO mapping_table" \
-                                " (meta_individual_id, feeder_individual_id, stock_id)" \
+                                " (MetaIndividualId, IndividualID, SecID)" \
                                 " VALUES" \
                                 " ( " + str(newId+1) + ", " + str(list1[i][0]) + ", " + str(list1[i][1]) + " )"
                         databaseObject.Execute(query)
                     else:                               # Insert in other portfolio if short individual is to be exchanged
                         query = "INSERT INTO mapping_table" \
-                                " (meta_individual_id, feeder_individual_id, stock_id)" \
+                                " (MetaIndividualId, IndividualID, SecID)" \
                                 " VALUES" \
                                 " ( " + str(newId+2) + ", " + str(list1[i][0]) + ", " + str(list1[i][1]) + " )"
                         databaseObject.Execute(query)
@@ -755,32 +678,32 @@ class DBUtils:
             for i in range(0, size2, 1):
                 if list2[i][2]==0:                  # Insert if short of its own
                     query = "INSERT INTO mapping_table" \
-                            " (meta_individual_id, feeder_individual_id, stock_id)" \
+                            " (MetaIndividualId, IndividualID, SecID)" \
                             " VALUES" \
                             " ( " + str(newId+2) + ", " + str(list2[i][0]) + ", " + str(list2[i][1]) + " )"
                     databaseObject.Execute(query)
                 else:
                     if count2 not in exchange2:             # Insert if long is not to be exchanged
                         query = "INSERT INTO mapping_table" \
-                                " (meta_individual_id, feeder_individual_id, stock_id)" \
+                                " (MetaIndividualId, IndividualID, SecID)" \
                                 " VALUES" \
                                 " ( " + str(newId+2) + ", " + str(list2[i][0]) + ", " + str(list2[i][1]) + " )"
                         databaseObject.Execute(query)
                     else:                                   # Insert in other portfolio if long is to exchanged
                         query = "INSERT INTO mapping_table" \
-                                " (meta_individual_id, feeder_individual_id, stock_id)" \
+                                " (MetaIndividualId, IndividualID, SecID)" \
                                 " VALUES" \
                                 " ( " + str(newId+1) + ", " + str(list2[i][0]) + ", " + str(list2[i][1]) + " )"
                         databaseObject.Execute(query)
                     count2 += 1
 
             query = "INSERT INTO portfolio_table" \
-                    " (meta_individual_id, first_generation, last_generation)" \
+                    " (MetaIndividualId, first_generation, last_generation)" \
                     " VALUES" \
                     " (" + str(newId+1) + ", " + str(generation) + ", " + str(generation) + ")"
             databaseObject.Execute(query)
             query = "INSERT INTO portfolio_table" \
-                    " (meta_individual_id, first_generation, last_generation)" \
+                    " (MetaIndividualId, first_generation, last_generation)" \
                     " VALUES" \
                     " (" + str(newId+2) + ", " + str(generation) + ", " + str(generation) + ")"
             databaseObject.Execute(query)
@@ -789,11 +712,11 @@ class DBUtils:
     # Function to set exposure for start of the day
     def setInitialExposure(self, portfolioId, date, time):
         global databaseObject
-        queryIndividuals = "SELECT feeder_individual_id, stock_id FROM mapping_table WHERE meta_individual_id=" + str(portfolioId)
+        queryIndividuals = "SELECT IndividualID, SecID FROM mapping_table WHERE MetaIndividualId=" + str(portfolioId)
         resultIndividuals = databaseObject.Execute(queryIndividuals)
         for feederId, stockId in resultIndividuals:
             query = "INSERT INTO exposure_table" \
-                    " (meta_individual_id, feeder_individual_id, stock_id, date, time, exposure)" \
+                    " (MetaIndividualId, IndividualID, SecID, date, time, exposure)" \
                     " VALUES" \
                     " (" + str(portfolioId) + ", " + str(feederId) + ", " + str(stockId) + ", '" + str(date) + "', '" + str(time) + "', " + str(0) + ")"
             databaseObject.Execute(query)
@@ -802,25 +725,25 @@ class DBUtils:
     # Function to get daily trades for a portfolio from original tradesheet
     def getDayTrades(self, portfolioId, date):
         global databaseObject
-        queryIndividuals = "SELECT feeder_individual_id, stock_id FROM mapping_table WHERE meta_individual_id=" + str(portfolioId)
+        queryIndividuals = "SELECT IndividualID, SecID FROM mapping_table WHERE MetaIndividualId=" + str(portfolioId)
         resultIndividuals = databaseObject.Execute(queryIndividuals)
-        query = "SELECT * FROM  tblIndividualTradesheet WHERE entry_date='" + str(date) + "' AND ("
+        query = "SELECT * FROM  tblIndividualTradesheet WHERE EntryDate='" + str(date) + "' AND ("
         individualCount = 0
         for feederId, stockId in resultIndividuals:
             if individualCount==0:
-                query = query + " ( individual_id=" + str(feederId) + " AND stock_id=" + str(stockId) + ") "
+                query = query + " ( IndividualID=" + str(feederId) + " AND SecID=" + str(stockId) + ") "
             else:
-                query = query + " OR ( individual_id=" + str(feederId) + " AND stock_id=" + str(stockId) + ") "
+                query = query + " OR ( IndividualID=" + str(feederId) + " AND SecID=" + str(stockId) + ") "
             individualCount += 1
-        query = query + ") ORDER BY entry_time"
+        query = query + ") ORDER BY EntryTime"
         return databaseObject.Execute(query)
 
     # Function to update current exposure for all feeder individuals in a portfolio and return total exposure and stock exposure
     def updateAndGetCurrentExposure(self, portfolioId, stockId, date, time):
         global databaseObject
-        queryIndividuals = "SELECT feeder_individual_id, stock_id FROM mapping_table WHERE meta_individual_id=" + str(portfolioId)
+        queryIndividuals = "SELECT IndividualID, SecID FROM mapping_table WHERE MetaIndividualId=" + str(portfolioId)
         resultIndividuals = databaseObject.Execute(queryIndividuals)
-        queryCheck = "SELECT EXISTS ( SELECT 1 FROM exposure_table WHERE meta_individual_id=" + str(portfolioId) + " AND date='" + str(date) + "' AND time='" + str(time) + "' ) , 1"
+        queryCheck = "SELECT EXISTS ( SELECT 1 FROM exposure_table WHERE MetaIndividualId=" + str(portfolioId) + " AND date='" + str(date) + "' AND time='" + str(time) + "' ) , 1"
         resultCheck = databaseObject.Execute(queryCheck)
         totalExposure = 0
         stockExposure = 0
@@ -831,13 +754,13 @@ class DBUtils:
                     longQty = None
                     shortQty = None
                     price = None
-                    queryLongQty = "SELECT SUM(entry_qty), 1 FROM portfolio_tradesheet_data_table WHERE meta_individual_id=" + str(portfolioId) + \
-                                   " AND individual_id=" + str(feederId) + " AND stock_id=" + str(stock) + " AND entry_date='" + str(date) + \
-                                   "' AND entry_time<='" + str(time) + "' AND exit_time>'" + str(time) + "' AND trade_type=1"
-                    queryShortQty = "SELECT SUM(entry_qty), 1 FROM portfolio_tradesheet_data_table WHERE meta_individual_id=" + str(portfolioId) + \
-                                   " AND individual_id=" + str(feederId) + " AND stock_id=" + str(stock) + " AND entry_date='" + str(date) + \
-                                   "' AND entry_time<='" + str(time) + "' AND exit_time>'" + str(time) + "' AND trade_type=0"
-                    queryPrice = "SELECT open, 1 FROM tblStockPriceData WHERE stock_id=" + str(stock) + " AND date='" + str(date) + "' AND time='" + str(time) + "'"
+                    queryLongQty = "SELECT SUM(Qty), 1 FROM portfolio_tradesheet_data_table WHERE MetaIndividualId=" + str(portfolioId) + \
+                                   " AND IndividualID=" + str(feederId) + " AND SecID=" + str(stock) + " AND EntryDate='" + str(date) + \
+                                   "' AND EntryTime<='" + str(time) + "' AND ExitTime>'" + str(time) + "' AND TradeType=1"
+                    queryShortQty = "SELECT SUM(Qty), 1 FROM portfolio_tradesheet_data_table WHERE MetaIndividualId=" + str(portfolioId) + \
+                                   " AND IndividualID=" + str(feederId) + " AND SecID=" + str(stock) + " AND EntryDate='" + str(date) + \
+                                   "' AND EntryTime<='" + str(time) + "' AND ExitTime>'" + str(time) + "' AND TradeType=0"
+                    queryPrice = "SELECT Open, 1 FROM tblStockPriceData WHERE SecID=" + str(stock) + " AND PriceDate='" + str(date) + "' AND PriceTime='" + str(time) + "'"
                     resultLongQty = databaseObject.Execute(queryLongQty)
                     resultShortQty = databaseObject.Execute(queryShortQty)
                     resultPrice = databaseObject.Execute(queryPrice)
@@ -853,7 +776,7 @@ class DBUtils:
                         if shortQty:
                             exposure += float(shortQty) * price * (-1)
                     queryInsert = "INSERT INTO exposure_table" \
-                                  " ( meta_individual_id, feeder_individual_id, stock_id, date, time, exposure )" \
+                                  " ( MetaIndividualId, IndividualID, SecID, date, time, exposure )" \
                                   " VALUES" \
                                   " ( " + str(portfolioId) + ", " + str(feederId) + ", " + str(stock) + ", '" + str(date) + "', '" + str(time) + "', " + str(exposure) + " )"
                     databaseObject.Execute(queryInsert)
@@ -861,9 +784,9 @@ class DBUtils:
                     if stock == stockId:
                         stockExposure += exposure
             else:
-                queryTotal = "SELECT SUM(exposure), 1 FROM exposure_table WHERE meta_individual_id=" + str(portfolioId) + " AND date='" + str(date) + \
+                queryTotal = "SELECT SUM(exposure), 1 FROM exposure_table WHERE MetaIndividualId=" + str(portfolioId) + " AND date='" + str(date) + \
                              "' AND time='" + str(time) + "'"
-                queryStock = "SELECT SUM(exposure), 1 FROM exposure_table WHERE meta_individual_id=" + str(portfolioId) + " AND stock_id=" + str(stockId) + \
+                queryStock = "SELECT SUM(exposure), 1 FROM exposure_table WHERE MetaIndividualId=" + str(portfolioId) + " AND SecID=" + str(stockId) + \
                              " AND date='" + str(date) + "' AND time='" + str(time) + "'"
                 resultTotal = databaseObject.Execute(queryTotal)
                 resultStock = databaseObject.Execute(queryStock)
@@ -876,7 +799,7 @@ class DBUtils:
     # Function to get current exposure without updating in database
     def getCurrentExposure(self, portfolioId, stockId, date, time):
         global databaseObject
-        queryIndividuals = "SELECT feeder_individual_id, stock_id FROM mapping_table WHERE meta_individual_id=" + str(portfolioId)
+        queryIndividuals = "SELECT IndividualID, SecID FROM mapping_table WHERE MetaIndividualId=" + str(portfolioId)
         resultIndividuals = databaseObject.Execute(queryIndividuals)
         totalExposure = 0
         stockExposure = 0
@@ -885,13 +808,13 @@ class DBUtils:
             longQty = None
             shortQty = None
             price = None
-            queryLongQty = "SELECT SUM(entry_qty), 1 FROM portfolio_tradesheet_data_table WHERE meta_individual_id=" + str(portfolioId) + \
-                           " AND individual_id=" + str(feederId) + " AND stock_id=" + str(stock) + " AND entry_date='" + str(date) + \
-                           "' AND entry_time<='" + str(time) + "' AND exit_time>'" + str(time) + "' AND trade_type=1"
-            queryShortQty = "SELECT SUM(entry_qty), 1 FROM portfolio_tradesheet_data_table WHERE meta_individual_id=" + str(portfolioId) + \
-                           " AND individual_id=" + str(feederId) + " AND stock_id=" + str(stock) + " AND entry_date='" + str(date) + \
-                           "' AND entry_time<='" + str(time) + "' AND exit_time>'" + str(time) + "' AND trade_type=0"
-            queryPrice = "SELECT open, 1 FROM tblStockPriceData WHERE stock_id=" + str(stock) + " AND date='" + str(date) + "' AND time='" + str(time) + "'"
+            queryLongQty = "SELECT SUM(Qty), 1 FROM portfolio_tradesheet_data_table WHERE MetaIndividualId=" + str(portfolioId) + \
+                           " AND IndividualID=" + str(feederId) + " AND SecID=" + str(stock) + " AND EntryDate='" + str(date) + \
+                           "' AND EntryTime<='" + str(time) + "' AND ExitTime>'" + str(time) + "' AND TradeType=1"
+            queryShortQty = "SELECT SUM(Qty), 1 FROM portfolio_tradesheet_data_table WHERE MetaIndividualId=" + str(portfolioId) + \
+                           " AND IndividualID=" + str(feederId) + " AND SecID=" + str(stock) + " AND EntryDate='" + str(date) + \
+                           "' AND EntryTime<='" + str(time) + "' AND ExitTime>'" + str(time) + "' AND TradeType=0"
+            queryPrice = "SELECT Open, 1 FROM tblStockPriceData WHERE SecID=" + str(stock) + " AND PriceDate='" + str(date) + "' AND PriceTime='" + str(time) + "'"
             resultLongQty = databaseObject.Execute(queryLongQty)
             resultShortQty = databaseObject.Execute(queryShortQty)
             resultPrice = databaseObject.Execute(queryPrice)
@@ -914,15 +837,15 @@ class DBUtils:
     # Function to update exposure corresponding to new trade taken
     def updateNewExposure(self, portfolioId, feederIndividualId, stockId, date, time, exposure):
         global databaseObject
-        query = "UPDATE exposure_table SET exposure=exposure+" + str(exposure) + " WHERE meta_individual_id=" + str(portfolioId) + " AND feeder_individual_id=" + \
-                str(feederIndividualId) + " AND stock_id=" + str(stockId) + " AND date='" + str(date) + "' AND time='" + str(time) + "'"
+        query = "UPDATE exposure_table SET exposure=exposure+" + str(exposure) + " WHERE MetaIndividualId=" + str(portfolioId) + " AND IndividualID=" + \
+                str(feederIndividualId) + " AND SecID=" + str(stockId) + " AND date='" + str(date) + "' AND time='" + str(time) + "'"
         return databaseObject.Execute(query)
 
     # Function to insert new trade for a portfolio
     def insertTrade(self, portfolioId, stockId, feederIndividualId, entryDate, entryTime, entryPrice, exitDate, exitTime, exitPrice, entryQty, tradeType):
         global databaseObject
         query = "INSERT INTO portfolio_tradesheet_data_table" \
-                " (meta_individual_id, stock_id, individual_id, entry_date, entry_time, entry_price, exit_date, exit_time, exit_price, entry_qty, trade_type)" \
+                " (MetaIndividualId, SecID, IndividualID, EntryDate, EntryTime, EntryPrice, ExitDate, ExitTime, ExitPrice, Qty, TradeType)" \
                 " VALUES" \
                 " (" + str(portfolioId) + ", " + str(stockId) + ", " + str(feederIndividualId) + ", '" + str(entryDate) + "', '" + str(entryTime) + \
                 "', "+ str(entryPrice) + ", '" + str(exitDate) + "', '" + str(exitTime) + "', " + str(exitPrice) + ", " + str(entryQty) + ", " + str(tradeType) + ")"
@@ -932,7 +855,7 @@ class DBUtils:
     def updateFeederIndividualPerformance(self, feederIndividualId, stockId, performance, walkforward):
         global databaseObject
         query = "INSERT INTO feeder_performance_table" \
-                " (feeder_individual_id, stock_id, performance, walk_forward)" \
+                " (IndividualID, SecID, performance, WalkForwardID)" \
                 " VALUES" \
                 " (" + str(feederIndividualId) + ", " + str(stockId) + ", " + str(performance) + ", " + str(walkforward) + ")"
         return databaseObject.Execute(query)
@@ -940,18 +863,18 @@ class DBUtils:
     # Function to update category of feeder_individuals depending upon top percentage
     def updateCategory(self, walkforward):
         global databaseObject
-        queryInsert = "INSERT INTO tblIndividualCategoryInfo (individual_id, stock_id, walk_forward)" \
-                      "SELECT feeder_individual_id, stock_id, walk_forward FROM feeder_performance_table"
+        queryInsert = "INSERT INTO tblIndividualCategoryInfo (IndividualID, SecID, WalkForwardID)" \
+                      "SELECT IndividualID, SecID, WalkForwardID FROM feeder_performance_table"
         databaseObject.Execute(queryInsert)
 
         queryNonFeasible = "UPDATE tblIndividualCategoryInfo ct " \
                         "JOIN feeder_performance_table pt " \
-                        "ON ct.individual_id=pt.feeder_individual_id AND ct.stock_id=pt.stock_id AND ct.walk_forward=pt.walk_forward " \
-                        "SET category=3 " \
+                        "ON ct.IndividualID=pt.IndividualID AND ct.SecID=pt.SecID AND ct.WalkForwardID=pt.WalkForwardID " \
+                        "SET Category=3 " \
                         "WHERE pt.performance<0"
         databaseObject.Execute(queryNonFeasible)
 
-        queryTotal = "SELECT COUNT(*), 1 FROM feeder_performance_table WHERE walk_forward=" + str(walkforward)
+        queryTotal = "SELECT COUNT(*), 1 FROM feeder_performance_table WHERE WalkForwardID=" + str(walkforward)
         numTotal = None
         numElites = None
         resultTotal = databaseObject.Execute(queryTotal)
@@ -959,21 +882,21 @@ class DBUtils:
             numTotal = count
         numElites = int(math.ceil(gv.fractionElites * numTotal))
 
-        queryTopIndividuals = "SELECT feeder_individual_id, stock_id FROM feeder_performance_table WHERE walk_forward=" + str(walkforward) + \
+        queryTopIndividuals = "SELECT IndividualID, SecID FROM feeder_performance_table WHERE WalkForwardID=" + str(walkforward) + \
                               " AND performance>0 ORDER BY performance DESC LIMIT " + str(numElites)
         resultElites = databaseObject.Execute(queryTopIndividuals)
         for feederId, stockId in resultElites:
-            queryElite = "UPDATE tblIndividualCategoryInfo SET category=1 WHERE individual_id=" + str(feederId) + " AND stock_id=" + str(stockId) + \
-                         " AND walk_forward=" + str(walkforward)
+            queryElite = "UPDATE tblIndividualCategoryInfo SET Category=1 WHERE IndividualID=" + str(feederId) + " AND SecID=" + str(stockId) + \
+                         " AND WalkForwardID=" + str(walkforward)
             databaseObject.Execute(queryElite)
 
-        queryFeasible = "UPDATE tblIndividualCategoryInfo SET category=2 WHERE walk_forward=" + str(walkforward) + " AND category IS NULL"
+        queryFeasible = "UPDATE tblIndividualCategoryInfo SET Category=2 WHERE WalkForwardID=" + str(walkforward) + " AND Category IS NULL"
         return databaseObject.Execute(queryFeasible)
 
     def updateFeederIndividualCategory(self, feederIndividualId, stockId, category, walkforward):
         global databaseObject
         query = "INSERT INTO tblIndividualCategoryInfo " \
-                "(individual_id, stock_id, walk_forward, category)" \
+                "(IndividualID, SecID, WalkForwardID, Category)" \
                 " VALUES" \
                 " (" + str(feederIndividualId) + ", " + str(stockId) + ", " + str(walkforward)+ ", " + str(category) + ")"
         return databaseObject.Execute(query)
