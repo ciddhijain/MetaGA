@@ -142,7 +142,7 @@ if __name__ == "__main__":
                      " IndividualID int,"
                      " SecID int,"
                      " IndividualSignature varchar(100),"
-                     " individual_type int"
+                     " Type int"
                      " )")
     '''
 

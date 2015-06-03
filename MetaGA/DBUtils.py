@@ -424,15 +424,15 @@ class DBUtils:
     def getLongIndividualsPortfolio(self, portfolioId):
         global databaseObject
         query = "SELECT COUNT(*),1 FROM mapping_table m, tblIndividualList i WHERE m.MetaIndividualId=" + str(portfolioId) + \
-                " AND i.individual_type=1 AND m.IndividualID=i.IndividualID AND m.SecID=i.SecID"
+                " AND i.Type=1 AND m.IndividualID=i.IndividualID AND m.SecID=i.SecID"
         return databaseObject.Execute(query)
 
     def insertBiasedCrossoverPortfolio(self, id1, id2, cut1, cut2, long1, size1, long2, size2, biasType, generation):
         global databaseObject
-        queryCurrent1 = "SELECT m.IndividualID, m.SecID, i.individual_type FROM mapping_table m, tblIndividualList i" \
+        queryCurrent1 = "SELECT m.IndividualID, m.SecID, i.Type FROM mapping_table m, tblIndividualList i" \
                         " WHERE m.MetaIndividualId=" + str(id1) + " AND m.IndividualID=i.IndividualID AND m.SecID=i.SecID"
         resultCurrent1 = databaseObject.Execute(queryCurrent1)
-        queryCurrent2 = "SELECT m.IndividualID, m.SecID, i.individual_type FROM mapping_table m, tblIndividualList i" \
+        queryCurrent2 = "SELECT m.IndividualID, m.SecID, i.Type FROM mapping_table m, tblIndividualList i" \
                         " WHERE m.MetaIndividualId=" + str(id2) + " AND m.IndividualID=i.IndividualID AND m.SecID=i.SecID"
         resultCurrent2 = databaseObject.Execute(queryCurrent2)
         queryNewMetaId = "SELECT MAX(MetaIndividualId), 1 FROM mapping_table"

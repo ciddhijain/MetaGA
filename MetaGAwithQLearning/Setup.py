@@ -141,7 +141,7 @@ if __name__ == "__main__":
                      " IndividualID int,"
                      " SecID int,"
                      " individual_signature varchar(100),"
-                     " individual_type int"
+                     " Type int"
                      " )")
 
     print("Loading tblIndividualList -----------")
