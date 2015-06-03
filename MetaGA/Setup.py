@@ -155,4 +155,13 @@ if __name__ == "__main__":
                      " LINES TERMINATED BY '\\n'")
     '''
 
+    dbObject.dbQuery("CREATE TABLE IF NOT EXISTS tblWalkForwardList"
+                     " ("
+                     " WalkForwardID int,"
+                     " TrainingBeginDate date,"
+                     " TrainingEndDate date,"
+                     " ReportingBeginDate date DEFAULT NULL,"
+                     " ReportingEndDate date DEFAULT NULL"
+                     ")")
+
     dbObject.dbClose()
