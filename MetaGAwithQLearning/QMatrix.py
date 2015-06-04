@@ -5,6 +5,7 @@ from RewardMatrix import *
 import numpy as np
 import GlobalVariables as gv
 from datetime import timedelta
+import logging
 
 class QMatrix:
 
@@ -43,7 +44,7 @@ class QMatrix:
                 similarCount = similarCount + 1
                 if similarCount>=5:
                     done = True
-                    print('Converged in ------------------' + str(iterations) + ' iterations')
+                    logging.info('Converged in ' + str(iterations) + ' iterations')
                     break
             else:
                 similarCount = 0

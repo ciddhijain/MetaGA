@@ -2,6 +2,7 @@ __author__ = 'Ciddhi'
 
 from datetime import timedelta, datetime
 import GlobalVariables as gv
+import logging
 
 import calendar
 
@@ -32,7 +33,7 @@ class QLearningWrapper:
         dbObject.resetAssetAllocation(portfolioId, liveStartDate, startTime)
         done = False
 
-        print('Started at : ' + str(datetime.now()))
+        logging.info('Starting q learning for ' + str(portfolioId) + ' from ' + str(walkforwardStartDate) + ' to ' + str(periodEndDate))
         while (not done):
             dbObject.resetAssetTraining(portfolioId)
             rankingObject.updateRankings(portfolioId, walkforwardStartDate, walkforwardEndDate, performanceObject, dbObject)
@@ -53,4 +54,4 @@ class QLearningWrapper:
                 liveEndDate = datetime(liveStartDate.year, liveStartDate.month, calendar.monthrange(liveStartDate.year, liveStartDate.month)[1]).date()
                 if liveEndDate>periodEndDate:
                     liveEndDate = periodEndDate
-        print('Finished at : ' + str(datetime.now()))
+        logging.info('Finished q learning for ' + str(portfolioId))

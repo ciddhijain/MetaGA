@@ -70,9 +70,10 @@ class CombinationToLists:
             feasiblePerformance = dbObject.updatePerformanceFeasibilityPortfolio(countPortfolios+1)
             if feasiblePerformance==1:
                 countFeasiblePortfolios += 1
+                logging.info("Feasible Portfolio - incremented feasible count to " + str(countFeasiblePortfolios))
             countPortfolios += 1
 
-        logging.info("Generated " + str(countPortfolios) + " combinations")
+        logging.info("Generated " + str(countPortfolios) + " total combinations and " + str(countFeasiblePortfolios) + " feasible combinations")
 
 
 if __name__ == "__main__":
