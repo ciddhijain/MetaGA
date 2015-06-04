@@ -25,8 +25,8 @@ minGenerations = 10                             # This is the minimum number of 
 maxGenerations = 100                            # This is the maximum number of generations that GA will perform
 
 walkforward = 4                                 # This is walkforward from which individual category is taken
-startDate = datetime(2012, 1, 2).date()          # This is the start of trading period
-endDate = datetime(2012, 3, 31).date()           # This is the end of trading period
+startDate = datetime(2012, 1, 2).date()          # This is the start of training period
+endDate = datetime(2012, 3, 31).date()           # This is the end of training period
 testingStartDate = endDate + timedelta(days=1)
 testingEndDate = datetime(2012, 6, 30).date()
 numTrainingDays = 62
