@@ -1,0 +1,8 @@
+Set 1 -
+
+feederEliteSelectionProbability = 0.7           # This is the probability of putting elite individuals from feeder in a portfolio
+feederNonEliteSelectionProbability = 0.3        # This is the probability of putting non-elite fit individuals from feeder in a portfolio
+mutationProbability = 0.05                      # This is the mutation probability
+longShortProbability = 0.5
+longLongProbability = 0.25
+shortShortProbability = 0.25
