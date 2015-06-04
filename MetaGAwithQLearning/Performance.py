@@ -376,7 +376,7 @@ class Performance:
         DD_History = [] #List to store the DD values.
         Gain_History = []
 
-        for stock_id, individual_id, trade_entry_date, trade_entry_time, trade_entry_price, trade_exit_date, trade_exit_time, trade_exit_price, trade_qty, trade_type in resultTrades:
+        for meta_id, stock_id, individual_id, trade_entry_date, trade_entry_time, trade_entry_price, trade_exit_date, trade_exit_time, trade_exit_price, trade_qty, trade_type in resultTrades:
             individual_id = 0
             CurrentDate=trade_entry_date
             if(c==0):
@@ -517,9 +517,18 @@ class Performance:
         for date,dummy in resultDates:
             DictOfDates[date]=date_count_range
             date_count_range=date_count_range+1
-        # TODO
-        query = "SELECT * FROM tblIndividualTradesheet WHERE EntryDate >= '" + str(startDate) + "' AND EntryDate <= '" + str(endDate) + \
-                "' AND IndividualID IN (SELECT * FROM tblIndividualCategoryInfo WHERE WalkForwardID=" + str(gv.walkforward) + " AND Category=1)"
+        queryELites = "SELECT IndividualId, SecId FROM tblIndividualCategoryInfo WHERE WalkForwardID=" + str(gv.walkforward) + " AND Category=1"
+        resultElites = dbObject.dbQuery(queryELites)
+        query = "SELECT * FROM tblIndividualTradesheet WHERE EntryDate >= '" + str(startDate) + "' AND EntryDate <= '" + str(endDate) + "' AND ("
+        count = 0
+        for feederId, stockId in resultElites:
+            if count == 0:
+                query += " ( IndividualId=" + str(feederId) + " AND SecId=" + str(stockId) + " )"
+                count += 1
+            else:
+                query += " OR ( IndividualId=" + str(feederId) + " AND SecId=" + str(stockId) + " )"
+        query += " )"
+
         resultTrades = dbObject.dbQuery(query)
         c=0
         #Parameters for each individual

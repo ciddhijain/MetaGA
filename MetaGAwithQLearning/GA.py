@@ -63,7 +63,7 @@ if __name__ == "__main__":
     dbObject.dbQuery("DELETE FROM latest_individual_table")
     logging.info("Deleted previous data")
 
-    categoryObj.categorizeFeederIndividualsByThresholds(gv.startDate, gv.endDate, performanceObj, dbObject)
+    #categoryObj.categorizeFeederIndividualsByThresholds(gv.startDate, gv.endDate, performanceObj, dbObject)
 
     combinationObj.combine(qLearningObj, performanceObj, rankingObj, mtmObj, rewardMatrixObj, qMatrixObj, trainingObj, liveObj, reallocationObj, dbObject)
     generation = 1
