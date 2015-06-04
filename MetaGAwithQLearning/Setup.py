@@ -13,6 +13,7 @@ if __name__ == "__main__":
                      " StockName varchar(50),"
                      " LotSize int"
                      " )")
+    '''
 
     print("Loading tblStockIDList ------ ")
 
@@ -21,6 +22,7 @@ if __name__ == "__main__":
                      " FIELDS TERMINATED BY ','"
                      " ENCLOSED BY '\"'"
                      " LINES TERMINATED BY '\\n'")
+    '''
 
     dbObject.dbQuery(" CREATE TABLE IF NOT EXISTS tblStockPriceData"
                      " ("
@@ -33,6 +35,7 @@ if __name__ == "__main__":
                      " Close float,"
                      " Volume int"
                      " )")
+    '''
 
     print("Loading tblStockPriceData ------ ")
 
@@ -41,6 +44,7 @@ if __name__ == "__main__":
                      " FIELDS TERMINATED BY ','"
                      " ENCLOSED BY '\"'"
                      " LINES TERMINATED BY '\\n'")
+    '''
 
     dbObject.dbQuery("CREATE TABLE IF NOT EXISTS  tblIndividualTradesheet "
                      " ("
@@ -55,6 +59,7 @@ if __name__ == "__main__":
                      " Qty int,"
                      " TradeType int"
                      " )")
+    '''
 
     print("Loading tradesheet -----------")
 
@@ -63,6 +68,7 @@ if __name__ == "__main__":
                      " FIELDS TERMINATED BY ','"
                      " ENCLOSED BY '\"'"
                      " LINES TERMINATED BY '\\n'")
+    '''
 
     dbObject.dbQuery("CREATE TABLE IF NOT EXISTS portfolio_tradesheet_data_table"
                      " ("
@@ -102,6 +108,7 @@ if __name__ == "__main__":
                      " IndividualID int,"
                      " Category int DEFAULT NULL"
                      " )")
+    '''
 
     print("Loading tblIndividualCategoryInfo -----------")
 
@@ -110,6 +117,7 @@ if __name__ == "__main__":
                      " FIELDS TERMINATED BY ','"
                      " ENCLOSED BY '\"'"
                      " LINES TERMINATED BY '\\n'")
+    '''
 
     dbObject.dbQuery("CREATE TABLE IF NOT EXISTS crossover_pairs_table"
                      " ("
@@ -128,14 +136,6 @@ if __name__ == "__main__":
                      " exposure float"
                      " )")
 
-    dbObject.dbQuery("CREATE TABLE IF NOT EXISTS feeder_performance_table"
-                     " ("
-                     " IndividualID int,"
-                     " SecID int,"
-                     " performance float,"
-                     " WalkForwardID int"
-                     " )")
-
     dbObject.dbQuery("CREATE TABLE IF NOT EXISTS tblIndividualList"
                      " ("
                      " IndividualID int,"
@@ -143,6 +143,7 @@ if __name__ == "__main__":
                      " individual_signature varchar(100),"
                      " Type int"
                      " )")
+    '''
 
     print("Loading tblIndividualList -----------")
 
@@ -151,6 +152,16 @@ if __name__ == "__main__":
                      " FIELDS TERMINATED BY ','"
                      " ENCLOSED BY '\"'"
                      " LINES TERMINATED BY '\\n'")
+    '''
+
+    dbObject.dbQuery("CREATE TABLE IF NOT EXISTS tblWalkForwardList"
+                     " ("
+                     " WalkForwardID int,"
+                     " TrainingBeginDate date,"
+                     " TrainingEndDate date,"
+                     " ReportingBeginDate date DEFAULT NULL,"
+                     " ReportingEndDate date DEFAULT NULL"
+                     ")")
 
 
     dbObject.dbClose()
