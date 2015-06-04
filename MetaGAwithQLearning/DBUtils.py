@@ -950,10 +950,10 @@ class DBUtils:
                                " VALUES"
                                " (" + str(portfolioId) + ", " + str(gv.dummyIndividualId) + ", " + str(gv.dummyStockId) + ", " + str(round(gv.trainingMaxTotalAsset,4)) + ", 0, " + str(round(gv.trainingMaxTotalAsset,4)) + ")")
 
-    # Function to reset latest_tblIndividualList every walk-forward
+    # Function to reset latest_individual_table every walk-forward
     def resetLatestIndividualsWalkForward(self, portfolioId):
         global databaseObject
-        queryReset = "DELETE FROM latest_tblIndividualList WHERE MetaIndividualId=" + str(portfolioId)
+        queryReset = "DELETE FROM latest_individual_table WHERE MetaIndividualId=" + str(portfolioId)
         databaseObject.Execute(queryReset)
 
     # Function to reset training_asset_allocation_table every training period
@@ -1106,15 +1106,15 @@ class DBUtils:
                            ", '" + str(exitDate) + "', '" + str(exitTime) + "', " + str(exitPrice) + ", " + str(entryQty) + ", " + str(tradeType) + ")"
         databaseObject.Execute(queryInsertTrade)
 
-    # Function to insert individual id in latest_tblIndividualList every walk-forward
+    # Function to insert individual id in latest_individual_table every walk-forward
     def insertLatestIndividual(self, portfolioId, feederIndividualId, stockId):
         global databaseObject
-        queryCheck = "SELECT EXISTS (SELECT 1 FROM latest_tblIndividualList WHERE MetaIndividualId=" + str(portfolioId) + " AND IndividualID=" + \
+        queryCheck = "SELECT EXISTS (SELECT 1 FROM latest_individual_table WHERE MetaIndividualId=" + str(portfolioId) + " AND IndividualID=" + \
                      str(feederIndividualId) + " AND SecID=" + str(stockId) + "), 0"
         resultCheck = databaseObject.Execute(queryCheck)
         for check, dummy in resultCheck:
             if check==0:
-                queryInsert = "INSERT INTO latest_tblIndividualList" \
+                queryInsert = "INSERT INTO latest_individual_table" \
                               " (MetaIndividualId, IndividualID, SecID)" \
                               " VALUES" \
                               " (" + str(portfolioId) + ", " + str(feederIndividualId) + ", " + str(stockId) + ")"
@@ -1421,7 +1421,7 @@ class DBUtils:
     # Function to delete all non-recent entries from q_matrix_table every walk-forward
     def updateQMatrixTableWalkForward(self, portfolioId):
         global databaseObject
-        queryLatest = "SELECT * FROM latest_tblIndividualList WHERE MetaIndividualId=" + str(portfolioId)
+        queryLatest = "SELECT * FROM latest_individual_table WHERE MetaIndividualId=" + str(portfolioId)
         resultLatest = databaseObject.Execute(queryLatest)
         queryUpdate = "DELETE FROM q_matrix_table WHERE MetaIndividualId=" + str(portfolioId) + " AND NOT ( "
         count = 0
@@ -1437,7 +1437,7 @@ class DBUtils:
     # Function to reset asset_allocation_table every walk-forward
     def updateAssetWalkForward(self, portfolioId):
         global databaseObject
-        queryLatest = "SELECT * FROM latest_tblIndividualList WHERE MetaIndividualId=" + str(portfolioId)
+        queryLatest = "SELECT * FROM latest_individual_table WHERE MetaIndividualId=" + str(portfolioId)
         resultLatest = databaseObject.Execute(queryLatest)
         queryUpdate = "DELETE FROM asset_allocation_table WHERE MetaIndividualId=" + str(portfolioId) + " AND NOT ( ( IndividualID=" + \
                       str(gv.dummyIndividualId) + " AND SecID=" + str(gv.dummyStockId) + " ) "
@@ -1462,6 +1462,6 @@ class DBUtils:
 
     def checkQMatrix(self, portfolioId, feederIndividualId, stockId):
         global databaseObject
-        query = "SELECT EXISTS( SELECT 1 FROM latest_tblIndividualList WHERE MetaIndividualId=" + str(portfolioId) + " AND IndividualID=" + \
+        query = "SELECT EXISTS( SELECT 1 FROM latest_individual_table WHERE MetaIndividualId=" + str(portfolioId) + " AND IndividualID=" + \
                 str(feederIndividualId) + " AND SecID=" + str(stockId) + " ), 1"
         return databaseObject.Execute(query)
