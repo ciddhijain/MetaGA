@@ -132,7 +132,7 @@ class Crossover:
                                     if k<(gv.longLongProbability + gv.shortShortProbability) * rangeBias:
                                         biasType = 1
                                     else:
-                                        biasType = 21
+                                        biasType = 22
 
                                 # If both type of individuals exist in both portfolios, all 3 types of crossovers are possible
                                 else:
