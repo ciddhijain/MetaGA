@@ -44,7 +44,7 @@ class QMatrix:
                 similarCount = similarCount + 1
                 if similarCount>=5:
                     done = True
-                    logging.info('Converged in ' + str(iterations) + ' iterations')
+                    #logging.info('Converged in ' + str(iterations) + ' iterations')
                     break
             else:
                 similarCount = 0
