@@ -799,20 +799,20 @@ class DBUtils:
     # Function to get current exposure without updating in database
     def getCurrentExposure(self, portfolioId, stockId, date, time):
         global databaseObject
-        queryIndividuals = "SELECT IndividualID, SecID FROM mapping_table WHERE MetaIndividualId=" + str(portfolioId)
+        queryIndividuals = "SELECT DISTINCT(SecID), 1 FROM mapping_table WHERE MetaIndividualId=" + str(portfolioId)
         resultIndividuals = databaseObject.Execute(queryIndividuals)
         totalExposure = 0
         stockExposure = 0
-        for feederId, stock in resultIndividuals:
+        for stock, dummy in resultIndividuals:
             exposure = 0
             longQty = None
             shortQty = None
             price = None
             queryLongQty = "SELECT SUM(Qty), 1 FROM portfolio_tradesheet_data_table WHERE MetaIndividualId=" + str(portfolioId) + \
-                           " AND IndividualID=" + str(feederId) + " AND SecID=" + str(stock) + " AND EntryDate='" + str(date) + \
+                           " AND SecID=" + str(stock) + " AND EntryDate='" + str(date) + \
                            "' AND EntryTime<='" + str(time) + "' AND ExitTime>'" + str(time) + "' AND TradeType=1"
             queryShortQty = "SELECT SUM(Qty), 1 FROM portfolio_tradesheet_data_table WHERE MetaIndividualId=" + str(portfolioId) + \
-                           " AND IndividualID=" + str(feederId) + " AND SecID=" + str(stock) + " AND EntryDate='" + str(date) + \
+                           " AND SecID=" + str(stock) + " AND EntryDate='" + str(date) + \
                            "' AND EntryTime<='" + str(time) + "' AND ExitTime>'" + str(time) + "' AND TradeType=0"
             queryPrice = "SELECT Open, 1 FROM tblStockPriceData WHERE SecID=" + str(stock) + " AND PriceDate='" + str(date) + "' AND PriceTime='" + str(time) + "'"
             resultLongQty = databaseObject.Execute(queryLongQty)
