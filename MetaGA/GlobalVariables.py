@@ -15,23 +15,17 @@ portfolioOutfileName = 'portfolio101.csv'
 testingPerformanceOutfileName = 'testingPerformance101.csv'
 bestPerformanceOutfileName = 'bestPerformance101.csv'
 
-tradesheetLocation = "TradesheetTable.csv"
-priceSeriesLocation = "PriceSeriesTable.csv"
-stockTableLocation = "StockTable.csv"
-feederIndividualLocation = "FeederIndividualTable.csv"
-individualTableLocation = "IndividualTable.csv"
-
 minGenerations = 10                             # This is the minimum number of generations that GA will perform
 maxGenerations = 100                            # This is the maximum number of generations that GA will perform
 
 walkforward = 1                                 # This is walkforward from which individual category is taken
 startDate = datetime(2012, 1, 2).date()          # This is the start of training period
-endDate = datetime(2012, 2, 28).date()           # This is the end of training period
+endDate = datetime(2012, 1, 31).date()           # This is the end of training period
 testingStartDate = endDate + timedelta(days=1)
-testingEndDate = datetime(2012, 3, 31).date()
-numTrainingDays = 40
+testingEndDate = datetime(2012, 2, 15).date()
+numTrainingDays = 20
 
-maxPortfolioSize = 100                           # This is the maximum size of portfolio
+maxPortfolioSize = 75                           # This is the maximum size of portfolio
 minPortfolioSize = 25                            # This is the minimum size of portfolio
 
 feederEliteSelectionProbability = 0.7           # This is the probability of putting elite individuals from feeder in a portfolio
@@ -41,7 +35,7 @@ longShortProbability = 0.5
 longLongProbability = 0.25
 shortShortProbability = 0.25
 
-numPortfolios = 120                             # This is the number of portfolios in one generation
+numPortfolios = 50                             # This is the number of portfolios in one generation
 maxNumPortfolios = numPortfolios
 minNumPortfolios = numPortfolios/2
 numCrossoverPortfolios = 0.8 * numPortfolios    # This is the proportion which is generated via crossover

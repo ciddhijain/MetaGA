@@ -11,62 +11,61 @@ Set 2 -
 
 feederEliteSelectionProbability = 0.7
 feederNonEliteSelectionProbability = 0.3
-mutationProbability = 0.075
-longShortProbability = 0.5
-longLongProbability = 0.25
-shortShortProbability = 0.25
-
-Set 3 -
-
-feederEliteSelectionProbability = 0.7
-feederNonEliteSelectionProbability = 0.3
 mutationProbability = 0.05
 longShortProbability = 0.6
 longLongProbability = 0.2
 shortShortProbability = 0.2
 
+Set 3 -
+
+feederEliteSelectionProbability = 0.6
+feederNonEliteSelectionProbability = 0.4
+mutationProbability = 0.05
+longShortProbability = 0.5
+longLongProbability = 0.25
+shortShortProbability = 0.25
+
 Set 4 -
 
-feederEliteSelectionProbability = 0.7
-feederNonEliteSelectionProbability = 0.3
-mutationProbability = 0.075
+feederEliteSelectionProbability = 0.6
+feederNonEliteSelectionProbability = 0.4
+mutationProbability = 0.05
 longShortProbability = 0.6
 longLongProbability = 0.2
 shortShortProbability = 0.2
 
 Set 5 -
 
-feederEliteSelectionProbability = 0.75
-feederNonEliteSelectionProbability = 0.25
-mutationProbability = 0.05
+feederEliteSelectionProbability = 0.7
+feederNonEliteSelectionProbability = 0.3
+mutationProbability = 0.075
 longShortProbability = 0.5
 longLongProbability = 0.25
 shortShortProbability = 0.25
 
 Set 6 -
 
-feederEliteSelectionProbability = 0.75
-feederNonEliteSelectionProbability = 0.25
+feederEliteSelectionProbability = 0.7
+feederNonEliteSelectionProbability = 0.3
+mutationProbability = 0.075
+longShortProbability = 0.6
+longLongProbability = 0.2
+shortShortProbability = 0.2
+
+Set 7 -
+
+feederEliteSelectionProbability = 0.6
+feederNonEliteSelectionProbability = 0.4
 mutationProbability = 0.075
 longShortProbability = 0.5
 longLongProbability = 0.25
 shortShortProbability = 0.25
 
-Set 7 -
-
-feederEliteSelectionProbability = 0.75
-feederNonEliteSelectionProbability = 0.25
-mutationProbability = 0.05
-longShortProbability = 0.6
-longLongProbability = 0.2
-shortShortProbability = 0.2
-
 Set 8 -
 
-feederEliteSelectionProbability = 0.75
-feederNonEliteSelectionProbability = 0.25
+feederEliteSelectionProbability = 0.6
+feederNonEliteSelectionProbability = 0.4
 mutationProbability = 0.075
 longShortProbability = 0.6
 longLongProbability = 0.2
 shortShortProbability = 0.2
-

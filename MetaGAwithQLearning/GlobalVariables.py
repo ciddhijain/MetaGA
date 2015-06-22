@@ -2,7 +2,7 @@ __author__ = 'Ciddhi'
 
 from datetime import timedelta, datetime
 
-databaseName = 'QLGA2'                         # This is database name to which connection is made
+databaseName = 'QLGA1'                         # This is database name to which connection is made
 userName = 'root'                               # This is the user name for database connection
 password = 'controljp'                          # This is the password for database connection
 dbHost = '127.0.0.1'                            # This is host address for database connection
@@ -15,28 +15,22 @@ portfolioOutfileName = 'portfolio200.csv'
 testingPerformanceOutfileName = 'testingPerformance200.csv'
 bestPerformanceOutfileName = 'bestPerformance200.csv'
 
-tradesheetLocation = "TradesheetTable.csv"
-priceSeriesLocation = "PriceSeriesTable.csv"
-stockTableLocation = "StockTable.csv"
-individualCategoryLocation = "categories.csv"
-individualTableLocation = "IndividualTable.csv"
-
 minGenerations = 10                             # This is the minimum number of generations that GA will perform
 maxGenerations = 100                            # This is the maximum number of generations that GA will perform
 
-walkforward = 4                                 # This is walkforward from which individual category is taken
-startDate = datetime(2012, 9, 21).date()          # This is the start of training period
-endDate = datetime(2012, 12, 20).date()           # This is the end of training period
-testingStartDate = endDate + timedelta(days=1)
-testingEndDate = datetime(2012, 12, 28).date()
+walkforward = 1                                 # This is walkforward from which individual category is taken
+startDate = datetime(2012, 1, 2).date()          # This is the start of training period
+endDate = datetime(2012, 3, 31).date()           # This is the end of training period
+testingStartDate = datetime(2012, 4, 1).date()      # this is start of testing period
+testingEndDate = datetime(2012, 6, 30).date()       # this is end of testing period
 numTrainingDays = 60
 
-maxPortfolioSize = 50                           # This is the maximum size of portfolio
+maxPortfolioSize = 75                           # This is the maximum size of portfolio
 minPortfolioSize = 25                            # This is the minimum size of portfolio
 
-feederEliteSelectionProbability = 0.6           # This is the probability of putting elite individuals from feeder in a portfolio
-feederNonEliteSelectionProbability = 0.4        # This is the probability of putting non-elite fit individuals from feeder in a portfolio
-mutationProbability = 0.025                      # This is the mutation probability
+feederEliteSelectionProbability = 0.7           # This is the probability of putting elite individuals from feeder in a portfolio
+feederNonEliteSelectionProbability = 0.3        # This is the probability of putting non-elite fit individuals from feeder in a portfolio
+mutationProbability = 0.05                      # This is the mutation probability
 longShortProbability = 0.5
 longLongProbability = 0.25
 shortShortProbability = 0.25
@@ -59,6 +53,11 @@ fractionElites = 0.05
 #Q Learning Varaibles
 #######################################################################################################################################
 
+alpha = 0.5
+gamma = 0.7
+maxGreedyLevel = 5
+zeroRange = 0.002
+
 dummyIndividualId = -1
 dummyStockId = -1
 
@@ -67,10 +66,5 @@ trainingMaxTotalAsset = 2 * maxTotalAsset
 factor = 5
 maxAsset = maxTotalAsset / factor
 unitQty = 250000
-
-alpha = 0.6
-gamma = 0.8
-maxGreedyLevel = 5
-zeroRange = 0.001
 
 hourWindow = 1
