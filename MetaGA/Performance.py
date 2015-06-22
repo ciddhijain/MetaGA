@@ -686,10 +686,9 @@ class Performance:
         return Performance_Measures
 
 if __name__ == "__main__":
-    ddObject = Performance()
+    performanceObject = Performance()
     dbObject = DBUtils()
     dbObject.dbConnect()
-    date = datetime(2012, 1, 2).date()
-    periodEndDate = datetime(2012, 1, 10).date()
-    ddObject.calculatePerformance(date, periodEndDate, 0, dbObject)
+    performance = performanceObject.calculateReferencePerformanceTradesheet(gv.startDate, gv.endDate, dbObject)
+    print(performance)
     dbObject.dbClose()
