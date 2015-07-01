@@ -1,4 +1,4 @@
-This is the basic MetaGA. It generates tradesheet by thresholding exposure for a portfolio, overall and stock-wise.
+This is the MetaGA with Q Learning incorporated for each portfolio. It does ranking for one month, initializes q matrix in next (second) month and does live trading in next (third) month.
 
 Steps for setup:
 - Create a Database and update its name in GlobalVariables.py. Also update username, password, and connection string etc.
