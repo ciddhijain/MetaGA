@@ -45,8 +45,8 @@ class CombinationToLists:
             currentSize = 0
 
             # Lists containing unique randomly ordered offsets within range for elites and feasible individuals
-            eliteOffsets = sample(range(countElite), sizePortfolio)
-            feasibleOffsets = sample(range(countFeasible), sizePortfolio)
+            eliteOffsets = []
+            feasibleOffsets = []
 
             # Terminate when required number of individuals have been added to the portfolio
             while currentSize<sizePortfolio:
@@ -54,9 +54,22 @@ class CombinationToLists:
                 # Generating probability for fetching elite/feasible feeder individual
                 p = randint(1, rangeBits)
                 if p<=gv.feederEliteSelectionProbability*rangeBits:
-                    resultIndividual = dbObject.getRandomEliteIndividual(eliteOffsets[currentSize], gv.walkforward)
+                    elite = 0
+                    while True:
+                        elite = randint(0, countElite)
+                        if elite not in eliteOffsets:
+                            eliteOffsets.append(elite)
+                            break
+                    resultIndividual = dbObject.getRandomEliteIndividual(elite, gv.walkforward)
                 else:
-                    resultIndividual = dbObject.getRandomFeasibleIndividual(feasibleOffsets[currentSize], gv.walkforward)
+                    feasible = 0
+                    while True:
+                        feasible = randint(0, countFeasible)
+                        if feasible not in feasibleOffsets:
+                            feasibleOffsets.append(feasible)
+                            break
+                    resultIndividual = dbObject.getRandomFeasibleIndividual(feasible, gv.walkforward)
+
                 for individualId, stockId in resultIndividual:
                     currentSize += 1
                     dbObject.insertPortfolioMapping(countPortfolios+1, individualId, stockId)
