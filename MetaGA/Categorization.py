@@ -20,7 +20,8 @@ class Categorization:
         resultWalkForward = dbObject.getNewWalkforward()
         walkforward = 0
         for wf, dummy in resultWalkForward:
-            walkforward = wf
+            if wf:
+                walkforward = wf
         walkforward += 1
         dbObject.insertWalkForward(walkforward, startDate, endDate)
         resultIndividuals = dbObject.getFeederIndividuals()

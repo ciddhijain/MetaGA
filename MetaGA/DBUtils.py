@@ -359,7 +359,7 @@ class DBUtils:
     def getFinalElites(self):
         global databaseObject
         query = "SELECT MetaIndividualId, performance FROM portfolio_table WHERE last_generation=" \
-                "(SELECT MAX(last_generation) FROM portfolio_table)) " \
+                "(SELECT MAX(last_generation) FROM portfolio_table) " \
                 "ORDER BY performance DESC LIMIT " + str(gv.numElites)
         return databaseObject.Execute(query)
 
