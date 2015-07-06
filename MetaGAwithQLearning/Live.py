@@ -101,4 +101,4 @@ class Live:
                     date = date + timedelta(days=1)
                     if(date>periodEndDate):
                         done = True
-        print('Done Live ----------------------')
+        logging.info('Finished Live')
