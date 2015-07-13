@@ -13,16 +13,6 @@ if __name__ == "__main__":
                      " StockName varchar(50),"
                      " LotSize int"
                      " )")
-    '''
-
-    print("Loading tblStockIDList ------ ")
-
-    dbObject.dbQuery("LOAD DATA INFILE '" + gv.stockTableLocation + "'"
-                     " INTO TABLE tblStockIDList"
-                     " FIELDS TERMINATED BY ','"
-                     " ENCLOSED BY '\"'"
-                     " LINES TERMINATED BY '\\n'")
-    '''
 
     dbObject.dbQuery(" CREATE TABLE IF NOT EXISTS tblStockPriceData"
                      " ("
@@ -35,16 +25,6 @@ if __name__ == "__main__":
                      " Close float,"
                      " Volume int"
                      " )")
-    '''
-
-    print("Loading tblStockPriceData ------ ")
-
-    dbObject.dbQuery("LOAD DATA INFILE '" + gv.priceSeriesLocation + "'"
-                     " INTO TABLE tblStockPriceData"
-                     " FIELDS TERMINATED BY ','"
-                     " ENCLOSED BY '\"'"
-                     " LINES TERMINATED BY '\\n'")
-    '''
 
     dbObject.dbQuery("CREATE TABLE IF NOT EXISTS  tblIndividualTradesheet "
                      " ("
@@ -59,16 +39,6 @@ if __name__ == "__main__":
                      " Qty int,"
                      " TradeType int"
                      " )")
-    '''
-
-    print("Loading tradesheet -----------")
-
-    dbObject.dbQuery("LOAD DATA INFILE '" + gv.tradesheetLocation + "'"
-                     " INTO TABLE  tblIndividualTradesheet "
-                     " FIELDS TERMINATED BY ','"
-                     " ENCLOSED BY '\"'"
-                     " LINES TERMINATED BY '\\n'")
-    '''
 
     dbObject.dbQuery("CREATE TABLE IF NOT EXISTS portfolio_tradesheet_data_table"
                      " ("
@@ -108,16 +78,6 @@ if __name__ == "__main__":
                      " IndividualID int,"
                      " Category int DEFAULT NULL"
                      " )")
-    '''
-
-    print("Loading tblIndividualCategoryInfo -----------")
-
-    dbObject.dbQuery("LOAD DATA INFILE '" + gv.individualCategoryLocation + "'"
-                     " INTO TABLE tblIndividualCategoryInfo"
-                     " FIELDS TERMINATED BY ','"
-                     " ENCLOSED BY '\"'"
-                     " LINES TERMINATED BY '\\n'")
-    '''
 
     dbObject.dbQuery("CREATE TABLE IF NOT EXISTS crossover_pairs_table"
                      " ("
@@ -143,17 +103,7 @@ if __name__ == "__main__":
                      " individual_signature varchar(100),"
                      " Type int"
                      " )")
-    '''
-
-    print("Loading tblIndividualList -----------")
-
-    dbObject.dbQuery("LOAD DATA INFILE '" + gv.individualTableLocation + "'"
-                     " INTO TABLE tblIndividualList"
-                     " FIELDS TERMINATED BY ','"
-                     " ENCLOSED BY '\"'"
-                     " LINES TERMINATED BY '\\n'")
-    '''
-
+    
     dbObject.dbQuery("CREATE TABLE IF NOT EXISTS tblWalkForwardList"
                      " ("
                      " WalkForwardID int,"
