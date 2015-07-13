@@ -45,10 +45,10 @@ if __name__ == "__main__":
     dbObject = DBUtils()
     dbObject.dbConnect()
 
-    dbObject.dbQuery("DELETE FROM mapping_table WHERE MetaIndividualId>50")
-    dbObject.dbQuery("DELETE FROM portfolio_table WHERE MetaIndividualId>50")
+    dbObject.dbQuery("DELETE FROM mapping_table WHERE MetaIndividualId")
+    dbObject.dbQuery("DELETE FROM portfolio_table WHERE MetaIndividualId")
     dbObject.dbQuery("DELETE FROM crossover_pairs_table")
-    dbObject.dbQuery("DELETE FROM portfolio_tradesheet_data_table WHERE MetaIndividualId>50")
+    dbObject.dbQuery("DELETE FROM portfolio_tradesheet_data_table WHERE MetaIndividualId")
     
     dbObject.dbQuery("DELETE FROM asset_allocation_table")
     dbObject.dbQuery("DELETE FROM asset_daily_allocation_table")
@@ -64,7 +64,7 @@ if __name__ == "__main__":
 
     #categoryObj.categorizeFeederIndividualsByThresholds(gv.startDate, gv.endDate, performanceObj, dbObject)
 
-    #combinationObj.combine(qLearningObj, performanceObj, rankingObj, mtmObj, rewardMatrixObj, qMatrixObj, trainingObj, liveObj, reallocationObj, dbObject)
+    combinationObj.combine(qLearningObj, performanceObj, rankingObj, mtmObj, rewardMatrixObj, qMatrixObj, trainingObj, liveObj, reallocationObj, dbObject)
     generation = 1
 
     while (True):
@@ -85,7 +85,7 @@ if __name__ == "__main__":
     resultElites = dbObject.getFinalElites()
     elites = ()
     for portfolioId, performance in resultElites:
-        qLearningObj.feedback(portfolioId, performanceObj, rankingObj, mtmObj, rewardMatrixObj, qMatrixObj, trainingObj, liveObj, reallocationObj, dbObject)
+        qLearningObj.feedback(gv.testingStartDate, gv.testingEndDate, portfolioId, performanceObj, rankingObj, mtmObj, rewardMatrixObj, qMatrixObj, trainingObj, liveObj, reallocationObj, dbObject)
         elites = elites + (portfolioId, )
     performanceElites = performanceObj.calculatePerformancePortfolioList(gv.testingStartDate, gv.testingEndDate, elites, dbObject)
     performanceTradesheet = performanceObj.calculateReferencePerformanceTradesheet(gv.testingStartDate, gv.testingEndDate, dbObject)

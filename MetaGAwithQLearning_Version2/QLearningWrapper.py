@@ -8,15 +8,15 @@ import calendar
 
 class QLearningWrapper:
 
-    def feedback(self, portfolioId, performanceObject, rankingObject, mtmObject, rewardMatrixObject, qMatrixObject, trainingObject, liveObject, reallocationObject, dbObject):
+    def feedback(self, startDate, endDate, portfolioId, performanceObject, rankingObject, mtmObject, rewardMatrixObject, qMatrixObject, trainingObject, liveObject, reallocationObject, dbObject):
 
-        rankingStartDate = gv.startDate
+        rankingStartDate = startDate
         rankingEndDate = rankingStartDate + timedelta(days=gv.rankingDays)
         trainingStartDate = rankingEndDate + timedelta(days=1)
         trainingEndDate = trainingStartDate + timedelta(days=gv.initializationDays)
         liveStartDate = trainingEndDate + timedelta(days=1)
         liveEndDate = liveStartDate + timedelta(days=gv.liveDays)
-        periodEndDate = gv.endDate
+        periodEndDate = endDate
         startTime = timedelta(hours=9, minutes=15)
 
         dbObject.initializeRanks(portfolioId)

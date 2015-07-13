@@ -34,7 +34,7 @@ class Mutation:
                         newStockId = stock
                 if newIndividualId and oldIndividualId:
                     newId = dbObject.insertMutationPortfolio(portfolioId, oldIndividualId, newIndividualId, oldStockId, newStockId, generation)
-                    qLearningObject.feedback(newId, performanceObject, rankingObject, mtmObject, rewardMatrixObject, qMatrixObject, trainingObject, liveObject, reallocationObject, dbObject)
+                    qLearningObject.feedback(gv.startDate, gv.endDate, newId, performanceObject, rankingObject, mtmObject, rewardMatrixObject, qMatrixObject, trainingObject, liveObject, reallocationObject, dbObject)
                     performance = performanceObject.calculatePerformancePortfolio(gv.startDate, gv.endDate, newId, dbObject)
                     dbObject.insertPerformance(newId, performance[0][1])
                     dbObject.updatePerformanceFeasibilityPortfolio(newId)

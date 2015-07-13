@@ -76,7 +76,7 @@ class CombinationToLists:
 
             dbObject.insertPortfolio(countPortfolios+1, 1, 1)
 
-            qLearningObject.feedback(countPortfolios+1, performanceObject, rankingObject, mtmObject, rewardMatrixObject, qMatrixObject, trainingObject, liveObject, reallocationObject, dbObject)
+            qLearningObject.feedback(gv.startDate, gv.endDate, countPortfolios+1, performanceObject, rankingObject, mtmObject, rewardMatrixObject, qMatrixObject, trainingObject, liveObject, reallocationObject, dbObject)
             performance = performanceObject.calculatePerformancePortfolio(gv.startDate, gv.endDate, countPortfolios+1, dbObject)
             dbObject.insertPerformance(countPortfolios+1, performance[0][1])
 
