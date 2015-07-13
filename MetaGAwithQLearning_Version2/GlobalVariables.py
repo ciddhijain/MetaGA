@@ -58,6 +58,7 @@ initializationDays = 15                         # This is the number of days for
 liveDays = 30                                   # This is the number of days for which live trading is done
 
 alpha = 0.5
+beta = 0.9
 gamma = 0.7
 maxGreedyLevel = 5
 zeroRange = 0.002

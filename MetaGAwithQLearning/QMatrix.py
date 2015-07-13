@@ -34,7 +34,7 @@ class QMatrix:
                 action = randint(0,2)
                 maxQValue = np.amax(qm, axis=1)[action]
                 # Update q value
-                qm[initialState,action] = rewardMatrix[initialState,action] + gv.gamma * maxQValue
+                qm[initialState,action] = (1-gv.beta)*qm[initialState,action] + gv.beta*(rewardMatrix[initialState,action] + gv.gamma * maxQValue)
                 initialState = action
                 greedyLevel = greedyLevel + 1
             iterations = iterations + 1
